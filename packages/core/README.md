@@ -2,6 +2,18 @@
 
 @atomify/core helps you to easily create custom elements using Typescript and decorators.
 
+## Installation
+```sh
+npm i @atomify/core
+```
+
+## Configuration
+Atomify is made for the modern browsers. Its recommended in legacy browsers to add the following while compiling to ES5 with Babel:
+```exclude: /node_modules\/(?!@atomify)/,```
+
+Its recommended to use [Web Components polyfill](https://www.npmjs.com/package/@webcomponents/webcomponentsjs) to support everything from Web Components spec in legacy browsers.
+
+
 ## Creating components
 
 @atomify/core components are made with decorators, plain ES6 classes and Typescript.
@@ -44,6 +56,11 @@ The components have special lifecycle hooks that can be implemented:
 | connectedCallback   | This is being called everytime the element is inserted into the DOM        |
 | disconnectedCallback      | This is being called everytime the element is removed from the DOM       |
 | adoptedCallback      | This is being called when the custom element is moved into a new DOM       |
+| componentWillLoad      | Called when component is first connected      |
+| componentDidLoad      | Called when component is fully loaded      |
+| componentWillRender      | Called everytime when the component is rendering     |
+| componentDidRender      | Called everytime when the component rendered    |
+| componentOnReady      | Called when the component is ready (returns a promise) this can be used when using `document.createElement`   |
 
 ## Property Decorator
 Properties are custom attributes or properties that can be used to pass data through components. Properties have the options to be reflected to attributes. You can expose properties to import the `@Prop` from the '@atomify/core'. The properties can be `Number`, `String`, `Boolean`, `Object` and `Array`. You can get access to the property via `this` operater ( see the this.name ) as example.
@@ -80,6 +97,13 @@ This is done since Javascript does not know type a HMTL attribute is. The types 
 
 ```typescript
 @Prop({ type: Boolean }) name: string = 'Joe';
+```
+
+## Complete re-render
+You can set the `reRender` argument in the `@Prop` to `true` if you want to re-render the Custom Element.
+
+```typescript
+@Prop({ reRender: true }) name: string = 'Joe';
 ```
 
 The property will now be reflecting to the custom element when inserted into the DOM.

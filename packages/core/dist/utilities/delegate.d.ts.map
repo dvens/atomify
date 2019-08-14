@@ -1,0 +1,1 @@
+{"version":3,"file":"delegate.d.ts","sourceRoot":"","sources":["../../src/utilities/delegate.ts"],"names":[],"mappings":"AAIA,UAAU,aAAa;IACnB,QAAQ,EAAE,MAAM,CAAC;IACjB,IAAI,EAAE,MAAM,CAAC;IACb,QAAQ,EAAE,CAAE,KAAK,EAAE,KAAK,KAAM,IAAI,CAAC;IACnC,UAAU,CAAC,EAAE,OAAO,CAAC;CACxB;AAED,UAAU,eAAgB,SAAQ,aAAa;IAC3C,MAAM,EAAE,WAAW,CAAA;CACtB;AAgCD;;EAEE;AACF,eAAO,MAAM,QAAQ;;;;UAmBpB,CAAC"}

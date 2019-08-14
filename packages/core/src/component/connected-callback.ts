@@ -7,6 +7,7 @@ export const connectedCallback = async( target: ComponentConstructor, options: C
 
     safeCall( target, instance, 'connectedCallback' );
     safeCall( target, instance, 'componentWillLoad' );
+    safeCall( target, instance, 'componentWillRender' );
 
     await setInitialPropertyValues( target, instance );
     await initializePropertyToAttributes( target );
@@ -17,6 +18,7 @@ export const connectedCallback = async( target: ComponentConstructor, options: C
 
     ( target as any ).setAttribute('initialized', '');
 
+    safeCall( target, instance, 'componentDidRender' );
     safeCall( target, instance, 'componentDidLoad' );
     safeCall( target, instance, 'componentOnReady' );
 

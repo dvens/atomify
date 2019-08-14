@@ -16,7 +16,9 @@
     "lint": "tslint --project ./",
     "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
   },
-  "author": "Dylan Vens",
+  "author": {
+    "name": "Dylan Vens"
+  },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
@@ -37,5 +39,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "typings": "./dist/index.d.ts"
+  "typings": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvens/atomify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dvens/atomify/issues"
+  },
+  "homepage": "https://github.com/dvens/atomify"
 }
