@@ -1,0 +1,17 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "prepublishOnly": "lerna run build",
+    "release": "lerna publish",
+    "bootstrap": "lerna bootstrap",
+    "lerna": "lerna"
+  },
+  "devDependencies": {
+    "lerna": "^3.4.3"
+  }
+}
