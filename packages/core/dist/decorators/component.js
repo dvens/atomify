@@ -35,7 +35,7 @@ export const Component = (options) => {
                 super(args);
                 this.connected = false;
                 this.__canAttachShadowDom = (options.shadow) ? options.shadow : false;
-                this.__hasShadyPolyfill = (window.ShadyCSS && !window.ShadyCSS.nativeShadow);
+                this.__hasShadowdomPolyfill = (window.ShadyCSS && !window.ShadyCSS.nativeShadow);
                 this.__nodeName = this.nodeName.toLowerCase();
                 attachShadowDom(this);
                 this.renderRoot = (this.__canAttachShadowDom && this.shadowRoot) ? this.shadowRoot : this;

@@ -1,4 +1,4 @@
-import { RenderRoot } from '../declarations';
+import { RenderRoot, QueryTarget } from '../declarations';
 
 /**
  * Queries the render root ( this or the shadowdom ) from a custom element
@@ -6,7 +6,7 @@ import { RenderRoot } from '../declarations';
  * @param selector
  * @param queryAll
 */
-function select( selector: string, queryAll: boolean = false ) {
+function select( selector: string, queryAll: boolean = false, target?: QueryTarget ) {
 
     return ( propertyTarget: Object, propertyName: PropertyKey ): any => {
 
@@ -14,9 +14,11 @@ function select( selector: string, queryAll: boolean = false ) {
 
             get( this: RenderRoot ) {
 
+                const targetElement = target ? target : this.renderRoot;
+
                 return ( queryAll )
-                    ? this.renderRoot.querySelectorAll(selector)
-                    : this.renderRoot.querySelector(selector);
+                    ? targetElement.querySelectorAll(selector)
+                    : targetElement.querySelector(selector);
 
             },
 
@@ -35,9 +37,9 @@ function select( selector: string, queryAll: boolean = false ) {
  * Queries and returns a single element.
  * @param selector name of the selector that has to be queried.
 */
-export const Query = ( selector: string ) => {
+export const Query = ( selector: string, target?: QueryTarget ) => {
 
-    return select( selector );
+    return select( selector, false, target );
 
 };
 
@@ -45,8 +47,8 @@ export const Query = ( selector: string ) => {
  * Queries and returns a list of dom elements.
  * @param selector name of the selector that has to be queried
 */
-export const QueryAll = ( selector: string ) => {
+export const QueryAll = ( selector: string, target?: QueryTarget ) => {
 
-    return select( selector, true );
+    return select( selector, true, target );
 
 };

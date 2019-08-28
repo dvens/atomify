@@ -7,7 +7,7 @@ export interface ComponentConstructor {
     connected: boolean;
     properties: any;
     __canAttachShadowDom: boolean;
-    __hasShadyPolyfill: boolean;
+    __hasShadowdomPolyfill: boolean;
     __nodeName: string;
     __jsxProps?: Map<string, unknown>;
     componentOnReady: () => Promise<any>;
@@ -44,3 +44,5 @@ export interface RenderTemplate {
     styles: StyleString;
     templateResult: DocumentFragment;
 }
+
+export type QueryTarget = Element | DocumentFragment;

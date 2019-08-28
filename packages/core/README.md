@@ -171,7 +171,7 @@ interface CustomEventOptions {
 ```
 
 ## Query & QueryAll decorators
-`@Query` and `@QueryAll` are decorators that are executing `querySelector` and `querySelectorAll` on the shadowRoot if `shadow:true` and otherwise on the this. The properties are accesible through the `this`:
+`@Query` and `@QueryAll` are decorators that are executing `querySelector` and `querySelectorAll` on the shadowRoot if `shadow:true` and otherwise on the this. The properties are accesible through the `this`. If you want to `querySelector` through another element you can do that by using the second argument of the `@Query` and `@QueryAll`, this is accepting another DOM or the Document element:
 
 ```typescript
 import { Component, Query, QueryAll } from '@atomify/core';
@@ -179,7 +179,7 @@ import { Component, Query, QueryAll } from '@atomify/core';
 ...
 export class CounterElement extends HTMLElement {
 
-    @Query('counter-list') counterList: HTMLElement;
+    @Query('counter-list', document ) counterList: HTMLElement;
     @QueryAll('button') buttons: HTMLElement[];
 
     bindEvents() {

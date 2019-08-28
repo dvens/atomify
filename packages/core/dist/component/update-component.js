@@ -25,7 +25,7 @@ export const updateComponent = (target, options, reRender = false) => {
         }
         ;
         // Check if the shadow DOM polyfill is available.
-        if (target.__hasShadyPolyfill &&
+        if (target.__hasShadowdomPolyfill &&
             options.shadow &&
             !document.head.querySelector(`[scope="${target.__nodeName}"]`)) {
             bindShadyRoot(target, template);

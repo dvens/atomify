@@ -40,7 +40,7 @@ export const updateComponent = ( target: ComponentConstructor, options: Componen
 
         // Check if the shadow DOM polyfill is available.
         if(
-            target.__hasShadyPolyfill &&
+            target.__hasShadowdomPolyfill &&
             options.shadow &&
             !document.head.querySelector(`[scope="${target.__nodeName}"]`)
         ) {

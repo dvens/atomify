@@ -32,7 +32,7 @@ export const Component = ( options: ComponentOptions ) => {
         const generatedComponent: T = class extends constructor {
 
             __canAttachShadowDom: boolean;
-            __hasShadyPolyfill: boolean;
+            __hasShadowdomPolyfill: boolean;
             __nodeName: string;
 
             /**
@@ -62,7 +62,7 @@ export const Component = ( options: ComponentOptions ) => {
                 this.connected = false;
 
                 this.__canAttachShadowDom = ( options.shadow ) ? options.shadow : false;
-                this.__hasShadyPolyfill = ( window.ShadyCSS && !window.ShadyCSS.nativeShadow );
+                this.__hasShadowdomPolyfill = ( window.ShadyCSS && !window.ShadyCSS.nativeShadow );
                 this.__nodeName = this.nodeName.toLowerCase();
 
                 attachShadowDom( this );

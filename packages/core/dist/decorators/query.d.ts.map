@@ -1,1 +1,1 @@
-{"version":3,"file":"query.d.ts","sourceRoot":"","sources":["../../src/decorators/query.ts"],"names":[],"mappings":"AAiCA;;;EAGE;AACF,eAAO,MAAM,KAAK,+FAIjB,CAAC;AAEF;;;EAGE;AACF,eAAO,MAAM,QAAQ,+FAIpB,CAAC"}
+{"version":3,"file":"query.d.ts","sourceRoot":"","sources":["../../src/decorators/query.ts"],"names":[],"mappings":"AAmCA;;;EAGE;AACF,eAAO,MAAM,KAAK,gJAIjB,CAAC;AAEF;;;EAGE;AACF,eAAO,MAAM,QAAQ,gJAIpB,CAAC"}
