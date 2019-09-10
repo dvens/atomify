@@ -31,7 +31,7 @@ export const renderTemplate = (target, options) => {
     else {
         const { styles, template, componentStyles } = templateCache.get(target.__nodeName);
         template.innerHTML = `
-            ${componentStyles !== '' ? `<style>${componentStyles}</style>` : ''}
+            ${componentStyles !== '' ? `${componentStyles}` : ''}
             ${isTemplateString ? templateResult : ''}
         `;
         // Return styles and template to update the component
