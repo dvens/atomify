@@ -274,7 +274,3 @@ export class CounterElement extends HTMLElement {
     }
 }
 ```
-
-## TODO for 1.2.0
-- [ ] Property rerender option
-- [ ] Transform delegate util into decorator
