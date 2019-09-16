@@ -7,25 +7,28 @@ export const applyAttributes = (element, vnodeData) => {
     attributes.forEach((attribute) => {
         const prop = attribute;
         if (prop === 'style') {
-            Object.assign(element.style, vnodeData[prop]);
+            return Object.assign(element.style, vnodeData[prop]);
         }
         else if (prop === 'class' || prop === 'className') {
-            element.setAttribute('class', vnodeData[prop]);
+            return element.setAttribute('class', vnodeData[prop]);
         }
         else if (prop === 'htmlFor') {
-            element.setAttribute('for', vnodeData[prop]);
+            return element.setAttribute('for', vnodeData[prop]);
         }
         else if (prop.indexOf('on') === 0) {
             const eventName = prop.substr(2).toLowerCase();
-            element.addEventListener(eventName, vnodeData[prop]);
+            return element.addEventListener(eventName, vnodeData[prop]);
         }
         else if (isCustomElement(element) && !prop.includes('-')) {
             if (!element.__jsxProps.has(prop)) {
-                element.__jsxProps.set(prop, vnodeData[prop]);
+                return element.__jsxProps.set(prop, vnodeData[prop]);
             }
         }
+        else if (prop === 'dangerouslySetInnerHTML') {
+            return element.innerHTML = vnodeData[prop];
+        }
         else {
-            element.setAttribute(prop, vnodeData[prop]);
+            return element.setAttribute(prop, vnodeData[prop]);
         }
     });
     return element;

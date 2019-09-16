@@ -11,9 +11,12 @@ export declare namespace h {
 export const h = ( nodeName: string , vnodeData: object, ...children: any ) => {
 
     const element = createElement( nodeName, vnodeData, children );
-    const fragment = createFragementFromChildren( children );
+    const isNotFunctionalComponent = !(typeof nodeName === 'function' && nodeName !== DocumentFragment);
 
-    element.appendChild( fragment );
+    if( isNotFunctionalComponent ) {
+        const fragment = createFragementFromChildren( children );
+        element.appendChild( fragment );
+    }
 
     return applyAttributes( element, vnodeData );
 
