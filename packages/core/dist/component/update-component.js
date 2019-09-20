@@ -9,15 +9,6 @@ import { renderTemplate } from './render-template';
 export const updateComponent = (target, options, reRender = false) => {
     return new Promise(async (resolve) => {
         const { styles, template, templateResult } = renderTemplate(target, options);
-        const isJSXResult = templateResult && typeof templateResult === 'object';
-        const nodes = document.importNode(template.content, true);
-        if (reRender) {
-            target.renderRoot.innerHTML = '';
-        }
-        target.renderRoot.appendChild(nodes);
-        if (isJSXResult) {
-            target.renderRoot.appendChild(templateResult);
-        }
         // Checks if styling and shadow dom is not allowed
         // and adds the styling to the document head.
         if (styles && !options.shadow) {
@@ -29,6 +20,16 @@ export const updateComponent = (target, options, reRender = false) => {
             options.shadow &&
             !document.head.querySelector(`[scope="${target.__nodeName}"]`)) {
             bindShadyRoot(target, template);
+        }
+        // Append rendered target
+        const isJSXResult = templateResult && typeof templateResult === 'object';
+        const nodes = document.importNode(template.content, true);
+        if (reRender) {
+            target.renderRoot.innerHTML = '';
+        }
+        target.renderRoot.appendChild(nodes);
+        if (isJSXResult) {
+            target.renderRoot.appendChild(templateResult);
         }
         return resolve();
     });

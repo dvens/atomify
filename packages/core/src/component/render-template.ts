@@ -39,12 +39,7 @@ export const renderTemplate = ( target: ComponentConstructor, options: Component
 
     } else {
 
-        const { styles, template, componentStyles } = templateCache.get( target.__nodeName );
-
-        template.innerHTML = `
-            ${ componentStyles !== '' ? `${componentStyles}` : '' }
-            ${ isTemplateString ? templateResult : '' }
-        `;
+        const { styles, template } = templateCache.get( target.__nodeName );
 
         // Return styles and template to update the component
         return {
