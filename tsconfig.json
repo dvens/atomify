@@ -26,6 +26,6 @@
     "jsxFactory": "h",
     "emitDecoratorMetadata": true,
     "strictNullChecks": true,
-    "noEmitOnError": true,
-  },
+    "noEmitOnError": true
+  }
 }
