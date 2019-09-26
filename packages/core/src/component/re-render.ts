@@ -5,13 +5,13 @@ import { setInitialPropertyValues } from './set-initial-property-values';
 
 export const reRender = async( target: ComponentConstructor, options: ComponentOptions, instance: any ) => {
 
-    safeCall( target, instance, 'componentWillRender' );
+    await safeCall( target, instance, 'componentWillRender' );
 
     await setInitialPropertyValues( target, instance );
     await addRemoveEventListeners( target, 'removeEventListener' );
     await updateComponent( target, options, true );
     await addRemoveEventListeners( target );
 
-    safeCall( target, instance, 'componentDidRender' );
+    await safeCall( target, instance, 'componentDidRender' );
 
 };
