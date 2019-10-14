@@ -1,5 +1,30 @@
 import { isCustomElement } from '../utilities';
 
+const BOOLEAN_ATTRS = [
+    'async',
+    'allowfullscreen',
+    'allowpaymentrequest',
+    'autofocus',
+    'autoplay',
+    'checked',
+    'controls',
+    'default',
+    'defer',
+    'disabled',
+    'formnovalidate',
+    'hidden',
+    'ismap',
+    'multiple',
+    'muted',
+    'novalidate',
+    'nowrap',
+    'open',
+    'readonly',
+    'required',
+    'reversed',
+    'selected'
+];
+
 export const applyAttributes = ( element: any, vnodeData: object ) => {
 
     const attributes = Object.keys( vnodeData || {} );
@@ -44,6 +69,18 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
             return element.innerHTML = vnodeData[prop];
 
         } else {
+
+            if (BOOLEAN_ATTRS.includes(prop)) {
+                if(vnodeData[prop]) {
+
+                    return element.setAttribute(prop, '');
+
+                } else {
+
+                    return element.removeAttribute(prop);
+
+                }
+            }
 
             return element.setAttribute(prop, vnodeData[prop]);
 

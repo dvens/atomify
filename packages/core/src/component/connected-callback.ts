@@ -22,6 +22,6 @@ export const connectedCallback = async( target: ComponentConstructor, options: C
 
     await safeCall( target, instance, 'componentDidRender' );
     await safeCall( target, instance, 'componentDidLoad' );
-    await safeCall( target, instance, 'componentOnReady' );
+    await safeCall( target, target, 'componentOnReady' );
 
 };

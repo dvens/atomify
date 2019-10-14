@@ -13,6 +13,6 @@ export const connectedCallback = async (target, options, instance) => {
     target.setAttribute('initialized', '');
     await safeCall(target, instance, 'componentDidRender');
     await safeCall(target, instance, 'componentDidLoad');
-    await safeCall(target, instance, 'componentOnReady');
+    await safeCall(target, target, 'componentOnReady');
 };
 //# sourceMappingURL=connected-callback.js.map
