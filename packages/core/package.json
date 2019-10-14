@@ -1,6 +1,6 @@
 {
   "name": "@atomify/core",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Simple base decorators to create Web Components",
   "url": "https://github.com/dvens/atomify",
   "license": "MIT",
