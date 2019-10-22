@@ -21,7 +21,8 @@ const BOOLEAN_ATTRS = [
     'readonly',
     'required',
     'reversed',
-    'selected'
+    'selected',
+    'playsinline',
 ];
 export const applyAttributes = (element, vnodeData) => {
     const attributes = Object.keys(vnodeData || {});
@@ -43,7 +44,7 @@ export const applyAttributes = (element, vnodeData) => {
             const eventName = prop.substr(2).toLowerCase();
             return element.addEventListener(eventName, vnodeData[prop]);
         }
-        else if (isCustomElement(element) && !prop.includes('-')) {
+        else if (isCustomElement(element) && !prop.includes('-') && !BOOLEAN_ATTRS.includes(prop)) {
             if (!element.__jsxProps.has(prop)) {
                 return element.__jsxProps.set(prop, vnodeData[prop]);
             }
