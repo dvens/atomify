@@ -43,13 +43,13 @@ export const Prop = (options) => {
     * Initializes propertys to attributes in the connectedcallback when the property has the reflectToAttribute option.
 */
 export const initializePropertyToAttributes = (target) => {
-    const reflectedProperties = target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE];
+    const reflectedProperties = target[REFLECTED_PROPERTIES_TO_ATTRIBUTE];
     if (!reflectedProperties)
         return;
     reflectedProperties.forEach((propValue, propName) => {
         propertyToAttribute(target, propName, propValue);
     });
-    target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = undefined;
+    target[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = undefined;
 };
 /**
     * Requests an update for the component.
@@ -70,12 +70,12 @@ const requestUpdate = (target, name, oldValue) => {
     }
     else {
         // Ensure that the reflected properties to attribute map is there.
-        if (!target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE]) {
-            target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = new Map();
+        if (!target[REFLECTED_PROPERTIES_TO_ATTRIBUTE]) {
+            target[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = new Map();
         }
         // Push the reflected property to attribute in the store to reuse when the component is connected.
         if (options.reflectToAttribute) {
-            target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE].set(name, newValue);
+            target[REFLECTED_PROPERTIES_TO_ATTRIBUTE].set(name, newValue);
         }
     }
 };

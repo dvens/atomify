@@ -73,7 +73,7 @@ export const Prop = ( options?: PropertyOptions ) => {
 */
 export const initializePropertyToAttributes = ( target: any ) => {
 
-    const reflectedProperties = target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE];
+    const reflectedProperties = target[REFLECTED_PROPERTIES_TO_ATTRIBUTE];
 
     if( !reflectedProperties ) return;
 
@@ -83,7 +83,7 @@ export const initializePropertyToAttributes = ( target: any ) => {
 
     });
 
-    target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = undefined;
+    target[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = undefined;
 
 }
 
@@ -107,16 +107,16 @@ const requestUpdate = ( target: any, name: string, oldValue: any ) => {
     } else {
 
         // Ensure that the reflected properties to attribute map is there.
-        if( !target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE] ) {
+        if( !target[REFLECTED_PROPERTIES_TO_ATTRIBUTE] ) {
 
-            target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = new Map();
+            target[REFLECTED_PROPERTIES_TO_ATTRIBUTE] = new Map();
 
         }
 
         // Push the reflected property to attribute in the store to reuse when the component is connected.
         if( options.reflectToAttribute ) {
 
-            target.constructor[REFLECTED_PROPERTIES_TO_ATTRIBUTE].set( name, newValue );
+            target[REFLECTED_PROPERTIES_TO_ATTRIBUTE].set( name, newValue );
 
         }
 
