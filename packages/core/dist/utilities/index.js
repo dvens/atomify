@@ -4,4 +4,5 @@ export * from './validator';
 export * from './property-converter';
 export * from './delegate';
 export * from './support-passive';
+export * from './defer';
 //# sourceMappingURL=index.js.map

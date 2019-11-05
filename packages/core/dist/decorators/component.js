@@ -59,7 +59,7 @@ export const Component = (options) => {
                 disconnectedCallback(this, constructor.prototype);
             }
             componentOnReady() {
-                return new Promise((resolve) => resolve(this));
+                return this.__onReadyResolve.promise;
             }
             /**
                 * Rerender function thats being called when a property changes

@@ -1,3 +1,7 @@
+export interface IDefferObject<T> {
+    promise: Promise<T>;
+    resolve: (value?: T) => void;
+}
 export interface ComponentConstructor {
     connectedCallback?: () => void;
     attributeChangedCallback?: (name: string, oldValue: string| null, newValue: string | null) => void;
@@ -11,6 +15,7 @@ export interface ComponentConstructor {
     __nodeName: string;
     __jsxProps?: Map<string, unknown>;
     componentOnReady: () => Promise<any>;
+    __onReadyResolve: IDefferObject<any>;
 }
 
 export interface ComponentOptions {

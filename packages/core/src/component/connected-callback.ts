@@ -2,8 +2,11 @@ import { setInitialPropertyValues } from './set-initial-property-values';
 import { ComponentOptions, ComponentConstructor } from '../declarations';
 import { initializePropertyToAttributes, addRemoveEventListeners } from '../decorators';
 import { updateComponent, safeCall } from '../component';
+import { defer } from '../utilities';
 
 export const connectedCallback = async( target: ComponentConstructor, options: ComponentOptions, instance: any ) => {
+
+    target.__onReadyResolve = defer<any>();
 
     await safeCall( target, instance, 'connectedCallback' );
 
@@ -22,6 +25,7 @@ export const connectedCallback = async( target: ComponentConstructor, options: C
 
     await safeCall( target, instance, 'componentDidRender' );
     await safeCall( target, instance, 'componentDidLoad' );
-    await safeCall( target, target, 'componentOnReady' );
+
+    target.__onReadyResolve.resolve( target );
 
 };

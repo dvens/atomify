@@ -34,6 +34,7 @@ export const Component = ( options: ComponentOptions ) => {
             __canAttachShadowDom: boolean;
             __hasShadowdomPolyfill: boolean;
             __nodeName: string;
+            __onReadyResolve: any;
 
             /**
                 * Tells the components when it is connected to DOM
@@ -100,7 +101,7 @@ export const Component = ( options: ComponentOptions ) => {
 
             componentOnReady() {
 
-                return new Promise(( resolve ) => resolve( this ) );
+                return this.__onReadyResolve.promise;
 
             }
 
