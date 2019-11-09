@@ -26,9 +26,6 @@ const BOOLEAN_ATTRS = [
 ];
 export const applyAttributes = (element, vnodeData) => {
     const attributes = Object.keys(vnodeData || {});
-    if (isCustomElement(element) && !element.__jsxProps) {
-        element.__jsxProps = new Map();
-    }
     attributes.forEach((attribute) => {
         const prop = attribute;
         if (prop === 'style') {
@@ -44,10 +41,12 @@ export const applyAttributes = (element, vnodeData) => {
             const eventName = prop.substr(2).toLowerCase();
             return element.addEventListener(eventName, vnodeData[prop]);
         }
-        else if (isCustomElement(element) && !prop.includes('-') && !BOOLEAN_ATTRS.includes(prop)) {
-            if (!element.__jsxProps.has(prop)) {
-                return element.__jsxProps.set(prop, vnodeData[prop]);
-            }
+        else if (isCustomElement(element) &&
+            !prop.includes('-') &&
+            !BOOLEAN_ATTRS.includes(prop) &&
+            typeof element.constructor.properties !== 'undefined' &&
+            element.constructor.properties.has(prop)) {
+            return element[prop] = vnodeData[prop];
         }
         else if (prop === 'dangerouslySetInnerHTML') {
             return element.innerHTML = vnodeData[prop];

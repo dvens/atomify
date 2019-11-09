@@ -30,12 +30,6 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
 
     const attributes = Object.keys( vnodeData || {} );
 
-    if( isCustomElement( element ) && !element.__jsxProps ) {
-
-        element.__jsxProps = new Map();
-
-    }
-
     attributes.forEach(( attribute ) => {
 
         const prop = (attribute as keyof typeof vnodeData);
@@ -57,13 +51,15 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
             const eventName = ( prop as string ).substr(2).toLowerCase();
             return element.addEventListener( eventName, vnodeData[prop] );
 
-        } else if( isCustomElement( element ) && !( prop as string ).includes('-') && !BOOLEAN_ATTRS.includes(prop) ) {
+        } else if(
+            isCustomElement( element ) &&
+            !( prop as string ).includes('-') &&
+            !BOOLEAN_ATTRS.includes(prop) &&
+            typeof element.constructor.properties !== 'undefined' &&
+            element.constructor.properties.has(prop)
+        ) {
 
-            if( !element.__jsxProps.has( prop ) ) {
-
-                return element.__jsxProps.set( prop, vnodeData[prop] );
-
-            }
+            return element[prop] = vnodeData[prop];
 
         } else if( prop === 'dangerouslySetInnerHTML' ) {
 

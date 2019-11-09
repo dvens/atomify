@@ -1,4 +1,3 @@
-import { setInitialPropertyValues } from './set-initial-property-values';
 import { ComponentOptions, ComponentConstructor } from '../declarations';
 import { initializePropertyToAttributes, addRemoveEventListeners } from '../decorators';
 import { updateComponent, safeCall } from '../component';
@@ -9,9 +8,6 @@ export const connectedCallback = async( target: ComponentConstructor, options: C
     target.__onReadyResolve = defer<any>();
 
     await safeCall( target, instance, 'connectedCallback' );
-
-    await setInitialPropertyValues( target, instance );
-
     await safeCall( target, instance, 'componentWillLoad' );
     await safeCall( target, instance, 'componentWillRender' );
 
