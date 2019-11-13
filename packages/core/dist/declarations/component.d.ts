@@ -16,6 +16,7 @@ export interface ComponentConstructor {
     __jsxProps?: Map<string, unknown>;
     componentOnReady: () => Promise<any>;
     __onReadyResolve: IDefferObject<any>;
+    __isDisconnecting: IDefferObject<any>;
 }
 export interface ComponentOptions {
     tag: string;

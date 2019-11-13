@@ -1,5 +1,6 @@
-import { attachShadowDom, validateSelector } from '../utilities';
-import { ComponentOptions, CustomElementConstructor, CustomElementRenderRoot } from '../declarations';
+import { attachShadowDom, validateSelector, defer, generateQuickGuid } from '../utilities';
+import { IS_DISCONNECTING, ON_READY_RESOLVED, ELEMENT_ID } from '../constants';
+import { ComponentOptions, CustomElementConstructor, CustomElementRenderRoot, IDefferObject } from '../declarations';
 import { connectedCallback, disconnectedCallback, getObservedAttributes, attributeChangedCallback, reRender } from '../component';
 
 /**
@@ -34,7 +35,9 @@ export const Component = ( options: ComponentOptions ) => {
             __canAttachShadowDom: boolean;
             __hasShadowdomPolyfill: boolean;
             __nodeName: string;
-            __onReadyResolve: any;
+            [ON_READY_RESOLVED]: IDefferObject<any>;
+            [IS_DISCONNECTING]: boolean | IDefferObject<any>;
+            [ELEMENT_ID]: string;
 
             /**
                 * Tells the components when it is connected to DOM
@@ -66,6 +69,9 @@ export const Component = ( options: ComponentOptions ) => {
                 this.__hasShadowdomPolyfill = ( window.ShadyCSS && !window.ShadyCSS.nativeShadow );
                 this.__nodeName = this.nodeName.toLowerCase();
 
+                this[ELEMENT_ID] = generateQuickGuid();
+                this[IS_DISCONNECTING] = false;
+
                 attachShadowDom( this );
 
                 this.renderRoot = ( this.__canAttachShadowDom && this.shadowRoot ) ? this.shadowRoot : this;
@@ -95,13 +101,15 @@ export const Component = ( options: ComponentOptions ) => {
             **/
             disconnectedCallback() {
 
+                // Tell the component it is disconnecting
+                this[IS_DISCONNECTING] = defer();
                 disconnectedCallback( this as any, constructor.prototype );
 
             }
 
             componentOnReady() {
 
-                return this.__onReadyResolve.promise;
+                return this[ON_READY_RESOLVED].promise;
 
             }
 

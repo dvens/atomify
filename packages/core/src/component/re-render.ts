@@ -5,7 +5,6 @@ import { updateComponent, safeCall } from '../component';
 export const reRender = async( target: ComponentConstructor, options: ComponentOptions, instance: any ) => {
 
     await safeCall( target, instance, 'componentWillRender' );
-    await addRemoveEventListeners( target, 'removeEventListener' );
     await updateComponent( target, options, true );
     await addRemoveEventListeners( target );
 

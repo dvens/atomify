@@ -65,7 +65,7 @@ const requestUpdate = (target, name, oldValue) => {
             callWatcher(target, name, newValue, oldValue);
         if (options.reflectToAttribute)
             propertyToAttribute(target, name, newValue);
-        if (options.reRender)
+        if (hasChanged && options.reRender)
             target.reRender();
     }
     else {

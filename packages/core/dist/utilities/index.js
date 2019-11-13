@@ -5,4 +5,5 @@ export * from './property-converter';
 export * from './delegate';
 export * from './support-passive';
 export * from './defer';
+export * from './generate-quick-guid';
 //# sourceMappingURL=index.js.map

@@ -1,4 +1,5 @@
-import { attachShadowDom, validateSelector } from '../utilities';
+import { attachShadowDom, validateSelector, defer, generateQuickGuid } from '../utilities';
+import { IS_DISCONNECTING, ON_READY_RESOLVED, ELEMENT_ID } from '../constants';
 import { connectedCallback, disconnectedCallback, getObservedAttributes, attributeChangedCallback, reRender } from '../component';
 /**
 * Base Component decorator that creates a custom element on the fly.
@@ -25,20 +26,22 @@ export const Component = (options) => {
     validateSelector(options.tag);
     return (constructor) => {
         const generatedComponent = class extends constructor {
-            /**
-                * Returns a list of attributes based on the registrated properties.
-            **/
-            static get observedAttributes() {
-                return getObservedAttributes(this);
-            }
             constructor(...args) {
                 super(args);
                 this.connected = false;
                 this.__canAttachShadowDom = (options.shadow) ? options.shadow : false;
                 this.__hasShadowdomPolyfill = (window.ShadyCSS && !window.ShadyCSS.nativeShadow);
                 this.__nodeName = this.nodeName.toLowerCase();
+                this[ELEMENT_ID] = generateQuickGuid();
+                this[IS_DISCONNECTING] = false;
                 attachShadowDom(this);
                 this.renderRoot = (this.__canAttachShadowDom && this.shadowRoot) ? this.shadowRoot : this;
+            }
+            /**
+                * Returns a list of attributes based on the registrated properties.
+            **/
+            static get observedAttributes() {
+                return getObservedAttributes(this);
             }
             /**
                 * Is called each time a attribute that is defined in the observedAttributes is changed.
@@ -56,10 +59,12 @@ export const Component = (options) => {
                 * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
             **/
             disconnectedCallback() {
+                // Tell the component it is disconnecting
+                this[IS_DISCONNECTING] = defer();
                 disconnectedCallback(this, constructor.prototype);
             }
             componentOnReady() {
-                return this.__onReadyResolve.promise;
+                return this[ON_READY_RESOLVED].promise;
             }
             /**
                 * Rerender function thats being called when a property changes

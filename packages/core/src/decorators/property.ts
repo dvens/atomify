@@ -102,7 +102,7 @@ const requestUpdate = ( target: any, name: string, oldValue: any ) => {
 
         if( hasChanged && target.constructor[WATCHED_PROPERTIES] ) callWatcher( target, name, newValue, oldValue );
         if( options.reflectToAttribute ) propertyToAttribute( target, name, newValue );
-        if( options.reRender ) target.reRender();
+        if( hasChanged && options.reRender ) target.reRender();
 
     } else {
 

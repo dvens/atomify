@@ -1,6 +1,10 @@
 import { InitializedEvents, ListenOptions } from '../declarations';
 import { supportsPassive } from '../utilities';
-import { BOUND_LISTENERS } from '../constants';
+import { BOUND_LISTENERS, ELEMENT_ID } from '../constants';
+
+// Keeps track of the bound events of the components
+const BOUND_EVENTS = new Map();
+
 /**
     * @Listen decorator is handling events( custom or normal ) that are being dispatched by elements or components.
 */
@@ -53,26 +57,18 @@ export const addRemoveEventListeners = ( targetElement: any, type: string = 'add
         items.forEach( ( item ) => {
 
             const eventTarget = getEventTarget( targetElement, defaultTarget, item.eventTarget );
+            const eventId = `${targetElement[ELEMENT_ID]}${ item.type }${item.eventTarget}${ item.handler.toString()}`;
 
             if(
                 ( NodeList.prototype.isPrototypeOf(eventTarget) || Array.isArray( eventTarget ) ) &&
                 eventTarget.length > 0
             ) {
 
-                Array.from( eventTarget )
-                    .map( ( target: any ) => target[type]( item.type, (e: CustomEvent) => {
-
-                        item.handler.call( targetElement, e );
-
-                    }, item.options ) );
+                Array.from(eventTarget).map((target) => initializeEvent( target, eventId, item, targetElement, type ));
 
             } else {
 
-                eventTarget[type](item.type, (e: CustomEvent) => {
-
-                    item.handler.call( targetElement, e );
-
-                }, item.options );
+                initializeEvent( eventTarget, eventId, item, targetElement, type );
 
             }
 
@@ -81,6 +77,26 @@ export const addRemoveEventListeners = ( targetElement: any, type: string = 'add
         resolve();
 
     });
+
+}
+
+function initializeEvent(target: any, eventId: string, item: InitializedEvents , targetElement: any, type: string ) {
+
+    // Check if even is bound. If so remove it first before applying new one.
+    if( BOUND_EVENTS.has(eventId)) {
+        target.removeEventListener(item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
+    }
+
+    // Save event to use as reference.
+    BOUND_EVENTS.set(eventId, {
+        callbackWrapper: (e: Event) => { item.handler.call(targetElement, e); }
+    });
+
+    if( type === 'removeEventListener' ) {
+        BOUND_EVENTS.delete(eventId);
+    } else {
+        target[type](item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
+    }
 
 }
 
