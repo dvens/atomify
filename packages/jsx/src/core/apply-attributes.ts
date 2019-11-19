@@ -78,8 +78,9 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
             }
 
         } else if( typeof vnodeData[prop] !== 'function' ) {
-            const isStringValue = typeof vnodeData[prop] === 'string';
-            return element.setAttribute(prop, isStringValue ? vnodeData[prop] : '');
+            const isBooleanValue = typeof vnodeData[prop] === 'boolean';
+
+            return element.setAttribute(prop, isBooleanValue ? '' : vnodeData[prop] );
         }
 
     });
