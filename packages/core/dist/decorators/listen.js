@@ -62,7 +62,7 @@ function initializeEvent(target, eventId, item, targetElement, type) {
     if (type === 'removeEventListener') {
         BOUND_EVENTS.delete(eventId);
     }
-    else {
+    else if (typeof target[type] === 'function') {
         target[type](item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
     }
 }

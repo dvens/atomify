@@ -51,16 +51,17 @@ export const applyAttributes = (element, vnodeData) => {
         else if (prop === 'dangerouslySetInnerHTML') {
             return element.innerHTML = vnodeData[prop];
         }
-        else {
-            if (BOOLEAN_ATTRS.includes(prop)) {
-                if (vnodeData[prop]) {
-                    return element.setAttribute(prop, '');
-                }
-                else {
-                    return element.removeAttribute(prop);
-                }
+        else if (BOOLEAN_ATTRS.includes(prop)) {
+            if (vnodeData[prop]) {
+                return element.setAttribute(prop, '');
             }
-            return element.setAttribute(prop, vnodeData[prop]);
+            else {
+                return element.removeAttribute(prop);
+            }
+        }
+        else if (typeof vnodeData[prop] !== 'function') {
+            const isStringValue = typeof vnodeData[prop] === 'string';
+            return element.setAttribute(prop, isStringValue ? vnodeData[prop] : '');
         }
     });
     return element;

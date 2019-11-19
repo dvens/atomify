@@ -65,22 +65,21 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
 
             return element.innerHTML = vnodeData[prop];
 
-        } else {
+        } else if( BOOLEAN_ATTRS.includes(prop) ) {
 
-            if (BOOLEAN_ATTRS.includes(prop)) {
-                if(vnodeData[prop]) {
+            if(vnodeData[prop]) {
 
-                    return element.setAttribute(prop, '');
+                return element.setAttribute(prop, '');
 
-                } else {
+            } else {
 
-                    return element.removeAttribute(prop);
+                return element.removeAttribute(prop);
 
-                }
             }
 
-            return element.setAttribute(prop, vnodeData[prop]);
-
+        } else if( typeof vnodeData[prop] !== 'function' ) {
+            const isStringValue = typeof vnodeData[prop] === 'string';
+            return element.setAttribute(prop, isStringValue ? vnodeData[prop] : '');
         }
 
     });
