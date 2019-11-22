@@ -18,7 +18,7 @@ export const h = ( nodeName: string , vnodeData: object, ...children: any ) => {
         element.appendChild( fragment );
     }
 
-    return applyAttributes( element, vnodeData );
+    return isNotFunctionalComponent ? applyAttributes( element, vnodeData ) : element;
 
 };
 

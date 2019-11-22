@@ -51,8 +51,9 @@ export const addRemoveEventListeners = (targetElement, type = 'addEventListener'
     });
 };
 function initializeEvent(target, eventId, item, targetElement, type) {
+    const hasTarget = typeof target[type] === 'function';
     // Check if even is bound. If so remove it first before applying new one.
-    if (BOUND_EVENTS.has(eventId)) {
+    if (BOUND_EVENTS.has(eventId) && hasTarget) {
         target.removeEventListener(item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
     }
     // Save event to use as reference.
@@ -62,7 +63,7 @@ function initializeEvent(target, eventId, item, targetElement, type) {
     if (type === 'removeEventListener') {
         BOUND_EVENTS.delete(eventId);
     }
-    else if (typeof target[type] === 'function') {
+    else if (hasTarget) {
         target[type](item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
     }
 }

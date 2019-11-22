@@ -6,7 +6,7 @@ export const h = (nodeName, vnodeData, ...children) => {
         const fragment = createFragementFromChildren(children);
         element.appendChild(fragment);
     }
-    return applyAttributes(element, vnodeData);
+    return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
 };
 export const Fragment = DocumentFragment;
 //# sourceMappingURL=index.js.map

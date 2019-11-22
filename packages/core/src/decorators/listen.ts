@@ -82,8 +82,10 @@ export const addRemoveEventListeners = ( targetElement: any, type: string = 'add
 
 function initializeEvent(target: any, eventId: string, item: InitializedEvents , targetElement: any, type: string ) {
 
+    const hasTarget = typeof target[type] === 'function';
+
     // Check if even is bound. If so remove it first before applying new one.
-    if( BOUND_EVENTS.has(eventId)) {
+    if( BOUND_EVENTS.has(eventId) && hasTarget ) {
         target.removeEventListener(item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
     }
 
@@ -94,7 +96,7 @@ function initializeEvent(target: any, eventId: string, item: InitializedEvents ,
 
     if( type === 'removeEventListener' ) {
         BOUND_EVENTS.delete(eventId);
-    } else if( typeof target[type] === 'function' ){
+    } else if( hasTarget ){
         target[type](item.type, BOUND_EVENTS.get(eventId).callbackWrapper, item.options);
     }
 
