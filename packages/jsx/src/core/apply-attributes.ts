@@ -26,61 +26,90 @@ const BOOLEAN_ATTRS = [
     'playsinline',
 ];
 
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+
 export const applyAttributes = ( element: any, vnodeData: object ) => {
 
     const attributes = Object.keys( vnodeData || {} );
 
     attributes.forEach(( attribute ) => {
+        const attributeName = (attribute as keyof typeof vnodeData);
+        const attributeValue = vnodeData[attributeName];
 
-        const prop = (attribute as keyof typeof vnodeData);
+        let lAttributeName = attribute.toLowerCase();
 
-        if( prop === 'style' ) {
+        if( attributeName === 'style' ) {
 
-            return Object.assign( element.style, vnodeData[prop] )
+            return Object.assign( element.style, attributeValue )
 
-        } else if ( prop === 'class' || prop === 'className' ) {
+        } else if ( attributeName === 'class' || attributeName === 'className' ) {
 
-            return element.setAttribute('class', vnodeData[prop] );
+            return element.setAttribute('class', attributeValue );
 
-        } else if ( prop === 'htmlFor' ) {
+        } else if ( attributeName === 'htmlFor' ) {
 
-            return element.setAttribute('for', vnodeData[prop]);
+            return element.setAttribute('for', attributeValue);
 
-        } else if ( ( prop as string ).indexOf('on') === 0 ) {
+        } else if ( ( attributeName as string ).indexOf('on') === 0 ) {
 
-            const eventName = ( prop as string ).substr(2).toLowerCase();
-            return element.addEventListener( eventName, vnodeData[prop] );
+            const eventName = ( attributeName as string ).substr(2).toLowerCase();
+            return element.addEventListener( eventName, attributeValue );
 
         } else if(
             isCustomElement( element ) &&
-            !( prop as string ).includes('-') &&
-            !BOOLEAN_ATTRS.includes(prop) &&
+            !( attributeName as string ).includes('-') &&
+            !BOOLEAN_ATTRS.includes(attributeName) &&
             typeof element.constructor.properties !== 'undefined' &&
-            element.constructor.properties.has(prop)
+            element.constructor.properties.has(attributeName)
         ) {
 
-            return element[prop] = vnodeData[prop];
+            return element[attributeName] = attributeValue;
 
-        } else if( prop === 'dangerouslySetInnerHTML' ) {
+        } else if( attributeName === 'dangerouslySetInnerHTML' ) {
 
-            return element.innerHTML = vnodeData[prop];
+            return element.innerHTML = attributeValue;
 
-        } else if( BOOLEAN_ATTRS.includes(prop) ) {
+        } else if( BOOLEAN_ATTRS.includes(attributeName) ) {
 
-            if(vnodeData[prop]) {
+            if(attributeValue) {
 
-                return element.setAttribute(prop, '');
+                return element.setAttribute(attributeName, '');
 
             } else {
 
-                return element.removeAttribute(prop);
+                return element.removeAttribute(attributeName);
 
             }
 
-        } else if( typeof vnodeData[prop] !== 'function' ) {
-            const isBooleanValue = typeof vnodeData[prop] === 'boolean';
+        } else if( typeof attributeValue !== 'function' ) {
+            if (lAttributeName !== (lAttributeName = lAttributeName.replace(/^xlink\:?/, ''))) {
 
-            return element.setAttribute(prop, isBooleanValue ? '' : vnodeData[prop] );
+                if (attributeValue == null || attributeValue === false) {
+
+                    element.removeAttributeNS(
+                        XLINK_NS,
+                        lAttributeName.toLowerCase()
+                    );
+
+                } else {
+
+                    element.setAttributeNS(
+                        XLINK_NS,
+                        lAttributeName.toLowerCase(),
+                        attributeValue
+                    );
+
+                }
+
+            }  else if (attributeValue == null || attributeValue === false) {
+
+                element.removeAttribute(attributeName);
+
+            } else {
+
+                element.setAttribute(attributeName, attributeValue);
+
+            }
         }
 
     });

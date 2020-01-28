@@ -24,44 +24,59 @@ const BOOLEAN_ATTRS = [
     'selected',
     'playsinline',
 ];
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
 export const applyAttributes = (element, vnodeData) => {
     const attributes = Object.keys(vnodeData || {});
     attributes.forEach((attribute) => {
-        const prop = attribute;
-        if (prop === 'style') {
-            return Object.assign(element.style, vnodeData[prop]);
+        const attributeName = attribute;
+        const attributeValue = vnodeData[attributeName];
+        let lAttributeName = attribute.toLowerCase();
+        if (attributeName === 'style') {
+            return Object.assign(element.style, attributeValue);
         }
-        else if (prop === 'class' || prop === 'className') {
-            return element.setAttribute('class', vnodeData[prop]);
+        else if (attributeName === 'class' || attributeName === 'className') {
+            return element.setAttribute('class', attributeValue);
         }
-        else if (prop === 'htmlFor') {
-            return element.setAttribute('for', vnodeData[prop]);
+        else if (attributeName === 'htmlFor') {
+            return element.setAttribute('for', attributeValue);
         }
-        else if (prop.indexOf('on') === 0) {
-            const eventName = prop.substr(2).toLowerCase();
-            return element.addEventListener(eventName, vnodeData[prop]);
+        else if (attributeName.indexOf('on') === 0) {
+            const eventName = attributeName.substr(2).toLowerCase();
+            return element.addEventListener(eventName, attributeValue);
         }
         else if (isCustomElement(element) &&
-            !prop.includes('-') &&
-            !BOOLEAN_ATTRS.includes(prop) &&
+            !attributeName.includes('-') &&
+            !BOOLEAN_ATTRS.includes(attributeName) &&
             typeof element.constructor.properties !== 'undefined' &&
-            element.constructor.properties.has(prop)) {
-            return element[prop] = vnodeData[prop];
+            element.constructor.properties.has(attributeName)) {
+            return element[attributeName] = attributeValue;
         }
-        else if (prop === 'dangerouslySetInnerHTML') {
-            return element.innerHTML = vnodeData[prop];
+        else if (attributeName === 'dangerouslySetInnerHTML') {
+            return element.innerHTML = attributeValue;
         }
-        else if (BOOLEAN_ATTRS.includes(prop)) {
-            if (vnodeData[prop]) {
-                return element.setAttribute(prop, '');
+        else if (BOOLEAN_ATTRS.includes(attributeName)) {
+            if (attributeValue) {
+                return element.setAttribute(attributeName, '');
             }
             else {
-                return element.removeAttribute(prop);
+                return element.removeAttribute(attributeName);
             }
         }
-        else if (typeof vnodeData[prop] !== 'function') {
-            const isBooleanValue = typeof vnodeData[prop] === 'boolean';
-            return element.setAttribute(prop, isBooleanValue ? '' : vnodeData[prop]);
+        else if (typeof attributeValue !== 'function') {
+            if (lAttributeName !== (lAttributeName = lAttributeName.replace(/^xlink\:?/, ''))) {
+                if (attributeValue == null || attributeValue === false) {
+                    element.removeAttributeNS(XLINK_NS, lAttributeName.toLowerCase());
+                }
+                else {
+                    element.setAttributeNS(XLINK_NS, lAttributeName.toLowerCase(), attributeValue);
+                }
+            }
+            else if (attributeValue == null || attributeValue === false) {
+                element.removeAttribute(attributeName);
+            }
+            else {
+                element.setAttribute(attributeName, attributeValue);
+            }
         }
     });
     return element;
