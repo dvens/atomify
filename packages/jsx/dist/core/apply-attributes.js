@@ -76,7 +76,6 @@ export const applyAttributes = (element, vnodeData) => {
             }
             else {
                 const isBooleanValue = typeof attributeValue === 'boolean';
-                // return element.setAttribute(attributeName, attributeValue);
                 return element.setAttribute(attributeName, isBooleanValue ? '' : attributeValue);
             }
         }
