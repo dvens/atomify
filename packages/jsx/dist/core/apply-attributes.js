@@ -65,17 +65,19 @@ export const applyAttributes = (element, vnodeData) => {
         else if (typeof attributeValue !== 'function') {
             if (lAttributeName !== (lAttributeName = lAttributeName.replace(/^xlink\:?/, ''))) {
                 if (attributeValue == null || attributeValue === false) {
-                    element.removeAttributeNS(XLINK_NS, lAttributeName.toLowerCase());
+                    return element.removeAttributeNS(XLINK_NS, lAttributeName.toLowerCase());
                 }
                 else {
-                    element.setAttributeNS(XLINK_NS, lAttributeName.toLowerCase(), attributeValue);
+                    return element.setAttributeNS(XLINK_NS, lAttributeName.toLowerCase(), attributeValue);
                 }
             }
             else if (attributeValue == null || attributeValue === false) {
-                element.removeAttribute(attributeName);
+                return element.removeAttribute(attributeName);
             }
             else {
-                element.setAttribute(attributeName, attributeValue);
+                const isBooleanValue = typeof attributeValue === 'boolean';
+                // return element.setAttribute(attributeName, attributeValue);
+                return element.setAttribute(attributeName, isBooleanValue ? '' : attributeValue);
             }
         }
     });

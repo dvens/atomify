@@ -86,14 +86,14 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
 
                 if (attributeValue == null || attributeValue === false) {
 
-                    element.removeAttributeNS(
+                    return element.removeAttributeNS(
                         XLINK_NS,
                         lAttributeName.toLowerCase()
                     );
 
                 } else {
 
-                    element.setAttributeNS(
+                    return element.setAttributeNS(
                         XLINK_NS,
                         lAttributeName.toLowerCase(),
                         attributeValue
@@ -103,11 +103,12 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
 
             }  else if (attributeValue == null || attributeValue === false) {
 
-                element.removeAttribute(attributeName);
+                return element.removeAttribute(attributeName);
 
             } else {
 
-                element.setAttribute(attributeName, attributeValue);
+                const isBooleanValue = typeof attributeValue === 'boolean';
+                return element.setAttribute(attributeName, isBooleanValue ? '' : attributeValue );
 
             }
         }
