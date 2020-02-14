@@ -22,11 +22,11 @@ function _delegate(options) {
 export const delegate = (options) => {
     let { target, type } = options;
     if (typeof target === 'object' || typeof type === 'function') {
-        return _delegate(Object.assign({}, options, { target }));
+        return _delegate(Object.assign(Object.assign({}, options), { target }));
     }
     if (typeof target === 'string') {
         return Array.from(document.querySelectorAll(target))
-            .map((element) => _delegate(Object.assign({}, options, { target: element })));
+            .map((element) => _delegate(Object.assign(Object.assign({}, options), { target: element })));
     }
     return null;
 };
