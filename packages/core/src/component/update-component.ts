@@ -1,5 +1,5 @@
-import { ComponentConstructor, ComponentOptions } from '../declarations';
 import { generateGeneralStyling } from '../component';
+import { ComponentConstructor, ComponentOptions } from '../declarations';
 import { renderTemplate } from './render-template';
 
 /**

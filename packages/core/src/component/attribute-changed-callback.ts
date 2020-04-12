@@ -1,6 +1,6 @@
 import { ComponentConstructor } from '../declarations';
-import { camelCaseToDash } from '../utilities';
 import { attributeToProperty } from '../decorators';
+import { camelCaseToDash } from '../utilities';
 
 export const attributeChangedCallback = ( target: ComponentConstructor, name: string, oldValue: any, newValue: any ) => {
 
@@ -19,7 +19,7 @@ export const getObservedAttributes = ( target: ComponentConstructor ) => {
 
     if( props ) {
 
-        props.forEach( ( _:any, key: string ) => attributes.push( camelCaseToDash( key ) ) );
+        props.forEach( ( _: any, key: string ) => attributes.push( camelCaseToDash( key ) ) );
 
     }
 

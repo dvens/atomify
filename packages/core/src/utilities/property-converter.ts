@@ -1,9 +1,9 @@
+import { ConvertedOptions, PropertyConverter, TypeHint } from '../declarations';
 import { camelCaseToDash, dashToCamelCase } from './camel-case';
-import { PropertyConverter, ConvertedOptions, TypeHint } from '../declarations';
 
 export const propertyConverter: PropertyConverter = {
 
-    toAttribute( name: string, value: any, type?: TypeHint ) : ConvertedOptions {
+    toAttribute( name: string, value: any, type?: TypeHint ): ConvertedOptions {
 
 		const valueType = type ? type : getTypeOfValue( value );
 		const convertedPropertyToAttributeName = camelCaseToDash( name );

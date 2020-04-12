@@ -1,4 +1,4 @@
-export const camelCaseToDash = ( string : string ) => {
+export const camelCaseToDash = ( string: string ) => {
 
     return string.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
 

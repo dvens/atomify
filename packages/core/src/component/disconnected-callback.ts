@@ -1,7 +1,7 @@
+import { removeTemplate,safeCall } from '../component';
+import { IS_DISCONNECTING } from '../constants';
 import { ComponentConstructor } from '../declarations';
 import { addRemoveEventListeners } from '../decorators';
-import { safeCall, removeTemplate } from '../component';
-import { IS_DISCONNECTING } from '../constants';
 
 export const disconnectedCallback = async( target: ComponentConstructor, instance: any ) => {
 

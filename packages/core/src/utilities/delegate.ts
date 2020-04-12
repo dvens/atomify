@@ -48,7 +48,7 @@ function _delegate( options: DelegateOptions ) {
 */
 export const delegate = ( options: DelegateOptions ) => {
 
-    let { target, type } = options;
+    const { target, type } = options;
 
 	if ( typeof target === 'object' || typeof type === 'function' ) {
 

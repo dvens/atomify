@@ -2,7 +2,7 @@ export interface KeyValue {
     [key: string ]: any;
 }
 
-export type TypeHint = 'Boolean' | 'String' | 'Object' | 'Number' | 'Array' | Boolean;
+export type TypeHint = 'Boolean' | 'String' | 'Object' | 'Number' | 'Array' | boolean;
 export interface PropertyOptions {
     reflectToAttribute?: boolean;
     type?: TypeHint;

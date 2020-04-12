@@ -1,4 +1,4 @@
-import { RenderRoot, QueryTarget } from '../declarations';
+import { QueryTarget,RenderRoot } from '../declarations';
 
 /**
  * Queries the render root ( this or the shadowdom ) from a custom element
@@ -8,7 +8,7 @@ import { RenderRoot, QueryTarget } from '../declarations';
 */
 function select( selector: string, queryAll: boolean = false, target?: QueryTarget ) {
 
-    return ( propertyTarget: Object, propertyName: PropertyKey ): any => {
+    return ( propertyTarget: Record<string, any>, propertyName: PropertyKey ): any => {
 
         const descriptor = {
 

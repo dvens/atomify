@@ -1,5 +1,5 @@
 
-export const attachShadowDom = ( target: any ) : void => {
+export const attachShadowDom = ( target: any ): void => {
 
     if( !target.shadowRoot && target.__canAttachShadowDom ) {
 

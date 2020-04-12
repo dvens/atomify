@@ -1,6 +1,6 @@
+import { BOUND_LISTENERS, ELEMENT_ID } from '../constants';
 import { InitializedEvents, ListenOptions } from '../declarations';
 import { supportsPassive } from '../utilities';
-import { BOUND_LISTENERS, ELEMENT_ID } from '../constants';
 
 // Keeps track of the bound events of the components
 const BOUND_EVENTS = new Map();

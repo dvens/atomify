@@ -1,4 +1,4 @@
-import { ComponentOptions, ComponentConstructor, StyleString } from '../declarations';
+import { ComponentConstructor, ComponentOptions, StyleString } from '../declarations';
 
 /*
     * Generates (concats) styling based upon the style string and styles array given by the component.

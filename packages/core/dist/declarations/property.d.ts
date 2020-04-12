@@ -1,7 +1,7 @@
 export interface KeyValue {
     [key: string]: any;
 }
-export declare type TypeHint = 'Boolean' | 'String' | 'Object' | 'Number' | 'Array' | Boolean;
+export declare type TypeHint = 'Boolean' | 'String' | 'Object' | 'Number' | 'Array' | boolean;
 export interface PropertyOptions {
     reflectToAttribute?: boolean;
     type?: TypeHint;

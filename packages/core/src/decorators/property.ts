@@ -1,6 +1,6 @@
+import { CLASS_PROPERTIES, IS_REFLECTING_ATTRIBUTE,IS_REFLECTING_PROPERTY, PROPERTIES, REFLECTED_PROPERTIES_TO_ATTRIBUTE, WATCHED_PROPERTIES } from '../constants';
 import { KeyValue, PropertyOptions, PropertyTarget } from '../declarations';
-import { propertyConverter, dashToCamelCase } from '../utilities';
-import { CLASS_PROPERTIES, PROPERTIES, REFLECTED_PROPERTIES_TO_ATTRIBUTE, IS_REFLECTING_PROPERTY, WATCHED_PROPERTIES, IS_REFLECTING_ATTRIBUTE } from '../constants';
+import { dashToCamelCase,propertyConverter } from '../utilities';
 
 const defaultPropertyDeclaration: PropertyOptions = {
     reflectToAttribute: false,

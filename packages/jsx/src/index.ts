@@ -1,4 +1,4 @@
-import { createElement, createFragementFromChildren, applyAttributes } from "./core";
+import { applyAttributes, createElement, createFragementFromChildren } from './core';
 
 export declare namespace h {
     export namespace JSX {
@@ -8,18 +8,18 @@ export declare namespace h {
     }
 }
 
-export const h = ( nodeName: string , vnodeData: object, ...children: any ) => {
+export const h = (nodeName: string, vnodeData: object, ...children: any) => {
+    const element = createElement(nodeName, vnodeData, children);
+    const isNotFunctionalComponent = !(
+        typeof nodeName === 'function' && nodeName !== DocumentFragment
+    );
 
-    const element = createElement( nodeName, vnodeData, children );
-    const isNotFunctionalComponent = !(typeof nodeName === 'function' && nodeName !== DocumentFragment);
-
-    if( isNotFunctionalComponent ) {
-        const fragment = createFragementFromChildren( children );
-        element.appendChild( fragment );
+    if (isNotFunctionalComponent) {
+        const fragment = createFragementFromChildren(children);
+        element.appendChild(fragment);
     }
 
-    return isNotFunctionalComponent ? applyAttributes( element, vnodeData ) : element;
-
+    return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
 };
 
 export const Fragment = DocumentFragment;
