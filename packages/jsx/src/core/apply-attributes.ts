@@ -58,7 +58,6 @@ export const applyAttributes = ( element: any, vnodeData: object ) => {
         } else if(
             isCustomElement( element ) &&
             !( attributeName as string ).includes('-') &&
-            !BOOLEAN_ATTRS.includes(attributeName) &&
             typeof element.constructor.properties !== 'undefined' &&
             element.constructor.properties.has(attributeName)
         ) {
