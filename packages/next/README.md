@@ -31,14 +31,14 @@ const updateTitle = () => {
 
 // Component setup
 export const CustomElement = () => {
-    const [value, updateValue] = useProperty<String>('value', {value});
+    const [value, updateValue] = useProperty<String>('value', {value: 'test'});
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
 
-    useWatch({ value }) => {
+    useWatch(({ value }) => {
         amount.innerText = value.newValue;
         changeEvent(value.newValue);
-    }, ['value']);
+    }, [value]);
 
     // Listens to events.
     useListen('click', (e: MouseEvent) => {
@@ -46,20 +46,20 @@ export const CustomElement = () => {
     },[title]);
 
     // Triggered when component is added/loaded to the dom.
-    onComponentDidload(() => {
+    onDidload(() => {
         console.log('component loaded!');
     });
 
     // Triggered when component is removed from the dom
-    onComponentUnload(() => {
+    onUnload(() => {
         console.log('on component unload!');
     });
 
     return (
-        <Host shadow={true} styles={style}>
+        <Host shadowDom={true} shadowMode={'open'} style={style}>
             <h1 class={'test'}>{ title }</h1>
             amount:<span js-hook-amount></span>
-            <button onClick={updateTitle}></button>
+            <button onClick={updateValue('hello')}></button>
         </Host>
     );
 };
