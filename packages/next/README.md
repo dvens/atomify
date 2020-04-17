@@ -31,14 +31,14 @@ const updateTitle = () => {
 
 // Component setup
 export const CustomElement = () => {
-    const [value, updateValue] = useProperty<String>('value', {value: 'test'});
+    const [value, updateValue, onValueChanged] = useProperty<String>('value', {value: 'test'});
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
 
-    useWatch(({ value }) => {
-        amount.innerText = value.newValue;
-        changeEvent(value.newValue);
-    }, [value]);
+    onValueChanged((newValue) => {
+        amount.innerText = newValue;
+        changeEvent(newValue);
+    });
 
     // Listens to events.
     useListen('click', (e: MouseEvent) => {
