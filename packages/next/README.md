@@ -30,7 +30,7 @@ const updateTitle = () => {
 };
 
 // Component setup
-export const CustomElement = () => {
+export const CustomElement = ({ element, update }) => {
     const [value, updateValue, onValueChanged] = useProperty<String>('value', {value: 'test'});
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
@@ -38,12 +38,25 @@ export const CustomElement = () => {
     onValueChanged((newValue) => {
         amount.innerText = newValue;
         changeEvent(newValue);
+
+        // Update will trigger a rerender.
+        update();
     });
 
     // Listens to events.
     useListen('click', (e: MouseEvent) => {
         console.log('title has been clicked: ', e);
     },[title]);
+
+    // Triggered when the component updates/rerenders
+    onUpdate(() => {
+
+    });
+
+    // Triggered when component did load.
+    onWillLoad(() => {
+
+    });
 
     // Triggered when component is added/loaded to the dom.
     onDidload(() => {
