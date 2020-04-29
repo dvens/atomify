@@ -31,7 +31,7 @@ const updateTitle = () => {
 
 // Component setup
 export const CustomElement = ({ element, update }) => {
-    const [value, updateValue, onValueChanged] = useProperty<String>('value', {value: 'test'});
+    const [value, updateValue, onValueChanged] = useProp<String>('value', {value: 'test'});
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
 
