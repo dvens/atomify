@@ -30,7 +30,7 @@ const updateTitle = () => {
 };
 
 // Component setup
-export const CustomElement = ({ element, update }) => {
+export const CustomElement: Atomify.FC = ({ element, update }) => {
     const [value, updateValue, onValueChanged] = useProp<String>('value', {value: 'test'});
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
@@ -49,12 +49,7 @@ export const CustomElement = ({ element, update }) => {
     },[title]);
 
     // Triggered when the component updates/rerenders
-    onUpdate(() => {
-
-    });
-
-    // Triggered when component did load.
-    onWillLoad(() => {
+    onUpdated(() => {
 
     });
 
@@ -69,6 +64,7 @@ export const CustomElement = ({ element, update }) => {
     });
 
     return (
+        // Host is part of the new Atomify/JSX
         <Host shadowDom={true} shadowMode={'open'} style={style}>
             <h1 class={'test'}>{ title }</h1>
             amount:<span js-hook-amount></span>
