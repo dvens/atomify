@@ -4,20 +4,15 @@ import {
     disconnectedCallback,
     getObservedAttributes,
     reRender,
-} from "../component";
-import { ELEMENT_ID,IS_DISCONNECTING, ON_READY_RESOLVED } from "../constants";
+} from '../component';
+import { ELEMENT_ID, IS_DISCONNECTING, ON_READY_RESOLVED } from '../constants';
 import {
     ComponentOptions,
     CustomElementConstructor,
     CustomElementRenderRoot,
     IDefferObject,
-} from "../declarations";
-import {
-    attachShadowDom,
-    defer,
-    generateQuickGuid,
-    validateSelector,
-} from "../utilities";
+} from '../declarations';
+import { attachShadowDom, defer, generateQuickGuid, validateSelector } from '../utilities';
 
 /**
 * Base Component decorator that creates a custom element on the fly.
@@ -75,11 +70,8 @@ export const Component = (options: ComponentOptions) => {
 
                 this.connected = false;
 
-                this.__canAttachShadowDom = options.shadow
-                    ? options.shadow
-                    : false;
-                this.__hasShadowdomPolyfill =
-                    window.ShadyCSS && !window.ShadyCSS.nativeShadow;
+                this.__canAttachShadowDom = options.shadow ? options.shadow : false;
+                this.__hasShadowdomPolyfill = window.ShadyCSS && !window.ShadyCSS.nativeShadow;
                 this.__nodeName = this.nodeName.toLowerCase();
 
                 this[ELEMENT_ID] = generateQuickGuid();
@@ -88,9 +80,7 @@ export const Component = (options: ComponentOptions) => {
                 attachShadowDom(this);
 
                 this.renderRoot =
-                    this.__canAttachShadowDom && this.shadowRoot
-                        ? this.shadowRoot
-                        : this;
+                    this.__canAttachShadowDom && this.shadowRoot ? this.shadowRoot : this;
             }
 
             /**
@@ -99,7 +89,7 @@ export const Component = (options: ComponentOptions) => {
             attributeChangedCallback(
                 name: string,
                 oldValue: string | null,
-                newValue: string | null
+                newValue: string | null,
             ) {
                 attributeChangedCallback(this as any, name, oldValue, newValue);
             }
