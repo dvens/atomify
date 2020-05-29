@@ -31,17 +31,20 @@ const updateTitle = () => {
 
 // Component setup
 export const CustomElement: Atomify.FC = ({ element, update }) => {
-    const [value, updateValue, onValueChanged] = useProp<String>('value', {value: 'test'});
+    const value = useProp<Number>('value', 1, { reflectToAttr: true, type: Boolean });
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
 
-    onValueChanged((newValue) => {
-        amount.innerText = newValue;
-        changeEvent(newValue);
+    useWatch(() => {
+        console.log(value);
+    }, [value]);
+    // onValueChanged((newValue) => {
+    //     amount.current.innerText = newValue;
+    //     changeEvent(newValue);
 
-        // Update will trigger a rerender.
-        update();
-    });
+    //     // Update will trigger a rerender.
+    //     update();
+    // });
 
     // Listens to events.
     useListen('click', (e: MouseEvent) => {

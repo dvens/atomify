@@ -1,5 +1,5 @@
-import { clear, setCurrentElement } from '../hooks';
-import { connectingSymbol, disconnectedSymbol, Phase, phaseSymbol, updateSymbol } from '../symbols';
+import { clear, Hooks, setCurrentElement } from '../hooks';
+import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, Phase, PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { defer, DefferObject, scheduleMicrotask, validateSelector } from '../utilities';
 import { defaultRenderer, FC, RenderFunction } from './render';
 
@@ -9,11 +9,10 @@ export interface Component extends HTMLElement {
     container: Container;
     connected: boolean | null;
     update(): void;
-    [phaseSymbol]: Phase | null;
+    [PHASE_SYMBOL]: Phase | null;
     componentOnReady: () => Promise<any>;
-    componentOnDisconnecting: () => Promise<any>;
     __onConnectedResolve: DefferObject<any>;
-    __onDisconnectedResolve: DefferObject<any>;
+    __hooks: Hooks;
 }
 
 interface Options {
@@ -46,7 +45,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
              *
              * @type {(Phase | null)}
              */
-            public [phaseSymbol]: Phase | null = null;
+            public [PHASE_SYMBOL]: Phase | null = null;
 
             /**
              * @type {DefferObject<any>}
@@ -54,9 +53,12 @@ export function defineElement(name: string, fn: FC, options?: Options) {
             __onConnectedResolve: DefferObject<any> = defer<any>();
 
             /**
-             * @type {DefferObject<any>}
+             * Holds the hook state values and the callbacks
              */
-            __onDisconnectedResolve: DefferObject<any> = defer<any>();
+            __hooks: Hooks = {
+                state: [],
+                callbacks: [],
+            };
 
             /**
              * Called when the component is created
@@ -83,7 +85,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
              * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
              **/
             disconnectedCallback() {
-                this._handlePhase(disconnectedSymbol);
+                this._handlePhase(DID_UNLOAD_SYMBOL);
             }
 
             /**
@@ -92,7 +94,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
              */
             public update() {
                 scheduleMicrotask(() => {
-                    const phase = this.connected ? updateSymbol : connectingSymbol;
+                    const phase = this.connected ? UPDATE_SYMBOL : DID_LOAD_SYMBOL;
                     this._handlePhase(phase);
                 });
             }
@@ -106,11 +108,17 @@ export function defineElement(name: string, fn: FC, options?: Options) {
             }
 
             /**
-             * Is called when the component is removed from the dom.
-             * @returns { Promise<any> }
+             * @param phase
              */
-            public componentOnDisconnecting() {
-                return this.__onDisconnectedResolve.promise;
+            private _flushPhaseCallbacks(phase: Phase) {
+                const callbacks = this.__hooks.callbacks;
+
+                callbacks.forEach((callback, key) => {
+                    if (callback.type === phase) {
+                        callback.callback();
+                        delete callbacks[key];
+                    }
+                });
             }
 
             /**
@@ -120,25 +128,26 @@ export function defineElement(name: string, fn: FC, options?: Options) {
              * @returns
              */
             private _handlePhase(phase: Phase) {
-                this[phaseSymbol] = phase;
+                this[PHASE_SYMBOL] = phase;
 
                 switch (phase) {
-                    case connectingSymbol:
+                    case DID_LOAD_SYMBOL:
+                        this.connected = true;
                         this._render();
                         this.__onConnectedResolve.resolve(this);
-                        this.connected = true;
+                        this._flushPhaseCallbacks(DID_LOAD_SYMBOL);
                         this.__onConnectedResolve = defer<any>();
                         break;
-                    case updateSymbol:
+                    case UPDATE_SYMBOL:
                         this._render();
+                        this._flushPhaseCallbacks(UPDATE_SYMBOL);
                         break;
-                    case disconnectedSymbol:
-                        this.__onDisconnectedResolve.resolve(this);
+                    case DID_UNLOAD_SYMBOL:
                         this.connected = false;
-                        this.__onDisconnectedResolve = defer<any>();
+                        this._flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
                         break;
                 }
-                this[phaseSymbol] = null;
+                this[PHASE_SYMBOL] = null;
             }
 
             private _render() {

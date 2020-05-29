@@ -1,5 +1,5 @@
 {
-    "name": "@atomify/next",
+    "name": "@atomify/hooks",
     "version": "0.0.1",
     "description": "Hooks for the Atomify eco system",
     "url": "https://github.com/dvens/atomify",

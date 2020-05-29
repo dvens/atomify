@@ -17,5 +17,5 @@ export interface InitializedEvents {
     type: string;
     eventTarget?: EventType;
     options: ListenOptions;
-    handler: ( target: any ) => void;
+    handler: (target: any) => void;
 }

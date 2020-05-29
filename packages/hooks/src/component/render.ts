@@ -1,6 +1,6 @@
 import { Component } from './component';
 
-export type FC = ({ element }: { element: Component; update: () => void }) => unknown;
+export type FC<T = Component> = ({ element }: { element: T; update: () => void }) => unknown;
 export type RenderFunction = (
     result: unknown,
     container: DocumentFragment | Element,
@@ -9,7 +9,6 @@ export type RenderFunction = (
 
 interface TemplateCache {
     template: HTMLTemplateElement;
-    result: object | string | null;
     isTemplateString: boolean;
     isJSXresult: boolean;
 }
@@ -30,22 +29,19 @@ export const defaultRenderer: RenderFunction = (result, container, name) => {
         const template = document.createElement('template');
         const isTemplateString = typeof result === 'string';
         const isJSXresult = typeof result === 'object';
-        const templateResult =
-            typeof result === 'object' || typeof result === 'string' ? result : null;
 
         template.innerHTML = `${isTemplateString ? result : ''}`;
 
         const options = {
             template,
-            result: templateResult,
             isTemplateString,
             isJSXresult,
         };
         templateCache.set(name, options);
-        setTemplate(container, options);
+        setTemplate(container, options, result);
     } else {
         const template = templateCache.get(name);
-        template && setTemplate(container, template);
+        template && setTemplate(container, template, result);
     }
 };
 
@@ -54,9 +50,13 @@ export const defaultRenderer: RenderFunction = (result, container, name) => {
  * @param {(DocumentFragment | Element)} container
  * @param {TemplateCache} templateCache
  */
-const setTemplate = (container: DocumentFragment | Element, templateCache: TemplateCache) => {
+const setTemplate = (
+    container: DocumentFragment | Element,
+    templateCache: TemplateCache,
+    result: unknown,
+) => {
     const component = container as Component;
-    const { template, result, isTemplateString, isJSXresult } = templateCache;
+    const { template, isTemplateString, isJSXresult } = templateCache;
 
     if (component.connected) {
         component.innerHTML = '';
