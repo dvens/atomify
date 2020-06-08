@@ -1,18 +1,30 @@
-import { clear, Hooks, setCurrentElement } from '../hooks';
+import { clear, Hooks, ListenMap, setCurrentElement } from '../hooks';
 import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, Phase, PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
-import { defer, DefferObject, scheduleMicrotask, validateSelector } from '../utilities';
-import { defaultRenderer, FC, RenderFunction } from './render';
+import {
+    defer,
+    DefferObject,
+    generateQuickGuid,
+    scheduleMicrotask,
+    validateSelector,
+} from '../utilities';
+import { CFE, defaultRenderer, RenderFunction } from './render';
 
 export type Container = Element | DocumentFragment;
 
+export interface ComponentMeta {
+    $listeners$: ListenMap;
+    $onComponentReadyResolve$: DefferObject<any>;
+    $hooks$: Hooks;
+    $tagName$: string;
+    $id$: string;
+}
 export interface Component extends HTMLElement {
     container: Container;
     connected: boolean | null;
     update(): void;
     [PHASE_SYMBOL]: Phase | null;
     componentOnReady: () => Promise<any>;
-    __onConnectedResolve: DefferObject<any>;
-    __hooks: Hooks;
+    $cmpMeta$: ComponentMeta;
 }
 
 interface Options {
@@ -20,7 +32,7 @@ interface Options {
     useShadowDom?: boolean;
 }
 
-export function defineElement(name: string, fn: FC, options?: Options) {
+export function defineElement(name: string, fn: CFE, options?: Options) {
     const renderer = options && options.rerender ? options.rerender : defaultRenderer;
 
     validateSelector(name);
@@ -42,22 +54,20 @@ export function defineElement(name: string, fn: FC, options?: Options) {
             public connected: boolean | null = null;
 
             /**
-             *
+             * Holds the state of the element
              * @type {(Phase | null)}
              */
             public [PHASE_SYMBOL]: Phase | null = null;
 
-            /**
-             * @type {DefferObject<any>}
-             */
-            __onConnectedResolve: DefferObject<any> = defer<any>();
-
-            /**
-             * Holds the hook state values and the callbacks
-             */
-            __hooks: Hooks = {
-                state: [],
-                callbacks: [],
+            public $cmpMeta$: ComponentMeta = {
+                $listeners$: new Map(),
+                $onComponentReadyResolve$: defer<any>(),
+                $hooks$: {
+                    state: [],
+                    callbacks: [],
+                },
+                $tagName$: name,
+                $id$: generateQuickGuid(),
             };
 
             /**
@@ -104,14 +114,14 @@ export function defineElement(name: string, fn: FC, options?: Options) {
              * @returns { Promise<any> }
              */
             public componentOnReady() {
-                return this.__onConnectedResolve.promise;
+                return this.$cmpMeta$.$onComponentReadyResolve$.promise;
             }
 
             /**
              * @param phase
              */
             private _flushPhaseCallbacks(phase: Phase) {
-                const callbacks = this.__hooks.callbacks;
+                const callbacks = this.$cmpMeta$.$hooks$.callbacks;
 
                 callbacks.forEach((callback, key) => {
                     if (callback.type === phase) {
@@ -134,9 +144,9 @@ export function defineElement(name: string, fn: FC, options?: Options) {
                     case DID_LOAD_SYMBOL:
                         this.connected = true;
                         this._render();
-                        this.__onConnectedResolve.resolve(this);
+                        this.$cmpMeta$.$onComponentReadyResolve$.resolve(this);
                         this._flushPhaseCallbacks(DID_LOAD_SYMBOL);
-                        this.__onConnectedResolve = defer<any>();
+                        this.$cmpMeta$.$onComponentReadyResolve$ = defer<any>();
                         break;
                     case UPDATE_SYMBOL:
                         this._render();

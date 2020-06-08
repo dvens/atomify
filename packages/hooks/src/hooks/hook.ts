@@ -62,7 +62,7 @@ export function createHook<T>(config: Hook<T>): T {
 
     if (!currentElement) throw new Error('Hooks can only be used within a Component');
 
-    const hooks = currentElement.__hooks as Hooks<T>;
+    const hooks = currentElement.$cmpMeta$.$hooks$ as Hooks<T>;
     const phase = getCurrentElementPhase();
 
     // Check if the onDidLoad function exists on the hook and if the current phase is did load.

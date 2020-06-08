@@ -17,7 +17,9 @@ const queueTask = (callback: Callback) => {
         const ch = new MessageChannel();
         ch.port1.onmessage = callback;
         ch.port2.postMessage(null);
-    } catch {}
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 const setupScheduler = (runner: Runner) => {

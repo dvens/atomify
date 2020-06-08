@@ -9,7 +9,6 @@ interface QueryComponent extends Component {
 }
 
 /**
- *
  * Queries the render root ( this or the shadowdom ) from a custom element
  * And binds the selector to the custom element.
  * @param {string} selector
@@ -44,45 +43,25 @@ function select<T>(
  * @param {QueryTarget} target
  */
 export const useQuery = <T>(selector: string, target?: QueryTarget) =>
-    createHook<{ current: T | null }>({
-        onDidLoad(element: QueryComponent, hooks, index) {
-            const targetElement = target ? target : element.container;
-            select<T>(selector, false, element, targetElement);
-
-            hooks.callbacks.push({
-                type: DID_LOAD_SYMBOL,
-                callback: () => {
-                    hooks.state[index].current = element[selector];
-                },
-            });
-
-            return Object.defineProperties(Object.create(null), {
-                current: {
-                    value: null,
-                    writable: true,
-                },
-            });
-        },
-        onUpdate(element: QueryComponent, hooks, index) {
-            hooks.callbacks.push({
-                type: UPDATE_SYMBOL,
-                callback: () => {
-                    hooks.state[index].current = element[selector];
-                },
-            });
-        },
-    });
-
+    createListenHook<T, null>(selector, false, target);
 /**
  * Selects multiple elements and binds those elements to the custom element.
  * @param {string} selector
  * @param {QueryTarget} target
  */
 export const useQueryAll = <T>(selector: string, target?: QueryTarget) =>
-    createHook<{ current: T | null[] }>({
+    createListenHook<T, null[]>(selector, true, target);
+
+/**
+ * @param {string} selector
+ * @param {boolean} queryAll
+ * @param {QueryTarget} target
+ */
+const createListenHook = <T, D>(selector: string, queryAll: boolean, target?: QueryTarget) =>
+    createHook<{ current: T | D }>({
         onDidLoad(element: QueryComponent, hooks, index) {
             const targetElement = target ? target : element.container;
-            select<T>(selector, true, element, targetElement);
+            select<T>(selector, queryAll, element, targetElement);
 
             hooks.callbacks.push({
                 type: DID_LOAD_SYMBOL,

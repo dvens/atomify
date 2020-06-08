@@ -7,10 +7,8 @@ interface CustomEventOptions {
     eventName: string;
 }
 
-type emit<T> = (value: T) => void;
-
 export const useEvent = <T>(options: CustomEventOptions) =>
-    createHook<emit<T>>({
+    createHook<{ emit: (value: T) => void }>({
         onDidLoad(element) {
             function emit(value: T) {
                 const eventName = options.eventName;
@@ -24,6 +22,8 @@ export const useEvent = <T>(options: CustomEventOptions) =>
                 element.dispatchEvent(event);
             }
 
-            return emit;
+            return {
+                emit,
+            };
         },
     });

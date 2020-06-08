@@ -3,9 +3,19 @@ import { createHook } from './hook';
 
 export const onDidLoad = (cb: () => void) =>
     createHook({
-        onDidLoad(element) {
-            element.__hooks.callbacks.push({
+        onDidLoad(_, hooks) {
+            hooks.callbacks.push({
                 type: DID_LOAD_SYMBOL,
+                callback: cb,
+            });
+        },
+    });
+
+export const onDidUnload = (cb: () => void) =>
+    createHook({
+        onDidLoad(_, hooks) {
+            hooks.callbacks.push({
+                type: DID_UNLOAD_SYMBOL,
                 callback: cb,
             });
         },
@@ -15,15 +25,5 @@ export const onUpdated = (cb: () => void) =>
     createHook({
         onUpdate() {
             cb();
-        },
-    });
-
-export const onDidUnload = (cb: () => void) =>
-    createHook({
-        onDidLoad(element) {
-            element.__hooks.callbacks.push({
-                type: DID_UNLOAD_SYMBOL,
-                callback: cb,
-            });
         },
     });

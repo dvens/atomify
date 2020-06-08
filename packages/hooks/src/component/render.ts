@@ -1,6 +1,6 @@
 import { Component } from './component';
 
-export type FC<T = Component> = ({ element }: { element: T; update: () => void }) => unknown;
+export type CFE<T = Component> = ({ element }: { element: T; update: () => void }) => unknown;
 export type RenderFunction = (
     result: unknown,
     container: DocumentFragment | Element,
@@ -41,7 +41,7 @@ export const defaultRenderer: RenderFunction = (result, container, name) => {
         setTemplate(container, options, result);
     } else {
         const template = templateCache.get(name);
-        template && setTemplate(container, template, result);
+        if (template) setTemplate(container, template, result);
     }
 };
 

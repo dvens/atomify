@@ -5,6 +5,7 @@ export const supportsPassive = () => {
         const options = Object.defineProperty({}, 'passive', {
             get: () => {
                 supportsPassive = true;
+                return supportsPassive;
             },
         });
 
