@@ -9,7 +9,7 @@ import {
 } from '../utilities';
 import { CFE, defaultRenderer, RenderFunction } from './render';
 
-export type Container = Element | DocumentFragment;
+export type Container = HTMLElement | ShadowRoot;
 
 export interface ComponentMeta {
     $listeners$: ListenMap;
@@ -23,6 +23,7 @@ export interface Component extends HTMLElement {
     connected: boolean | null;
     update(): void;
     [PHASE_SYMBOL]: Phase | null;
+    hasShadowDom: boolean;
     componentOnReady: () => Promise<any>;
     $cmpMeta$: ComponentMeta;
 }
@@ -58,6 +59,13 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              * @type {(Phase | null)}
              */
             public [PHASE_SYMBOL]: Phase | null = null;
+
+            /**
+             * Tells the component if ShadowDom is supported.
+             * @type {boolean} hasShadowDom
+             */
+            public hasShadowDom: boolean =
+                options && options.useShadowDom ? options.useShadowDom : false;
 
             public $cmpMeta$: ComponentMeta = {
                 $listeners$: new Map(),
@@ -162,7 +170,11 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
 
             private _render() {
                 setCurrentElement(this);
-                renderer(fn({ element: this, update: this.update }), this.container, name);
+                renderer(
+                    fn({ element: this, update: this.update.bind(this) }),
+                    this.container,
+                    name,
+                );
                 clear();
             }
         },
