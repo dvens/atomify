@@ -1,4 +1,4 @@
-import { Component } from '../component/component';
+import { Component } from '../component';
 import { DID_LOAD_SYMBOL, Phase, PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 
 export interface Hooks<T = any> {

@@ -1,4 +1,4 @@
-import { Component } from '../component/component';
+import { Component } from '../component';
 import { DID_LOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { createHook } from './hook';
 

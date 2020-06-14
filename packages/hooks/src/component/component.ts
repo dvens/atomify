@@ -65,7 +65,7 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              * @type {boolean} hasShadowDom
              */
             public hasShadowDom: boolean =
-                options && options.useShadowDom ? options.useShadowDom : false;
+                options && options.useShadowDom && window.ShadowRoot ? options.useShadowDom : false;
 
             public $cmpMeta$: ComponentMeta = {
                 $listeners$: new Map(),
