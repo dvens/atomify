@@ -70,8 +70,11 @@ function bindEvents({ options, remove = false, eventName, cb, element }: BindEve
         options.target instanceof HTMLElement
     ) {
         trackEventListener({ options, target: options.target, element, remove, cb, eventName });
-    } else if (options.target.current instanceof NodeList) {
-        options.target.current.forEach(
+    } else if (
+        options.target.current instanceof NodeList ||
+        Array.isArray(options.target.current)
+    ) {
+        Array.from(options.target.current).forEach(
             (item) =>
                 item &&
                 trackEventListener({ options, target: item, element, remove, cb, eventName }),

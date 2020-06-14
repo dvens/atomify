@@ -1,6 +1,7 @@
 import { Component } from '../component';
 import { CSS_SAVE_TOKEN } from '../symbols';
 import { supportsAdoptingStyleSheets } from '../utilities';
+import { scopeCSS } from './scope-css';
 
 export interface StyleObject {
     token: typeof CSS_SAVE_TOKEN;
@@ -91,7 +92,10 @@ export const addStyle = (root: Component, token: symbol) => {
         }
     } else if (typeof style === 'string') {
         const styles = document.createElement('style');
-        styles.innerHTML = style;
+        styles.textContent = hasShadowDom ? style : scopeCSS(componentName, style);
+
+        // Save the styles of the component.
+        root.styles = style;
 
         // When adopted stylesheet is not supported but shadow dom is apply it to the shadow root.
         // Else it is being applied to the head.

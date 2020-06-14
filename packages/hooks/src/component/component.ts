@@ -21,6 +21,7 @@ export interface ComponentMeta {
 export interface Component extends HTMLElement {
     container: Container;
     connected: boolean | null;
+    styles: string;
     update(): void;
     [PHASE_SYMBOL]: Phase | null;
     hasShadowDom: boolean;
@@ -61,11 +62,17 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
             public [PHASE_SYMBOL]: Phase | null = null;
 
             /**
+             * Holds the styles of the component that can be reused within a template.
+             * @type {string}
+             */
+            public styles: string = '';
+
+            /**
              * Tells the component if ShadowDom is supported.
              * @type {boolean} hasShadowDom
              */
             public hasShadowDom: boolean =
-                options && options.useShadowDom && window.ShadowRoot ? options.useShadowDom : false;
+                options && options.useShadowDom ? options.useShadowDom : false;
 
             public $cmpMeta$: ComponentMeta = {
                 $listeners$: new Map(),
@@ -174,6 +181,7 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
                     fn({ element: this, update: this.update.bind(this) }),
                     this.container,
                     name,
+                    this,
                 );
                 clear();
             }
