@@ -1,4 +1,4 @@
-import { bindShadyRoot, supportShadyCSS } from '../utilities';
+import { bindShadyRoot, supportsAdoptingStyleSheets, supportShadyCSS } from '../utilities';
 import { Component, Container } from './component';
 
 export type CFE<T = Component> = ({ element }: { element: T; update: () => void }) => unknown;
@@ -34,14 +34,18 @@ export const defaultRenderer: RenderFunction = (result, container, name, compone
     // Create a template cache when its not defined and apply the result to the element.
     if (!templateCache.has(name)) {
         const template = document.createElement('template');
-        const isTemplateString = typeof result === 'string';
+        const hasStringResult = typeof result === 'string';
+        const isTemplateString = hasStringResult || component.styles !== '';
         const isJSXresult = typeof result === 'object';
 
-        // Note: the supportShadyCSS can be removed when IE11 is not supported anymore.
-        // Style is added for ShadyCSS to be tranforming i.
+        // Styles are being reused when the component supports shadowDom but not constructed stylesheets.
         template.innerHTML = `
-            ${supportShadyCSS && component.hasShadowDom ? `<style>${component.styles}</style>` : ''}
-            ${isTemplateString ? result : ''}
+            ${
+                component.hasShadowDom && !supportsAdoptingStyleSheets && component.styles
+                    ? `<style>${component.styles}</style>`
+                    : ''
+            }
+            ${hasStringResult ? result : ''}
         `;
 
         const options = {
@@ -68,9 +72,7 @@ const setTemplate = (
     result: unknown,
     component: Component,
 ) => {
-    const { template, isTemplateString, isJSXresult } = templateCache;
-
-    let nodeResult = null;
+    const { template, isJSXresult, isTemplateString } = templateCache;
 
     // Apply polyfill when shady polyfill is available and the component has shadowdom
     if (supportShadyCSS && component.hasShadowDom) {
@@ -78,14 +80,10 @@ const setTemplate = (
     }
 
     if (isTemplateString) {
-        nodeResult = document.importNode(template.content, true);
+        container.appendChild(document.importNode(template.content, true));
     }
 
     if (isJSXresult) {
-        nodeResult = result as Node;
-    }
-
-    if (nodeResult) {
-        container.appendChild(nodeResult);
+        container.appendChild(result as Node);
     }
 };

@@ -70,11 +70,9 @@ const createListenHook = <T, D>(selector: string, queryAll: boolean, target?: Qu
                 },
             });
 
-            return Object.defineProperties(Object.create(null), {
-                current: {
-                    value: [],
-                    writable: true,
-                },
+            return Object.defineProperty(Object.create(null), 'current', {
+                value: [],
+                writable: true,
             });
         },
         onUpdate(element: QueryComponent, hooks, index) {

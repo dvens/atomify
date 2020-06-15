@@ -31,12 +31,14 @@ export interface Component extends HTMLElement {
 }
 
 interface Options {
-    rerender?: RenderFunction;
+    renderer?: RenderFunction;
     useShadowDom?: boolean;
+    observedAttributes?: string[];
 }
 
 export function defineElement(name: string, fn: CFE, options?: Options) {
-    const renderer = options && options.rerender ? options.rerender : defaultRenderer;
+    const { renderer = defaultRenderer, observedAttributes = [], useShadowDom = false } =
+        options || {};
 
     validateSelector(name);
 
@@ -72,8 +74,7 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              * Tells the component if ShadowDom is supported.
              * @type {boolean} hasShadowDom
              */
-            public hasShadowDom: boolean =
-                options && options.useShadowDom ? options.useShadowDom : false;
+            public hasShadowDom: boolean = useShadowDom;
 
             public $cmpMeta$: ComponentMeta = {
                 $listeners$: new Map(),
@@ -86,6 +87,13 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
                 $id$: generateQuickGuid(),
                 $clearElementOnUpdate$: false,
             };
+
+            /**
+             * Returns a list of attributes based on the registrated properties.
+             **/
+            static get observedAttributes() {
+                return observedAttributes;
+            }
 
             /**
              * Called when the component is created
@@ -113,6 +121,17 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              **/
             disconnectedCallback() {
                 this._handlePhase(DID_UNLOAD_SYMBOL);
+            }
+
+            /**
+             * Is called each time a attribute that is defined in the observedAttributes is changed.
+             **/
+            attributeChangedCallback(
+                name: string,
+                oldValue: string | null,
+                newValue: string | null,
+            ) {
+                console.log(name, oldValue, newValue);
             }
 
             /**

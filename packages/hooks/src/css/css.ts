@@ -22,7 +22,6 @@ export interface StyleObject {
     cssText: string;
 }
 
-const CSS_CACHE = new Map<string, CSSStyleSheet | string>();
 const APPLIED_STYLES: string[] = [];
 
 const isValidCSSResult = (value: StyleObject | number) => {
@@ -33,26 +32,6 @@ const isValidCSSResult = (value: StyleObject | number) => {
     } else {
         throw new Error(`${value} is not supported. Use 'unsafeCSS' if you want to use: ${value}`);
     }
-};
-
-/**
- * Generates the stylesheet and saves it within the CSS_CACHE.
- * @param { style } style
- * @return { HTMLStyleElement }
- */
-export const registerStyle = (root: Component, cssText: string) => {
-    const hasShadowDom = root.hasShadowDom;
-    const componentId = root.$cmpMeta$.$id$;
-    let style = CSS_CACHE.get(componentId);
-
-    if (supportsAdoptingStyleSheets && hasShadowDom) {
-        style = new CSSStyleSheet() as CSSStyleSheet;
-        style.replaceSync(cssText);
-    } else {
-        style = cssText;
-    }
-
-    CSS_CACHE.set(componentId, style);
 };
 
 /**
@@ -89,36 +68,35 @@ export const unsafeCSS = (cssString: string): StyleObject => ({
  * @param { Component } root
  * @param { StyleObject } css
  */
-export const addStyle = (root: Component, token: symbol) => {
+export const addStyle = (root: Component, token: symbol, cssText: string) => {
     if (token !== CSS_SAVE_TOKEN) {
         throw new Error('The CSS result is not allowed. Use `unSafeCSS` or `CSS`');
     }
 
     const hasShadowDom = root.hasShadowDom;
     const componentName = root.$cmpMeta$.$tagName$;
-    const style = CSS_CACHE.get(root.$cmpMeta$.$id$);
-
-    if (!style) throw new Error(`No CSS available for: ${componentName}`);
 
     // Add addopted stylesheets when it is supported
-    if (supportsAdoptingStyleSheets && hasShadowDom && style instanceof CSSStyleSheet) {
+    if (supportsAdoptingStyleSheets && hasShadowDom) {
         // Apply the adopted stylesheet to the document when the shadowdom is false.
         const CSSRoot = root.container;
+        const style = new CSSStyleSheet() as CSSStyleSheet;
+        style.replaceSync(cssText);
+
         if (!(CSSRoot instanceof HTMLElement) && !CSSRoot.adoptedStyleSheets.includes(style)) {
             CSSRoot.adoptedStyleSheets = [...CSSRoot.adoptedStyleSheets, style];
         }
-    } else if (typeof style === 'string') {
+    } else if (typeof cssText === 'string' && APPLIED_STYLES.indexOf(componentName) === -1) {
         const styles = document.createElement('style');
-        styles.textContent = hasShadowDom ? style : scopeCSS(componentName, style);
-
-        // Save the styles of the component.
-        root.styles = style;
+        styles.textContent = hasShadowDom ? cssText : scopeCSS(componentName, cssText);
 
         // When adopted stylesheet is not supported but shadow dom is apply it to the shadow root.
         // Else it is being applied to the head.
         if (hasShadowDom) {
+            // Cache the styles so it can be reused instead of creating a style tag again.
+            root.styles = cssText;
             root.container.appendChild(styles);
-        } else if (APPLIED_STYLES.indexOf(componentName) === -1) {
+        } else {
             document.head.appendChild(styles);
             APPLIED_STYLES.push(componentName);
         }
