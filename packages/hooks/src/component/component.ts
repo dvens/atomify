@@ -17,6 +17,7 @@ export interface ComponentMeta {
     $hooks$: Hooks;
     $tagName$: string;
     $id$: string;
+    $clearElementOnUpdate$: boolean;
 }
 export interface Component extends HTMLElement {
     container: Container;
@@ -83,6 +84,7 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
                 },
                 $tagName$: name,
                 $id$: generateQuickGuid(),
+                $clearElementOnUpdate$: false,
             };
 
             /**
@@ -177,6 +179,11 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
 
             private _render() {
                 setCurrentElement(this);
+
+                if (this.$cmpMeta$.$clearElementOnUpdate$) {
+                    this.container.innerHTML = '';
+                }
+
                 renderer(
                     fn({ element: this, update: this.update.bind(this) }),
                     this.container,

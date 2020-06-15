@@ -8,4 +8,8 @@ export const useStyles = (styleCallback: () => StyleObject) =>
             registerStyle(element, cssText);
             addStyle(element, token);
         },
+        onUpdate(element) {
+            const { token } = styleCallback();
+            addStyle(element, token);
+        },
     });

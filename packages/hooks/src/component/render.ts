@@ -1,4 +1,3 @@
-import { PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { bindShadyRoot, supportShadyCSS } from '../utilities';
 import { Component, Container } from './component';
 
@@ -26,6 +25,11 @@ const templateCache = new Map<string, TemplateCache>();
  * @param {string} name
  */
 export const defaultRenderer: RenderFunction = (result, container, name, component) => {
+    // Set clear element on true because we do not make use of a vDom.
+    if (!component.$cmpMeta$.$clearElementOnUpdate$) {
+        component.$cmpMeta$.$clearElementOnUpdate$ = true;
+    }
+
     // Check if the template is already saved within the template cache
     // Create a template cache when its not defined and apply the result to the element.
     if (!templateCache.has(name)) {
@@ -33,6 +37,8 @@ export const defaultRenderer: RenderFunction = (result, container, name, compone
         const isTemplateString = typeof result === 'string';
         const isJSXresult = typeof result === 'object';
 
+        // Note: the supportShadyCSS can be removed when IE11 is not supported anymore.
+        // Style is added for ShadyCSS to be tranforming i.
         template.innerHTML = `
             ${supportShadyCSS && component.hasShadowDom ? `<style>${component.styles}</style>` : ''}
             ${isTemplateString ? result : ''}
@@ -64,20 +70,22 @@ const setTemplate = (
 ) => {
     const { template, isTemplateString, isJSXresult } = templateCache;
 
+    let nodeResult = null;
+
     // Apply polyfill when shady polyfill is available and the component has shadowdom
     if (supportShadyCSS && component.hasShadowDom) {
         bindShadyRoot(component, template);
     }
 
-    if (component[PHASE_SYMBOL] === UPDATE_SYMBOL) {
-        container.innerHTML = '';
-    }
-
     if (isTemplateString) {
-        container.appendChild(document.importNode(template.content, true));
+        nodeResult = document.importNode(template.content, true);
     }
 
     if (isJSXresult) {
-        container.appendChild(result as Node);
+        nodeResult = result as Node;
+    }
+
+    if (nodeResult) {
+        container.appendChild(nodeResult);
     }
 };

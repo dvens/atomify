@@ -3,6 +3,20 @@ import { CSS_SAVE_TOKEN } from '../symbols';
 import { supportsAdoptingStyleSheets } from '../utilities';
 import { scopeCSS } from './scope-css';
 
+declare global {
+    interface ShadowRoot {
+        adoptedStyleSheets: CSSStyleSheet[];
+    }
+
+    interface Document {
+        adoptedStyleSheets: CSSStyleSheet[];
+    }
+
+    interface CSSStyleSheet {
+        replaceSync(cssText: string): void;
+    }
+}
+
 export interface StyleObject {
     token: typeof CSS_SAVE_TOKEN;
     cssText: string;
@@ -28,8 +42,8 @@ const isValidCSSResult = (value: StyleObject | number) => {
  */
 export const registerStyle = (root: Component, cssText: string) => {
     const hasShadowDom = root.hasShadowDom;
-    const elementName = root.$cmpMeta$.$tagName$;
-    let style = CSS_CACHE.get(elementName);
+    const componentId = root.$cmpMeta$.$id$;
+    let style = CSS_CACHE.get(componentId);
 
     if (supportsAdoptingStyleSheets && hasShadowDom) {
         style = new CSSStyleSheet() as CSSStyleSheet;
@@ -38,7 +52,7 @@ export const registerStyle = (root: Component, cssText: string) => {
         style = cssText;
     }
 
-    CSS_CACHE.set(elementName, style);
+    CSS_CACHE.set(componentId, style);
 };
 
 /**
@@ -65,7 +79,10 @@ export const css = (
  * @param {string} css
  * @returns {StyleObject}
  */
-export const unsafeCSS = (cssString: string) => ({ token: CSS_SAVE_TOKEN, cssText: cssString });
+export const unsafeCSS = (cssString: string): StyleObject => ({
+    token: CSS_SAVE_TOKEN,
+    cssText: cssString,
+});
 
 /**
  * Applies adoptedStyleSheets to the Atomify component.
@@ -79,7 +96,7 @@ export const addStyle = (root: Component, token: symbol) => {
 
     const hasShadowDom = root.hasShadowDom;
     const componentName = root.$cmpMeta$.$tagName$;
-    const style = CSS_CACHE.get(componentName);
+    const style = CSS_CACHE.get(root.$cmpMeta$.$id$);
 
     if (!style) throw new Error(`No CSS available for: ${componentName}`);
 
@@ -107,17 +124,3 @@ export const addStyle = (root: Component, token: symbol) => {
         }
     }
 };
-
-declare global {
-    interface ShadowRoot {
-        adoptedStyleSheets: CSSStyleSheet[];
-    }
-
-    interface Document {
-        adoptedStyleSheets: CSSStyleSheet[];
-    }
-
-    interface CSSStyleSheet {
-        replaceSync(cssText: string): void;
-    }
-}
