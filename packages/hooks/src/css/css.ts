@@ -22,13 +22,20 @@ export interface StyleObject {
     cssText: string;
 }
 
+export interface CSSResult {
+    cssText: string;
+    styleSheet: CSSStyleSheet | null;
+}
+
+export type CSSResultOrNative = CSSResult | CSSStyleSheet;
+
 const APPLIED_STYLES: string[] = [];
 
 const isValidCSSResult = (value: StyleObject | number) => {
-    if (typeof value !== 'number' && value.hasOwnProperty('cssText')) {
-        return value.cssText;
-    } else if (typeof value === 'number') {
+    if (typeof value === 'number') {
         return value;
+    } else if ('cssText' in value) {
+        return value.cssText;
     } else {
         throw new Error(`${value} is not supported. Use 'unsafeCSS' if you want to use: ${value}`);
     }
@@ -42,13 +49,13 @@ const isValidCSSResult = (value: StyleObject | number) => {
 export const css = (
     strings: TemplateStringsArray,
     ...values: (StyleObject | number)[]
-): StyleObject => {
+): CSSResult => {
     const cssText = values.reduce(
         (acc, value, currentIndex) => acc + isValidCSSResult(value) + strings[currentIndex + 1],
         strings[0],
     );
 
-    return { token: CSS_SAVE_TOKEN, cssText };
+    return createCSSResult(cssText, CSS_SAVE_TOKEN);
 };
 
 /**
@@ -58,46 +65,70 @@ export const css = (
  * @param {string} css
  * @returns {StyleObject}
  */
-export const unsafeCSS = (cssString: string): StyleObject => ({
-    token: CSS_SAVE_TOKEN,
-    cssText: cssString,
-});
+export const unsafeCSS = (cssString: unknown): CSSResult =>
+    createCSSResult(String(cssString), CSS_SAVE_TOKEN);
+
+/**
+ * @param {string} css
+ * @param {symbol} token
+ * @returns {({ cssText: string; styleSheet: CSSStyleSheet | null })}
+ */
+const createCSSResult = (
+    css: string,
+    token: symbol,
+): { cssText: string; styleSheet: CSSStyleSheet | null } => {
+    if (token !== CSS_SAVE_TOKEN)
+        throw new Error(`${css} is not supported. Use 'unsafeCSS' if you want to use: ${css}`);
+
+    let styleSheet: CSSStyleSheet | null = null;
+    const cssText = css;
+
+    if (supportsAdoptingStyleSheets) {
+        styleSheet = new CSSStyleSheet();
+        styleSheet.replaceSync(cssText);
+    }
+
+    return {
+        cssText,
+        styleSheet,
+    };
+};
 
 /**
  * Applies adoptedStyleSheets to the Atomify component.
  * @param { Component } root
  * @param { StyleObject } css
  */
-export const addStyle = (root: Component, token: symbol, cssText: string) => {
-    if (token !== CSS_SAVE_TOKEN) {
-        throw new Error('The CSS result is not allowed. Use `unSafeCSS` or `CSS`');
-    }
-
+export const adoptStyles = (root: Component, styles: Array<CSSResultOrNative>) => {
     const hasShadowDom = root.hasShadowDom;
     const componentName = root.$cmpMeta$.$tagName$;
 
     // Add addopted stylesheets when it is supported
     if (supportsAdoptingStyleSheets && hasShadowDom) {
-        // Apply the adopted stylesheet to the document when the shadowdom is false.
         const CSSRoot = root.container;
-        const style = new CSSStyleSheet() as CSSStyleSheet;
-        style.replaceSync(cssText);
+        if (!(CSSRoot instanceof HTMLElement))
+            CSSRoot.adoptedStyleSheets = styles.map((s) => {
+                return s instanceof StyleSheet ? s : s.styleSheet!;
+            });
+    } else if (APPLIED_STYLES.indexOf(componentName) === -1) {
+        const combinedStyleArray = styles
+            .map((style) => ('cssText' in style ? style.cssText : null))
+            .join(',');
 
-        if (!(CSSRoot instanceof HTMLElement) && !CSSRoot.adoptedStyleSheets.includes(style)) {
-            CSSRoot.adoptedStyleSheets = [...CSSRoot.adoptedStyleSheets, style];
-        }
-    } else if (typeof cssText === 'string' && APPLIED_STYLES.indexOf(componentName) === -1) {
-        const styles = document.createElement('style');
-        styles.textContent = hasShadowDom ? cssText : scopeCSS(componentName, cssText);
+        const scopedCSS = hasShadowDom
+            ? combinedStyleArray
+            : scopeCSS(componentName, combinedStyleArray);
+
+        const styleElement = document.createElement('style');
+        styleElement.textContent = scopedCSS;
 
         // When adopted stylesheet is not supported but shadow dom is apply it to the shadow root.
         // Else it is being applied to the head.
         if (hasShadowDom) {
             // Cache the styles so it can be reused instead of creating a style tag again.
-            root.styles = cssText;
-            root.container.appendChild(styles);
+            root.styles = scopedCSS;
         } else {
-            document.head.appendChild(styles);
+            document.head.appendChild(styleElement);
             APPLIED_STYLES.push(componentName);
         }
     }

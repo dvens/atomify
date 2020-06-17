@@ -1,10 +1,13 @@
-import { addStyle, StyleObject } from '../css';
+import { adoptStyles, CSSResultOrNative } from '../css';
 import { createHook } from './hook';
 
-export const useStyles = (styleCallback: () => StyleObject) => {
-    const { cssText, token } = styleCallback();
+export const useStyles = (styleCallback: () => CSSResultOrNative | Array<CSSResultOrNative>) => {
+    const styleCallbackResult = styleCallback();
+    const styles = Array.isArray(styleCallbackResult)
+        ? [...styleCallbackResult]
+        : [styleCallbackResult];
 
     return createHook({
-        onDidLoad: (element) => addStyle(element, token, cssText),
+        onDidLoad: (element) => adoptStyles(element, styles),
     });
 };
