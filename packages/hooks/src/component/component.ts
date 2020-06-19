@@ -1,16 +1,17 @@
-import { clear, Hooks, ListenMap, setCurrentElement } from '../hooks';
+import { clear, Hooks, ListenMap, Property, setCurrentElement } from '../hooks';
 import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, Phase, PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import {
+    camelCaseToDash,
     defer,
     DefferObject,
     generateQuickGuid,
     scheduleMicrotask,
+    toProperty,
     validateSelector,
 } from '../utilities';
-import { CFE, defaultRenderer, RenderFunction } from './render';
+import { defaultRenderer, RenderFunction } from './render';
 
 export type Container = HTMLElement | ShadowRoot;
-
 export interface ComponentMeta {
     $listeners$: ListenMap;
     $onComponentReadyResolve$: DefferObject<any>;
@@ -28,17 +29,20 @@ export interface Component extends HTMLElement {
     hasShadowDom: boolean;
     componentOnReady: () => Promise<any>;
     $cmpMeta$: ComponentMeta;
+    props: Property;
+}
+export interface FC<P = object> {
+    ({ element, update }: { element: P & Component; update: () => void }): any;
+    props?: Property;
 }
 
 interface Options {
     renderer?: RenderFunction;
     useShadowDom?: boolean;
-    observedAttributes?: string[];
 }
 
-export function defineElement(name: string, fn: CFE, options?: Options) {
-    const { renderer = defaultRenderer, observedAttributes = [], useShadowDom = false } =
-        options || {};
+export function defineElement(name: string, fn: FC, options?: Options) {
+    const { renderer = defaultRenderer, useShadowDom = false } = options || {};
 
     validateSelector(name);
 
@@ -71,6 +75,13 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
             public styles: string = '';
 
             /**
+             * Holds the properties that can be set through Component.props
+             * @type {Property}
+             * @memberof Element
+             */
+            public props: Property = fn.props || {};
+
+            /**
              * Tells the component if ShadowDom is supported.
              * @type {boolean} hasShadowDom
              */
@@ -92,7 +103,7 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              * Returns a list of attributes based on the registrated properties.
              **/
             static get observedAttributes() {
-                return observedAttributes;
+                return fn.props ? Object.keys(fn.props).map((key) => camelCaseToDash(key)) : [];
             }
 
             /**
@@ -127,11 +138,14 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
              * Is called each time a attribute that is defined in the observedAttributes is changed.
              **/
             attributeChangedCallback(
-                name: string,
+                attrName: string,
                 oldValue: string | null,
                 newValue: string | null,
             ) {
-                console.log(name, oldValue, newValue);
+                if (oldValue === newValue) return;
+
+                const { name, value } = toProperty(attrName, newValue, this);
+                this[name as keyof this] = value;
             }
 
             /**
@@ -198,10 +212,6 @@ export function defineElement(name: string, fn: CFE, options?: Options) {
 
             private _render() {
                 setCurrentElement(this);
-
-                if (this.$cmpMeta$.$clearElementOnUpdate$) {
-                    this.container.innerHTML = '';
-                }
 
                 renderer(
                     fn({ element: this, update: this.update.bind(this) }),

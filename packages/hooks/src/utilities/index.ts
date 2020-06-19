@@ -7,3 +7,4 @@ export * from './support-adopting-stylesheets';
 export * from './bind-shady-css';
 export * from './support-shady-css';
 export * from './camel-case';
+export * from './property-converter';

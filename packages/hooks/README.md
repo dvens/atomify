@@ -31,10 +31,13 @@ const updateTitle = () => {
 
 // Component setup
 export const CustomElement: Atomify.FC = ({ element, update }) => {
-    const [value, setValue, watchValue] = useProp<Number>('value', 1, { reflectToAttr: true, type: Number });
+    const [value, setValue, watchValue] = useProp<Number>('value', 1, { reflectToAttr: true });
     const changeEvent = useEvent<Number>('amountChanged');
     const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
 
+    watchValue((newValue, oldValue) => {
+        console.log(newValue, oldValue);
+    });
 
     // Listens to events.
     useListen('click', (e: MouseEvent) => {
@@ -43,7 +46,7 @@ export const CustomElement: Atomify.FC = ({ element, update }) => {
 
     // Triggered when the component updates/rerenders
     onUpdated(() => {
-
+        console.log('component updated!');
     });
 
     // Triggered when component is added/loaded to the dom.
@@ -64,6 +67,10 @@ export const CustomElement: Atomify.FC = ({ element, update }) => {
             <button onClick={updateValue('hello')}></button>
         </Host>
     );
+};
+
+CustomElement.props = {
+    value: Number,
 };
 
 defineElement('custom-element', CustomElement);

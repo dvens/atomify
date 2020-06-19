@@ -113,7 +113,7 @@ export const adoptStyles = (root: Component, styles: Array<CSSResultOrNative>) =
     } else if (APPLIED_STYLES.indexOf(componentName) === -1) {
         const combinedStyleArray = styles
             .map((style) => ('cssText' in style ? style.cssText : null))
-            .join(',');
+            .join('');
 
         const scopedCSS = hasShadowDom
             ? combinedStyleArray
@@ -121,6 +121,7 @@ export const adoptStyles = (root: Component, styles: Array<CSSResultOrNative>) =
 
         const styleElement = document.createElement('style');
         styleElement.textContent = scopedCSS;
+        styleElement.setAttribute('scope', componentName);
 
         // When adopted stylesheet is not supported but shadow dom is apply it to the shadow root.
         // Else it is being applied to the head.

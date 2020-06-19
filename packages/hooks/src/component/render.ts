@@ -1,7 +1,6 @@
 import { bindShadyRoot, supportsAdoptingStyleSheets, supportShadyCSS } from '../utilities';
 import { Component, Container } from './component';
 
-export type CFE<T = Component> = ({ element }: { element: T; update: () => void }) => unknown;
 export type RenderFunction = (
     result: unknown,
     container: Container,
@@ -25,11 +24,6 @@ const templateCache = new Map<string, TemplateCache>();
  * @param {string} name
  */
 export const defaultRenderer: RenderFunction = (result, container, name, component) => {
-    // Set clear element on true because we do not make use of a vDom.
-    if (!component.$cmpMeta$.$clearElementOnUpdate$) {
-        component.$cmpMeta$.$clearElementOnUpdate$ = true;
-    }
-
     // Check if the template is already saved within the template cache
     // Create a template cache when its not defined and apply the result to the element.
     if (!templateCache.has(name)) {
@@ -79,11 +73,20 @@ const setTemplate = (
         bindShadyRoot(component, template);
     }
 
+    if (component.$cmpMeta$.$clearElementOnUpdate$) {
+        container.innerHTML = '';
+    }
+
     if (isTemplateString) {
         container.appendChild(document.importNode(template.content, true));
     }
 
     if (isJSXresult) {
         container.appendChild(result as Node);
+    }
+
+    // Set clear element on true because we do not make use of a vDom.
+    if (!component.$cmpMeta$.$clearElementOnUpdate$) {
+        component.$cmpMeta$.$clearElementOnUpdate$ = true;
     }
 };
