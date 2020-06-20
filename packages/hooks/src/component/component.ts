@@ -1,5 +1,13 @@
 import { clear, Hooks, ListenMap, Property, setCurrentElement } from '../hooks';
-import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, Phase, PHASE_SYMBOL, UPDATE_SYMBOL } from '../symbols';
+import {
+    DID_LOAD_SYMBOL,
+    DID_UNLOAD_SYMBOL,
+    Phase,
+    PHASE_SYMBOL,
+    REFLECTING_TO_ATTRIBUTE,
+    REFLECTING_TO_PROPERTY,
+    UPDATE_SYMBOL,
+} from '../symbols';
 import {
     camelCaseToDash,
     defer,
@@ -142,10 +150,16 @@ export function defineElement(name: string, fn: FC, options?: Options) {
                 oldValue: string | null,
                 newValue: string | null,
             ) {
-                if (oldValue === newValue) return;
+                if (this[PHASE_SYMBOL] === REFLECTING_TO_ATTRIBUTE) return;
 
-                const { name, value } = toProperty(attrName, newValue, this);
-                this[name as keyof this] = value;
+                if (oldValue !== newValue) {
+                    this[PHASE_SYMBOL] = REFLECTING_TO_PROPERTY;
+
+                    const { name, value } = toProperty(attrName, newValue, this);
+                    this[name as keyof this] = value;
+
+                    this[PHASE_SYMBOL] = null;
+                }
             }
 
             /**

@@ -1,6 +1,6 @@
 {
     "name": "@atomify/hooks",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Hooks for the Atomify eco system",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",

@@ -1,85 +1,10 @@
-# @atomify/next
-
-Small library for creating Custom Elements from JSX Markup.
+# @atomify/hooks
+Small hooks library inspired by React hooks but for standard web components.
 
 ## Installation
 
 ```sh
-npm i @atomify/next
+npm i @atomify/hooks
 ```
 
 ## Configuration
-
-@atomify/next works together with @atomify/jsx and you could use it as following:
-
-```jsx
-import { h , Fragment } from '@atomify/jsx';
-import { defineElement, useWatch, onComponentDidload, onComponentUnload, useQuery, useEvent,useListen } from '@atomify/next';
-import { createStore, useStore } from '@atomify/utilities';
-
-// Create store in seperate file.
-const store = createStore<State>({ count: 1 });
-
-// Also in a seperate file.
-const { storeChanged, updateStore } = useStore(store);
-const updateTitle = () => {
-    updateStore((state) => {
-        state.count = 2;
-        return state;
-    });
-};
-
-// Component setup
-export const CustomElement: Atomify.FC = ({ element, update }) => {
-    const [value, setValue, watchValue] = useProp<Number>('value', 1, { reflectToAttr: true });
-    const changeEvent = useEvent<Number>('amountChanged');
-    const amount = useQuery<HTMLSpanElement>('[js-hook-amount]');
-
-    watchValue((newValue, oldValue) => {
-        console.log(newValue, oldValue);
-    });
-
-    // Listens to events.
-    useListen('click', (e: MouseEvent) => {
-        console.log('title has been clicked: ', e);
-    },[title]);
-
-    // Triggered when the component updates/rerenders
-    onUpdated(() => {
-        console.log('component updated!');
-    });
-
-    // Triggered when component is added/loaded to the dom.
-    onDidload(() => {
-        console.log('component loaded!');
-    });
-
-    // Triggered when component is removed from the dom
-    onUnload(() => {
-        console.log('on component unload!');
-    });
-
-    return (
-        // Host is part of the new Atomify/JSX
-        <Host shadowDom={true} shadowMode={'open'} style={style}>
-            <h1 class={'test'}>{ title }</h1>
-            amount:<span js-hook-amount></span>
-            <button onClick={updateValue('hello')}></button>
-        </Host>
-    );
-};
-
-CustomElement.props = {
-    value: Number,
-};
-
-defineElement('custom-element', CustomElement);
-```
-
-```html
-<custom-element value="this is just a title"></custom-element>
-```
-
-```jsx
-<custom-element value="this is just a title" />
-```
