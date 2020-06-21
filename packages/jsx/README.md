@@ -71,3 +71,6 @@ const hasChildren = true;
 <h1 class={[ hasChildren ? 'its true': 'not true']}>{ this.title }</h1>
 <h1 class={{['is-hidden']: hasChildren }}>{ this.title }</h1>
 ```
+
+## Ref
+The `ref` attribute accepts a `function` or a direct `ref` object. The `ref` object must include the `current` property.

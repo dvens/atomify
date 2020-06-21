@@ -1,4 +1,5 @@
 import { applyAttributes, createElement, createFragementFromChildren } from './core';
+import { classNames } from './utilities';
 
 export declare namespace h {
     export namespace JSX {
@@ -23,3 +24,4 @@ export const h = (nodeName: string, vnodeData: object, ...children: any) => {
 };
 
 export const Fragment = DocumentFragment;
+export { classNames };
