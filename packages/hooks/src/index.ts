@@ -1,4 +1,4 @@
-import { defineElement, FC, RenderFunction } from './component';
+import { Component, defineElement, FC, RenderFunction } from './component';
 import { adoptStyles, css, scopeCSS, unsafeCSS } from './css';
 import {
     createHook,
@@ -28,6 +28,7 @@ export {
     adoptStyles,
     unsafeCSS,
     css,
+    Component,
     onDidLoad,
     onDidUnload,
     onUpdated,

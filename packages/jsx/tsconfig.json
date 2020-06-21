@@ -11,6 +11,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
+        "removeComments": true,
         "inlineSources": true,
         "strict": true,
         "noUnusedLocals": true,
@@ -21,12 +22,9 @@
         "noImplicitThis": true,
         // Only necessary because @types/uglify-js can't find types for source-map
         "skipLibCheck": true,
-        "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
         "forceConsistentCasingInFileNames": true,
-        "jsx": "react",
-        "jsxFactory": "h",
         "strictNullChecks": true,
         "noEmitOnError": true
     },

@@ -11,6 +11,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
+        "removeComments": true,
         "inlineSources": true,
         "strict": true,
         "noUnusedLocals": true,
@@ -25,8 +26,6 @@
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
         "forceConsistentCasingInFileNames": true,
-        "jsx": "react",
-        "jsxFactory": "h",
         "strictNullChecks": true,
         "noEmitOnError": true
     },
