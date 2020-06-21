@@ -36,7 +36,7 @@ and add the following to your tsconfig.json:
 
 @atomify/jsx works together with @atomify/core and you could use it as following:
 
-```jsx
+```tsx
 import { h , Fragment } from '@atomify/jsx';
 import { Component, Prop } from '@atomify/core';
 
@@ -59,4 +59,15 @@ export class CustomElement extends HTMLElement {
 
     }
 }
+```
+
+## Class
+Both `class` and `className` are supported. The `class` attribute can take a `string`, `object` or `array`:
+
+```tsx
+const hasChildren = true;
+
+<h1 class={'test'}>{ this.title }</h1>
+<h1 class={[ hasChildren ? 'its true': 'not true']}>{ this.title }</h1>
+<h1 class={{['is-hidden']: hasChildren }}>{ this.title }</h1>
 ```
