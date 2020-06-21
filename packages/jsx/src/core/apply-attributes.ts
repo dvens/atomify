@@ -1,8 +1,12 @@
 import {
+    classNames,
     FunctionValue,
     isBooleanAttr,
     isCustomElement,
     isFunction,
+    isNullValue,
+    Ref,
+    RefFunction,
     removeAttr,
     setAttr,
 } from '../utilities';
@@ -22,12 +26,24 @@ export const applyAttributes = (element: any, vnodeData: object) => {
             case 'style':
                 Object.assign(element.style, attributeValue);
                 return;
+            case 'dataset':
+                Object.keys(attributeValue).map((key) => {
+                    const value = attributeValue[key];
+                    if (value == null) return;
+                    element.dataset[key] = value;
+                });
+                return;
+            case 'ref':
+                isFunction(attributeValue)
+                    ? (attributeValue as RefFunction)(element)
+                    : ((attributeValue as Ref).current = element);
+                return;
             case 'class':
             case 'className':
                 if (isFunction(attributeValue)) {
                     (attributeValue as FunctionValue)(element);
                 } else {
-                    setAttr(element, 'style', attributeValue);
+                    setAttr(element, 'class', classNames(attributeValue));
                 }
                 return;
             case 'htmlFor':
@@ -38,48 +54,36 @@ export const applyAttributes = (element: any, vnodeData: object) => {
                 return;
         }
 
-        if (isBooleanAttr(attributeName)) {
+        if (
+            (isCustomElement(element) &&
+                !(attributeName as string).includes('-') &&
+                !isBooleanAttr(attributeName) &&
+                typeof element.constructor.properties !== 'undefined' &&
+                element.constructor.properties.has(attributeName)) ||
+            (element.props && attributeName in element.props)
+        ) {
+            element[attributeName] = attributeValue;
+        } else if (isBooleanAttr(attributeName)) {
             if (attributeValue) {
                 setAttr(element, attributeName, '');
             } else {
                 removeAttr(element, attributeName);
             }
-            return;
-        } else if (
-            isFunction(attributeValue) &&
-            attributeName[0] === 'o' &&
-            attributeName[1] === 'n'
-        ) {
-            const eventName = (attributeName as string).substr(2).toLowerCase();
-            element.addEventListener(eventName, attributeValue);
-        }
-
-        // if (
-        //     (isCustomElement(element) &&
-        //         !(attributeName as string).includes('-') &&
-        //         !isBooleanAttr(attributeName) &&
-        //         typeof element.constructor.properties !== 'undefined' &&
-        //         element.constructor.properties.has(attributeName)) ||
-        //     (element.props && attributeName in element.props)
-        // ) {
-        //     return (element[attributeName] = attributeValue);
-        // } else if (typeof attributeValue !== 'function') {
-        //     if (lAttributeName !== (lAttributeName = lAttributeName.replace(/^xlink\:?/, ''))) {
-        //         if (attributeValue == null || attributeValue === false) {
-        //             return element.removeAttributeNS(XLINK_NS, lAttributeName.toLowerCase());
-        //         } else {
-        //             return element.setAttributeNS(
-        //                 XLINK_NS,
-        //                 lAttributeName.toLowerCase(),
-        //                 attributeValue,
-        //             );
-        //         }
-        //     } else if (attributeValue == null || attributeValue === false) {
-        //         return element.removeAttribute(attributeName);
-        //     } else {
-        //         const isBooleanValue = typeof attributeValue === 'boolean';
-        //         return element.setAttribute(attributeName, isBooleanValue ? '' : attributeValue);
-        //     }
+        } else if (isFunction(attributeValue)) {
+            if (attributeName[0] === 'o' && attributeName[1] === 'n') {
+                const eventName = (attributeName as string).substr(2).toLowerCase();
+                element.addEventListener(eventName, attributeValue);
+            }
+        } else if (lAttributeName !== (lAttributeName = lAttributeName.replace(/^xlink\:?/, ''))) {
+            if (attributeValue == null || attributeValue === false) {
+                element.removeAttributeNS(XLINK_NS, lAttributeName.toLowerCase());
+            } else {
+                element.setAttributeNS(XLINK_NS, lAttributeName.toLowerCase(), attributeValue);
+            }
+        } else if (attributeValue === true) {
+            setAttr(element, attributeName, '');
+        } else if (!isNullValue(attributeValue)) {
+            setAttr(element, attributeName, attributeValue);
         }
     });
 
