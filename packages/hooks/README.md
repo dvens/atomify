@@ -18,8 +18,8 @@ All the examples below are made in combination with @atomify/jsx. But its also p
 
 ## Creating components
 
-@atomify/hooks components are made out of functions and Typescript.
-You can create new components by importing the defineElement from '@atomify/hooks'. @atomify/core components come without Shadow DOM enabled. You can enable the Shadow DOM by setting the `useShadowDom` argument as true.
+`@atomify/hooks` components are made out of functions and Typescript.
+You can create new components by importing the defineElement from `@atomify/hooks`. @atomify/core components come without Shadow DOM enabled. You can enable the Shadow DOM by setting the `useShadowDom` argument as true.
 
 ```tsx
 import { h, Fragment } from '@atomify/jsx';
@@ -167,7 +167,8 @@ console.log(div.current); // outputs single div
 console.log(buttons.current) // outputs array of buttons
 ```
 
-*Binded to the this of the element*
+**Binded to the this of the element**
+
 Both of the hooks bind the queried element to the this of the custom element. Since we are using functional components you need to specifically tell `Typescript` that these queried elements can be used:
 
 ```tsx
@@ -230,7 +231,8 @@ The `useStyles` hook appends the styles in three different ways:
 2. It appends it to the `shadowRoot` when `adoptedStyleSheets` and the `useShadowDom:true` is set.
 3. It will append the styles to the document.head when  `useShadowDom:false`, and it will automatically scopes the styles.
 
-*Add styles to your component*
+**Add styles to your component**
+
 Define styles in a tagged template literal, using the `css` tag function.
 
 ```tsx
@@ -261,7 +263,8 @@ const CustomElement = ({ element, update }) => {
 };
 ```
 
-*Sharing styles*
+**Sharing styles**
+
 You can share styles between components by creating a `const` is exporting a tagged style:
 
 ```tsx
@@ -292,7 +295,8 @@ const CustomElement = ({ element, update }) => {
 };
 ```
 
-*Using non `css` literal*
+**Using non `css` literal**
+
 If you must use an variable in a `css` literal that is not itself a `css` literal, and you are sure that it is a safe source then you can wrap the source within a `unsafeCSS` hook:
 
 ```typescript
