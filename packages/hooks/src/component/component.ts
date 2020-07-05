@@ -27,6 +27,11 @@ export interface ComponentMeta {
     $tagName$: string;
     $id$: string;
     $clearElementOnUpdate$: boolean;
+    $dependencies$: Set<symbol>;
+    $watchers$: Array<{
+        callback: () => void;
+        dependencies: Set<symbol>;
+    }>;
 }
 export interface Component extends HTMLElement {
     container: Container;
@@ -54,187 +59,190 @@ export function defineElement(name: string, fn: FC, options?: Options) {
 
     validateSelector(name);
 
-    customElements.define(
-        name,
-        class extends HTMLElement implements Component {
-            /**
-             * Node or ShadowRoot into which element DOM should be rendered.
-             * Which is being set in the constructor.
-             * @type {Container}
-             */
-            public container: Container;
+    class Element extends HTMLElement implements Component {
+        /**
+         * Node or ShadowRoot into which element DOM should be rendered.
+         * Which is being set in the constructor.
+         * @type {Container}
+         */
+        public container: Container;
 
-            /**
-             * Tells the components when it is connected to DOM
-             * @type {boolean}
-             */
-            public connected: boolean | null = null;
+        /**
+         * Tells the components when it is connected to DOM
+         * @type {boolean}
+         */
+        public connected: boolean | null = null;
 
-            /**
-             * Holds the state of the element
-             * @type {(Phase | null)}
-             */
-            public [PHASE_SYMBOL]: Phase | null = null;
+        /**
+         * Holds the state of the element
+         * @type {(Phase | null)}
+         */
+        public [PHASE_SYMBOL]: Phase | null = null;
 
-            /**
-             * Holds the styles of the component that can be reused within a template.
-             * @type {string}
-             */
-            public styles: string = '';
+        /**
+         * Holds the styles of the component that can be reused within a template.
+         * @type {string}
+         */
+        public styles: string = '';
 
-            /**
-             * Holds the properties that can be set through Component.props
-             * @type {Property}
-             * @memberof Element
-             */
-            public props: Property = fn.props || {};
+        /**
+         * Holds the properties that can be set through Component.props
+         * @type {Property}
+         * @memberof Element
+         */
+        public props: Property = fn.props || {};
 
-            /**
-             * Tells the component if ShadowDom is supported.
-             * @type {boolean} hasShadowDom
-             */
-            public hasShadowDom: boolean = useShadowDom;
+        /**
+         * Tells the component if ShadowDom is supported.
+         * @type {boolean} hasShadowDom
+         */
+        public hasShadowDom: boolean = useShadowDom;
 
-            public $cmpMeta$: ComponentMeta = {
-                $listeners$: new Map(),
-                $onComponentReadyResolve$: defer<any>(),
-                $hooks$: {
-                    state: [],
-                    callbacks: [],
-                },
-                $tagName$: name,
-                $id$: generateQuickGuid(),
-                $clearElementOnUpdate$: false,
-            };
+        public $cmpMeta$: ComponentMeta = {
+            $listeners$: new Map(),
+            $onComponentReadyResolve$: defer<any>(),
+            $hooks$: {
+                state: [],
+                callbacks: [],
+            },
+            $tagName$: name,
+            $id$: generateQuickGuid(),
+            $clearElementOnUpdate$: false,
+            $dependencies$: new Set(),
+            $watchers$: [],
+        };
 
-            /**
-             * Returns a list of attributes based on the registrated properties.
-             **/
-            static get observedAttributes() {
-                return fn.props ? Object.keys(fn.props).map((key) => camelCaseToDash(key)) : [];
+        /**
+         * Returns a list of attributes based on the registrated properties.
+         **/
+        static get observedAttributes() {
+            return fn.props ? Object.keys(fn.props).map((key) => camelCaseToDash(key)) : [];
+        }
+
+        /**
+         * Called when the component is created
+         */
+        constructor() {
+            super();
+
+            if (options && options.useShadowDom) {
+                this.attachShadow({ mode: 'open' });
+                this.container = this.shadowRoot ? this.shadowRoot : this;
+            } else {
+                this.container = this;
             }
+        }
 
-            /**
-             * Called when the component is created
-             */
-            constructor() {
-                super();
+        /**
+         * ConnectedCallback is fired each time the custom element is appended into a document-connected element.
+         **/
+        connectedCallback() {
+            this.update();
+        }
 
-                if (options && options.useShadowDom) {
-                    this.attachShadow({ mode: 'open' });
-                    this.container = this.shadowRoot ? this.shadowRoot : this;
-                } else {
-                    this.container = this;
-                }
-            }
+        /**
+         * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
+         **/
+        disconnectedCallback() {
+            this._handlePhase(DID_UNLOAD_SYMBOL);
+        }
 
-            /**
-             * ConnectedCallback is fired each time the custom element is appended into a document-connected element.
-             **/
-            connectedCallback() {
-                this.update();
-            }
+        /**
+         * Is called each time a attribute that is defined in the observedAttributes is changed.
+         **/
+        attributeChangedCallback(
+            attrName: string,
+            oldValue: string | null,
+            newValue: string | null,
+        ) {
+            if (this[PHASE_SYMBOL] === REFLECTING_TO_ATTRIBUTE) return;
 
-            /**
-             * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
-             **/
-            disconnectedCallback() {
-                this._handlePhase(DID_UNLOAD_SYMBOL);
-            }
+            if (oldValue !== newValue) {
+                this[PHASE_SYMBOL] = REFLECTING_TO_PROPERTY;
 
-            /**
-             * Is called each time a attribute that is defined in the observedAttributes is changed.
-             **/
-            attributeChangedCallback(
-                attrName: string,
-                oldValue: string | null,
-                newValue: string | null,
-            ) {
-                if (this[PHASE_SYMBOL] === REFLECTING_TO_ATTRIBUTE) return;
+                const { name, value } = toProperty(attrName, newValue, this);
+                this[name as keyof this] = value;
 
-                if (oldValue !== newValue) {
-                    this[PHASE_SYMBOL] = REFLECTING_TO_PROPERTY;
-
-                    const { name, value } = toProperty(attrName, newValue, this);
-                    this[name as keyof this] = value;
-
-                    this[PHASE_SYMBOL] = null;
-                }
-            }
-
-            /**
-             * Updates the component with a microtask.
-             * @public
-             */
-            public update() {
-                scheduleMicrotask(() => {
-                    const phase = this.connected ? UPDATE_SYMBOL : DID_LOAD_SYMBOL;
-                    this._handlePhase(phase);
-                });
-            }
-
-            /**
-             * Is called when the component is fully rendered.
-             * @returns { Promise<any> }
-             */
-            public componentOnReady() {
-                return this.$cmpMeta$.$onComponentReadyResolve$.promise;
-            }
-
-            /**
-             * @param phase
-             */
-            private _flushPhaseCallbacks(phase: Phase) {
-                const callbacks = this.$cmpMeta$.$hooks$.callbacks;
-
-                callbacks.forEach((callback, key) => {
-                    if (callback.type === phase) {
-                        callback.callback();
-                        delete callbacks[key];
-                    }
-                });
-            }
-
-            /**
-             * Handles the phase of the component and updates the component according the selected phase.
-             * @private
-             * @param {Phase} phase
-             * @returns
-             */
-            private _handlePhase(phase: Phase) {
-                this[PHASE_SYMBOL] = phase;
-
-                switch (phase) {
-                    case DID_LOAD_SYMBOL:
-                        this.connected = true;
-                        this._render();
-                        this.$cmpMeta$.$onComponentReadyResolve$.resolve(this);
-                        this._flushPhaseCallbacks(DID_LOAD_SYMBOL);
-                        this.$cmpMeta$.$onComponentReadyResolve$ = defer<any>();
-                        break;
-                    case UPDATE_SYMBOL:
-                        this._render();
-                        this._flushPhaseCallbacks(UPDATE_SYMBOL);
-                        break;
-                    case DID_UNLOAD_SYMBOL:
-                        this.connected = false;
-                        this._flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
-                        break;
-                }
                 this[PHASE_SYMBOL] = null;
             }
+        }
 
-            private _render() {
-                setCurrentElement(this);
+        /**
+         * Updates the component with a microtask.
+         * @public
+         */
+        public update() {
+            scheduleMicrotask(() => {
+                const phase = this.connected ? UPDATE_SYMBOL : DID_LOAD_SYMBOL;
+                this._handlePhase(phase);
+            });
+        }
 
-                renderer(
-                    fn({ element: this, update: this.update.bind(this) }),
-                    this.container,
-                    name,
-                    this,
-                );
-                clear();
+        /**
+         * Is called when the component is fully rendered.
+         * @returns { Promise<any> }
+         */
+        public componentOnReady() {
+            return this.$cmpMeta$.$onComponentReadyResolve$.promise;
+        }
+
+        /**
+         * @param phase
+         */
+        private _flushPhaseCallbacks(phase: Phase) {
+            const callbacks = this.$cmpMeta$.$hooks$.callbacks;
+
+            callbacks.forEach((callback, key) => {
+                if (callback.type === phase) {
+                    callback.callback();
+                    delete callbacks[key];
+                }
+            });
+        }
+
+        /**
+         * Handles the phase of the component and updates the component according the selected phase.
+         * @private
+         * @param {Phase} phase
+         * @returns
+         */
+        private _handlePhase(phase: Phase) {
+            this[PHASE_SYMBOL] = phase;
+
+            switch (phase) {
+                case DID_LOAD_SYMBOL:
+                    this.connected = true;
+                    this._render();
+                    this.$cmpMeta$.$onComponentReadyResolve$.resolve(this);
+                    this._flushPhaseCallbacks(DID_LOAD_SYMBOL);
+                    this.$cmpMeta$.$onComponentReadyResolve$ = defer<any>();
+                    break;
+                case UPDATE_SYMBOL:
+                    this._render();
+                    this._flushPhaseCallbacks(UPDATE_SYMBOL);
+                    break;
+                case DID_UNLOAD_SYMBOL:
+                    this.connected = false;
+                    this._flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
+                    break;
             }
-        },
-    );
+            this[PHASE_SYMBOL] = null;
+        }
+
+        private _render() {
+            setCurrentElement(this);
+
+            renderer(
+                fn({ element: this, update: this.update.bind(this) }),
+                this.container,
+                name,
+                this,
+            );
+            clear();
+        }
+    }
+
+    if (!customElements.get(name)) {
+        customElements.define(name, Element);
+    }
 }

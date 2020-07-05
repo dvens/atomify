@@ -156,12 +156,12 @@ interface CustomEventOptions {
 }
 ```
 
-### useQuery & useQueryAll
-`useQuery` and `useQueryAll` are hooks that are executing `querySelector` and `querySelectorAll` on the shadowRoot if `useShadowDom:true` and otherwise on the this. The hooks return a current object as reference this is needed because this object is getting updated once the component updates and its fully loaded.
+### useElement & useElements
+`useElement` and `useElements` are hooks that are executing `querySelector` and `querySelectorAll` on the shadowRoot if `useShadowDom:true` and otherwise on the this. The hooks return a current object as reference this is needed because this object is getting updated once the component updates and its fully loaded.
 
 ```typescript
-const div = useQuery<HTMLDivElement>('div');
-const buttons = useQueryAll<HTMLButtonElement[]>('button');
+const div = useElement<HTMLDivElement>('div');
+const buttons = useElements<HTMLButtonElement[]>('button');
 
 console.log(div.current); // outputs single div
 console.log(buttons.current) // outputs array of buttons
@@ -174,7 +174,7 @@ Both of the hooks bind the queried element to the this of the custom element. Si
 ```tsx
 import { h, Fragment } from '@atomify/jsx';
 
-import { Component, FC, useQuery, defineElement } from '@atomify/hooks';
+import { Component, FC, useElement, defineElement } from '@atomify/hooks';
 
 // Component returns the basic Atomify Component.
 export interface CustomElement extends Component {
@@ -182,7 +182,7 @@ export interface CustomElement extends Component {
 }
 
 const CustomElement: FC<CustomElement> = ({ element, update }) => {
-    const button = useQuery<HTMLButtonElement>('button');
+    const button = useElement<HTMLButtonElement>('button');
     const event = useEvent<Number>({eventName: 'test'});
 
     // Listens to the custom event named test.
@@ -215,7 +215,7 @@ The `useListen` hook is used to listen to DOM events, it can also listen to the 
 ```typescript
 ....
 const CustomElement: FC<CustomElement> = ({ element, update }) => {
-    const div = useQuery<HTMLDivElement>('div');
+    const div = useElement<HTMLDivElement>('div');
 
     return (
         <div>Hello World!</div>

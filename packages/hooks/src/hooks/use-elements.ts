@@ -42,14 +42,14 @@ function select<T>(
  * @param {string} selector
  * @param {QueryTarget} target
  */
-export const useQuery = <T>(selector: string, target?: QueryTarget) =>
+export const useElement = <T>(selector: string, target?: QueryTarget) =>
     createListenHook<T, null>(selector, false, target);
 /**
  * Selects multiple elements and binds those elements to the custom element.
  * @param {string} selector
  * @param {QueryTarget} target
  */
-export const useQueryAll = <T>(selector: string, target?: QueryTarget) =>
+export const useElements = <T>(selector: string, target?: QueryTarget) =>
     createListenHook<T, null[]>(selector, true, target);
 
 /**

@@ -8,13 +8,16 @@ import {
     onDidUnload,
     onUpdated,
     useBindMethod,
+    useComputed,
+    useElement,
+    useElements,
     useEvent,
     useListen,
     useProp,
-    useQuery,
-    useQueryAll,
+    useReactive,
     useRef,
     useStyles,
+    useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
 import { scheduleMacrotask, scheduleMicrotask, supportsAdoptingStyleSheets } from './utilities';
@@ -33,8 +36,8 @@ export {
     onDidUnload,
     onUpdated,
     useBindMethod,
-    useQuery,
-    useQueryAll,
+    useElement,
+    useElements,
     useStyles,
     useEvent,
     useListen,
@@ -46,4 +49,7 @@ export {
     scheduleMacrotask,
     scheduleMicrotask,
     FC,
+    useReactive,
+    useWatch,
+    useComputed,
 };
