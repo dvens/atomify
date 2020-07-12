@@ -6,6 +6,7 @@ export const useWatch = (callback: () => void) =>
     createHook({
         onDidLoad(element) {
             const dependencies = runAndGetDependencies(callback, element);
+            console.log(dependencies);
             element.$cmpMeta$.$watchers$.push({
                 callback: debounce(callback, 10),
                 dependencies,
