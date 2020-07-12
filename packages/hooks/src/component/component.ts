@@ -6,6 +6,8 @@ import {
     PHASE_SYMBOL,
     REFLECTING_TO_ATTRIBUTE,
     REFLECTING_TO_PROPERTY,
+    SIDE_EFFECT_PHASE_SYMBOL,
+    SideEffectPhase,
     UPDATE_SYMBOL,
 } from '../symbols';
 import {
@@ -39,6 +41,7 @@ export interface Component extends HTMLElement {
     styles: string;
     update(): void;
     [PHASE_SYMBOL]: Phase | null;
+    [SIDE_EFFECT_PHASE_SYMBOL]: SideEffectPhase | null;
     hasShadowDom: boolean;
     componentOnReady: () => Promise<any>;
     $cmpMeta$: ComponentMeta;
@@ -78,6 +81,12 @@ export function defineElement(name: string, fn: FC, options?: Options) {
          * @type {(Phase | null)}
          */
         public [PHASE_SYMBOL]: Phase | null = null;
+
+        /**
+         * Holds the state of the element side effects such as reflecting to attribute and reflecting to property
+         * @type {(SideEffectPhase | null)}
+         */
+        public [SIDE_EFFECT_PHASE_SYMBOL]: SideEffectPhase | null = null;
 
         /**
          * Holds the styles of the component that can be reused within a template.
@@ -144,7 +153,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
          * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
          **/
         disconnectedCallback() {
-            this._handlePhase(DID_UNLOAD_SYMBOL);
+            this.handlePhase(DID_UNLOAD_SYMBOL);
         }
 
         /**
@@ -155,15 +164,15 @@ export function defineElement(name: string, fn: FC, options?: Options) {
             oldValue: string | null,
             newValue: string | null,
         ) {
-            if (this[PHASE_SYMBOL] === REFLECTING_TO_ATTRIBUTE) return;
+            if (this[SIDE_EFFECT_PHASE_SYMBOL] === REFLECTING_TO_ATTRIBUTE) return;
 
             if (oldValue !== newValue) {
-                this[PHASE_SYMBOL] = REFLECTING_TO_PROPERTY;
+                this[SIDE_EFFECT_PHASE_SYMBOL] = REFLECTING_TO_PROPERTY;
 
                 const { name, value } = toProperty(attrName, newValue, this);
                 this[name as keyof this] = value;
 
-                this[PHASE_SYMBOL] = null;
+                this[SIDE_EFFECT_PHASE_SYMBOL] = null;
             }
         }
 
@@ -174,7 +183,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
         public update() {
             scheduleMicrotask(() => {
                 const phase = this.connected ? UPDATE_SYMBOL : DID_LOAD_SYMBOL;
-                this._handlePhase(phase);
+                this.handlePhase(phase);
             });
         }
 
@@ -189,7 +198,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
         /**
          * @param phase
          */
-        private _flushPhaseCallbacks(phase: Phase) {
+        private flushPhaseCallbacks(phase: Phase) {
             const callbacks = this.$cmpMeta$.$hooks$.callbacks;
 
             callbacks.forEach((callback, key) => {
@@ -206,30 +215,30 @@ export function defineElement(name: string, fn: FC, options?: Options) {
          * @param {Phase} phase
          * @returns
          */
-        private _handlePhase(phase: Phase) {
+        private handlePhase(phase: Phase) {
             this[PHASE_SYMBOL] = phase;
 
             switch (phase) {
                 case DID_LOAD_SYMBOL:
                     this.connected = true;
-                    this._render();
+                    this.render();
                     this.$cmpMeta$.$onComponentReadyResolve$.resolve(this);
-                    this._flushPhaseCallbacks(DID_LOAD_SYMBOL);
+                    this.flushPhaseCallbacks(DID_LOAD_SYMBOL);
                     this.$cmpMeta$.$onComponentReadyResolve$ = defer<any>();
                     break;
                 case UPDATE_SYMBOL:
-                    this._render();
-                    this._flushPhaseCallbacks(UPDATE_SYMBOL);
+                    this.render();
+                    this.flushPhaseCallbacks(UPDATE_SYMBOL);
                     break;
                 case DID_UNLOAD_SYMBOL:
                     this.connected = false;
-                    this._flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
+                    this.flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
                     break;
             }
             this[PHASE_SYMBOL] = null;
         }
 
-        private _render() {
+        private render() {
             setCurrentElement(this);
 
             renderer(

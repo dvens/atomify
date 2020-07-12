@@ -1,4 +1,5 @@
 export const PHASE_SYMBOL = Symbol('atomify.phase');
+export const SIDE_EFFECT_PHASE_SYMBOL = Symbol('atomify.sideEffectPhase');
 
 export const UPDATE_SYMBOL = Symbol('atomify.update');
 export const DID_LOAD_SYMBOL = Symbol('atomify.didLoad');
@@ -13,3 +14,5 @@ export type Phase =
     | typeof UPDATE_SYMBOL
     | typeof DID_LOAD_SYMBOL
     | typeof DID_UNLOAD_SYMBOL;
+
+export type SideEffectPhase = typeof REFLECTING_TO_ATTRIBUTE | typeof REFLECTING_TO_PROPERTY;

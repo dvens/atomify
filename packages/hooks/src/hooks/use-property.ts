@@ -1,5 +1,9 @@
 import { Component } from '../component';
-import { PHASE_SYMBOL, REFLECTING_TO_ATTRIBUTE, REFLECTING_TO_PROPERTY } from '../symbols';
+import {
+    REFLECTING_TO_ATTRIBUTE,
+    REFLECTING_TO_PROPERTY,
+    SIDE_EFFECT_PHASE_SYMBOL,
+} from '../symbols';
 import { toAttribute } from '../utilities';
 import { createHook } from './hook';
 
@@ -33,11 +37,12 @@ const valueHasChanged = (value: unknown, old: unknown): boolean => {
  * @param { unknown } newValue
  */
 const reflectPropertyToAttribute = (element: Component, attrName: string, newValue: unknown) => {
-    if (newValue === undefined || element[PHASE_SYMBOL] === REFLECTING_TO_PROPERTY) return;
+    if (newValue === undefined || element[SIDE_EFFECT_PHASE_SYMBOL] === REFLECTING_TO_PROPERTY)
+        return;
 
     const { name, value } = toAttribute(attrName, newValue, element);
 
-    element[PHASE_SYMBOL] = REFLECTING_TO_ATTRIBUTE;
+    element[SIDE_EFFECT_PHASE_SYMBOL] = REFLECTING_TO_ATTRIBUTE;
 
     if (value == null) {
         element.removeAttribute(name);
@@ -45,7 +50,7 @@ const reflectPropertyToAttribute = (element: Component, attrName: string, newVal
         element.setAttribute(name, value);
     }
 
-    element[PHASE_SYMBOL] = null;
+    element[SIDE_EFFECT_PHASE_SYMBOL] = null;
 };
 
 export const useProp = <T = unknown>(name: string, value: T) =>
@@ -101,6 +106,11 @@ export const useProp = <T = unknown>(name: string, value: T) =>
 
             // Set initial value of the getter.
             (element as PropertyElement<T>)[key] = initialValue;
+
+            // Initialize property to attributes when the property has the reflectToAttr option.
+            if (reflectToAttr) {
+                reflectPropertyToAttribute(element, name, initialValue);
+            }
 
             return [initialValue, setState, watchCallback];
         },
