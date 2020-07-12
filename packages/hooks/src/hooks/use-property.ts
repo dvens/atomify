@@ -10,7 +10,10 @@ type PropertyElement<T> = Component & { [name: string]: T };
 type PropertyCallback<T> = (newValue: T, oldValue: T) => void;
 
 export type Property = {
-    [key: string]: PropertyTypeHint;
+    [key: string]: {
+        type?: PropertyTypeHint;
+        reflectToAttr?: boolean;
+    };
 };
 
 /**
@@ -45,11 +48,7 @@ const reflectPropertyToAttribute = (element: Component, attrName: string, newVal
     element[PHASE_SYMBOL] = null;
 };
 
-export const useProp = <T = unknown>(
-    name: string,
-    value: T,
-    options?: { reflectToAttr: boolean },
-) =>
+export const useProp = <T = unknown>(name: string, value: T) =>
     createHook<[T, (s: T) => void, (callback: PropertyCallback<T>) => void]>({
         onDidLoad(element, hooks, index) {
             if (!(name in element.props))
@@ -59,7 +58,7 @@ export const useProp = <T = unknown>(
 
             const key = `_${name}`;
             const initialValue = (element as PropertyElement<T>)[name] || value;
-            const { reflectToAttr = false } = options || {};
+            const reflectToAttr = element.props[name].reflectToAttr || false;
 
             // Callback that gets set when its used.
             let callback: PropertyCallback<T> | null = null;

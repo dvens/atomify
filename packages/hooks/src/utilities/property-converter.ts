@@ -10,7 +10,8 @@ import { camelCaseToDash, dashToCamelCase } from './camel-case';
  */
 export const toAttribute = (name: string, value: any, component: Component) => {
     const propName = camelCaseToDash(name);
-    const type = propName in component.props ? component.props[propName] : null;
+    const property = propName in component.props ? component.props[propName] : null;
+    const type = property && property.type ? property.type : property;
     let convertedValue = value;
 
     switch (type) {
@@ -38,7 +39,8 @@ export const toAttribute = (name: string, value: any, component: Component) => {
  */
 export const toProperty = (name: string, value: any, component: Component) => {
     const propName = dashToCamelCase(name);
-    const type = propName in component.props ? component.props[propName] : null;
+    const property = propName in component.props ? component.props[propName] : null;
+    const type = property && property.type ? property.type : property;
 
     let convertedValue = value;
 

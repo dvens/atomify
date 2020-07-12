@@ -97,8 +97,10 @@ const CustomElement: FC = () => {
 };
 
 CustomElement.props = {
-    name: String;
-}
+    name: {
+        type: String;
+    }
+};
 
 defineElement('custom-element', CustomElement, {useShadowDom: true});
 ```
@@ -118,10 +120,15 @@ watchName((newValue, oldValue) => {
 ```
 
 #### Reflecting property to attribute
-You can set the `reflectToAttr` option in the `useProp` hook to `true` to reflect the property to an attribute. The property will now be in sync with the attribute:
+You can set the `reflectToAttr` option in the `Prop` definitions objects to `true` to reflect the property to an attribute. The property will now be in sync with the attribute:
 
 ```tsx
-const [name, setName, watchName] = useProp<string>('name', 'default name', { reflectToAttr: true });
+CustomElement.props = {
+    name: {
+        type: String;
+        reflectToAttr: true,
+    },
+};
 ```
 
 ```html

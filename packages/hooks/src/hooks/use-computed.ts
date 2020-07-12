@@ -10,13 +10,3 @@ export const useComputed = <T>(transform: () => T | null): { current: T | null }
 
     return reference;
 };
-
-// // export function computed(calculate) {
-// //     const reference = ref();
-
-// //     watch(() => {
-// //         reference.value = calculate();
-// //     });
-
-// //     return reference;
-// // }
