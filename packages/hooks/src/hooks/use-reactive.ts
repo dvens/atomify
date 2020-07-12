@@ -4,7 +4,6 @@ import { createHook } from './hook';
 export const useReactive = <T extends object>(initialState: T) =>
     createHook<T>({
         onDidLoad(element) {
-            console.log(initialState);
             return reactive<T>(initialState, element);
         },
     });

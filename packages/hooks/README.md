@@ -348,6 +348,48 @@ const customElement = document.querySelector<CustomElement>('custom-element');
 console.log(customElement.log()); // logs: Hello World!
 ```
 
+### Composition hooks
+The composition hooks are a set of addtive, function-based APIs that allow basic composition of the components.
+
+#### useReactive
+Takes an object and returns a reactive object.
+
+```ts
+const state = useReactive<{ count: number}>({count: 1});
+state.count++;
+console.log(state.count) // outputs 2
+```
+
+#### useRef
+Takes a single value and creates a reactive object from a primitive or object.
+
+```ts
+const text = useRef('Some text');
+console.log(text.current) // outputs Some text
+```
+
+#### useComputed
+Create a reactive objects that is synchronized with other reactive properties.
+
+```ts
+const state = useReactive<{ count: number}>({count: 1});
+const double = useComputed(() => state.count * 2);
+
+console.log(double); // outputs 2
+```
+
+#### useWatch
+Runs a function immedialty while reactively tracking the dependencies and re-runs whenever a value of a dependency is changed.
+
+```ts
+const state = useReactive<{ count: number}>({count: 1});
+const double = useComputed(() => state.count * 2);
+
+useWatch(() => {
+    console.log(state.count, double.current); // outputs 1, 2
+});
+```
+
 ### Writing your own hooks
 Most functionalities can be achieved with the provided hooks above or with `@atomify/kit`. But you can also create your own hooks for custom functionality:
 
