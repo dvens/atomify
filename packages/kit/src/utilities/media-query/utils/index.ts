@@ -11,14 +11,16 @@ export function getSizeFromBreakpoint(breakpointValue: Breakpoints) {
 }
 
 export function getMediaQueries(): MediaQuery[] {
-    const breakpointMap = Object.keys(breakpoints);
+    const breakpointsKeys = Object.keys(breakpoints);
+    const breakpointMap: MediaQuery[] = [];
 
-    return breakpointMap.map((item: Breakpoints, index: number) => {
-        const breakpoint = breakpoints[item];
-        const breakpointAbove = breakpoints[breakpointMap[index + 1] as Breakpoints];
+    breakpointsKeys.forEach((item, index) => {
+        const key = item as keyof typeof breakpoints;
+        const breakpoint = breakpoints[key];
+        const breakpointAbove = breakpoints[breakpointsKeys[index + 1] as Breakpoints];
 
-        return {
-            breakpoint: item,
+        breakpointMap.push({
+            breakpoint: key,
             query: () => {
                 if (index === 0) {
                     return `(max-width: ${breakpointAbove.size - 1}px)`;
@@ -30,6 +32,8 @@ export function getMediaQueries(): MediaQuery[] {
                     }px)`;
                 }
             },
-        };
+        });
     });
+
+    return breakpointMap;
 }

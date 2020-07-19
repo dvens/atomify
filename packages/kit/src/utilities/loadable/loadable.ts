@@ -1,4 +1,4 @@
-import { inviewObserver } from '@utilities/inview';
+import { inviewObserver } from '../inview';
 
 export interface LoadableOptions {
     hook: string;
@@ -10,7 +10,7 @@ export interface LoadableOptions {
 }
 
 export interface LoadableElement extends Element {
-    __initializedHookReference: string[];
+    __initializedHookReference?: string[];
     componentOnReady?: () => Promise<any>;
 }
 
@@ -57,7 +57,7 @@ function observeComponent(element: LoadableElement, options: LoadableOptions) {
 
     inviewObserver.observe(
         element,
-        inView => {
+        (inView) => {
             if (inView) {
                 options
                     .loader()
@@ -79,7 +79,7 @@ function observeComponent(element: LoadableElement, options: LoadableOptions) {
                         // Remove loading state
                         if (loadingState) loadingState.remove();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         // Trigger onerror callback when the module is not successfully loaded.
                         if (options.onError) options.onError(error);
                     });
@@ -98,8 +98,10 @@ function unObserveRelatedElements(hook: string, observer: typeof inviewObserver)
     const relatedElements = INITIALIZERS.get(hook);
 
     if (relatedElements) {
-        Array.from(relatedElements).map(element => {
-            element.__initializedHookReference.push(hook);
+        Array.from(relatedElements).map((element) => {
+            if (element.__initializedHookReference) {
+                element.__initializedHookReference.push(hook);
+            }
             observer.unobserve(element);
         });
     }

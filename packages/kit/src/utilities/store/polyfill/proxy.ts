@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 export default function proxyPolyfill() {
     let lastRevokeFn: any = null;
 
@@ -17,7 +15,7 @@ export default function proxyPolyfill() {
      * @param {{apply, construct, get, set}} handler
      */
 
-    const ProxyPolyfill = function(target: any, handler: any) {
+    const ProxyPolyfill = function (target: any, handler: any) {
         if (!isObject(target) || !isObject(handler)) {
             throw new TypeError('Cannot create proxy with a non-object as target or handler');
         }
@@ -25,11 +23,11 @@ export default function proxyPolyfill() {
         // Construct revoke function, and set lastRevokeFn so that Proxy.revocable can steal it.
         // The caller might get the wrong revoke function if a user replaces or wraps scope.Proxy
         // to call itself, but that seems unlikely especially when using the polyfill.
-        let throwRevoked: any = function() {
+        let throwRevoked: any = function () {
             return;
         };
-        lastRevokeFn = function() {
-            throwRevoked = function(trap: string) {
+        lastRevokeFn = function () {
+            throwRevoked = function (trap: string) {
                 throw new TypeError(`Cannot perform '${trap}' on a proxy that has been revoked`);
             };
         };
@@ -54,19 +52,24 @@ export default function proxyPolyfill() {
         // Define proxy as this, or a Function (if either it's callable, or apply is set).
         // TODO(samthor): Closure compiler doesn't know about 'construct', attempts to rename it.
 
+        // @ts-ignore
         let proxy = this;
         let isMethod = false;
         let isArray = false;
         if (typeof target === 'function') {
             proxy = function ProxyPolyfill() {
+                // @ts-ignore
                 const usingNew = this && this.constructor === proxy;
+                // @ts-ignore
                 const args = Array.prototype.slice.call(arguments);
 
                 throwRevoked(usingNew ? 'construct' : 'apply');
 
                 if (usingNew && handler['construct']) {
+                    // @ts-ignore
                     return handler['construct'].call(this, target, args);
                 } else if (!usingNew && handler.apply) {
+                    // @ts-ignore
                     return handler.apply(target, this, args);
                 }
 
@@ -75,11 +78,13 @@ export default function proxyPolyfill() {
                     // inspired by answers to https://stackoverflow.com/q/1606797
                     args.unshift(target); // pass class as first arg to constructor, although irrelevant
                     // nb. cast to convince Closure compiler that this is a constructor
+                    // @ts-ignore
                     const f = /** @type {!Function} */ target.bind.apply(target, args);
                     /* eslint new-cap: "off" */
                     return new f();
                 }
 
+                // @ts-ignore
                 return target.apply(this, args);
             };
             isMethod = true;
@@ -92,43 +97,46 @@ export default function proxyPolyfill() {
         // change after creation.
 
         const getter = handler.get
-            ? function(prop: any) {
+            ? function (prop: any) {
                   throwRevoked('get');
-
+                  // @ts-ignore
                   return handler.get(this, prop, proxy);
               }
-            : function(prop: any) {
+            : function (prop: any) {
                   throwRevoked('get');
 
+                  // @ts-ignore
                   return this[prop];
               };
         const setter = handler.set
-            ? function(prop: any, value: any) {
+            ? function (prop: any, value: any) {
                   throwRevoked('set');
-
+                  // @ts-ignore
                   handler.set(this, prop, value, proxy);
               }
-            : function(prop: any, value: any) {
+            : function (prop: any, value: any) {
                   throwRevoked('set');
-
+                  // @ts-ignore
                   this[prop] = value;
               };
 
         // Clone direct properties (i.e., not part of a prototype).
         const propertyNames = Object.getOwnPropertyNames(target);
         const propertyMap = {};
-        propertyNames.forEach(function(prop) {
+        propertyNames.forEach(function (prop) {
             if ((isMethod || isArray) && prop in proxy) {
                 return; // ignore properties already here, e.g. 'bind', 'prototype' etc
             }
             const real = Object.getOwnPropertyDescriptor(target, prop);
             const desc = {
+                // @ts-ignore
                 enumerable: !!real.enumerable,
                 get: getter.bind(target, prop),
                 set: setter.bind(target, prop),
             };
             Object.defineProperty(proxy, prop, desc);
 
+            // @ts-ignore
             propertyMap[prop] = true;
         });
 
@@ -146,6 +154,7 @@ export default function proxyPolyfill() {
         }
         if (handler.get || !prototypeOk) {
             for (const k in target) {
+                // @ts-ignore
                 if (propertyMap[k]) {
                     continue;
                 }
@@ -160,7 +169,8 @@ export default function proxyPolyfill() {
         return proxy; // nb. if isMethod is true, proxy != this
     };
 
-    ProxyPolyfill.revocable = function(target, handler) {
+    ProxyPolyfill.revocable = function (target: any, handler: any) {
+        // @ts-ignore
         const p = new ProxyPolyfill(target, handler);
 
         return { proxy: p, revoke: lastRevokeFn };

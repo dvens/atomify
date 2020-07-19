@@ -2,9 +2,11 @@ import { breakpoints } from './breakpoints';
 import { BreakpointFunction, Breakpoints, UseMediaFunction } from './media-query.types';
 import { getMediaQueries, getSizeFromBreakpoint } from './utils';
 
-const max: BreakpointFunction = breakpoint => `(max-width: ${getSizeFromBreakpoint(breakpoint)}px)`;
+const max: BreakpointFunction = (breakpoint) =>
+    `(max-width: ${getSizeFromBreakpoint(breakpoint)}px)`;
 
-const min: BreakpointFunction = breakpoint => `(min-width: ${getSizeFromBreakpoint(breakpoint)}px)`;
+const min: BreakpointFunction = (breakpoint) =>
+    `(min-width: ${getSizeFromBreakpoint(breakpoint)}px)`;
 
 /**
  * Method that calls a callback everytime a media-query matches
@@ -20,7 +22,7 @@ const mediaWatcher = (
     layoutChangedCallback: (mediaQueryMatches: boolean) => void,
 ) => {
     const mediaQueryListener = window.matchMedia(mediaQuery);
-    mediaQueryListener.addListener(e => layoutChangedCallback(e.matches));
+    mediaQueryListener.addListener((e) => layoutChangedCallback(e.matches));
     layoutChangedCallback(mediaQueryListener.matches);
 };
 
@@ -32,7 +34,7 @@ const getCurrentBreakpoint = () =>
     getMediaQueries().reduce(
         (previous, current) =>
             window.matchMedia(current.query()).matches ? current.breakpoint : previous,
-        undefined,
+        '',
     );
 
 /**
@@ -44,22 +46,23 @@ const useMedia = (callback: UseMediaFunction) => {
     const breakpointObject = getMediaQueries();
 
     breakpointObject
-        .map(breakpoint => {
+        .map((breakpoint) => {
             return {
                 listener: window.matchMedia(breakpoint.query()),
                 breakpoint: breakpoint.breakpoint,
             };
         })
-        .forEach(breakpoint =>
-            breakpoint.listener.addListener(e => handleMediaListeners(e, breakpoint.breakpoint)),
+        .forEach((breakpoint) =>
+            breakpoint.listener.addListener((e) => handleMediaListeners(e, breakpoint.breakpoint)),
         );
 
     function handleMediaListeners(event: { matches: boolean; media: string }, key: Breakpoints) {
         if (!event.matches) return;
 
         Object.keys(breakpoints).forEach(
-            (item: Breakpoints) =>
-                (breakpoints[item].active = item === key ? event.matches : !event.matches),
+            (item) =>
+                (breakpoints[item as keyof typeof breakpoints].active =
+                    item === key ? event.matches : !event.matches),
         );
 
         callback(breakpoints);
