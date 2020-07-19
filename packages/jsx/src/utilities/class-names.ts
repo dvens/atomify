@@ -1,4 +1,6 @@
-export const classNames = (value: object | Array<any> | string | null): string => {
+export const classNames = (
+    value: string | { [key: string]: boolean } | false | null | undefined,
+): string => {
     if (value == null) {
         return '';
     } else if (typeof value === 'string') {

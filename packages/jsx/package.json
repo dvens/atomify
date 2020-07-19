@@ -11,7 +11,6 @@
     },
     "scripts": {
         "build": "tsc",
-        "test": "npm run build && npm run build:babel-test && wct",
         "checksize": "rollup -c ; rm ./dist/index.bundled.js",
         "lint": "tslint --project ./",
         "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
@@ -42,5 +41,6 @@
     "bugs": {
         "url": "https://github.com/dvens/atomify/issues"
     },
-    "homepage": "https://github.com/dvens/atomify"
+    "homepage": "https://github.com/dvens/atomify",
+    "dependencies": {}
 }
