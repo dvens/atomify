@@ -4,7 +4,11 @@ export interface IDefferObject<T> {
 }
 export interface ComponentConstructor {
     connectedCallback?: () => void;
-    attributeChangedCallback?: (name: string, oldValue: string| null, newValue: string | null) => void;
+    attributeChangedCallback?: (
+        name: string,
+        oldValue: string | null,
+        newValue: string | null,
+    ) => void;
     disconnectedCallback?: () => void;
     render?: () => any;
     renderRoot: CustomElementRenderRoot;
@@ -20,8 +24,8 @@ export interface ComponentConstructor {
 }
 
 export interface ComponentOptions {
-    tag: string,
-    style?: string,
+    tag: string;
+    style?: string;
     styles?: string[];
     shadow?: boolean;
 }
@@ -40,7 +44,7 @@ export interface CustomElementConstructor {
 export type CustomElementRenderRoot = Element | DocumentFragment;
 
 export interface RenderRoot {
-    renderRoot: CustomElementRenderRoot
+    renderRoot: CustomElementRenderRoot;
 }
 
 export type StyleString = string | boolean;

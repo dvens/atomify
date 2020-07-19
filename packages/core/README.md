@@ -9,7 +9,7 @@ npm i @atomify/core
 
 ## Configuration
 Atomify is made for the modern browsers. Its recommended in legacy browsers to add the following while compiling to ES5 with Babel:
-```exclude: /node_modules\/(?!@atomify)/,```
+```exclude: /node_modules\/(?!@atomify)/```
 
 Its recommended to use [Web Components polyfill](https://www.npmjs.com/package/@webcomponents/webcomponentsjs) to support everything from Web Components spec in legacy browsers.
 
@@ -63,7 +63,7 @@ The components have special lifecycle hooks that can be implemented:
 | componentOnReady      | Called when the component is ready (returns a promise) this can be used when using `document.createElement`   |
 
 ## Property Decorator
-Properties are custom attributes or properties that can be used to pass data through components. Properties have the options to be reflected to attributes. You can expose properties to import the `@Prop` from the '@atomify/core'. The properties can be `Number`, `String`, `Boolean`, `Object` and `Array`. You can get access to the property via `this` operater ( see the this.name ) as example.
+Properties are custom attributes or properties that can be used to pass data through components. Properties have the options to be reflected to attributes. You can expose properties by importing the `@Prop` decorator from the '@atomify/core'. The properties can be `Number`, `String`, `Boolean`, `Object` and `Array`. You can get access to the property via `this` operater ( see the this.name ) as example.
 
 ```typescript
 import { Component, Prop } from '@atomify/core';

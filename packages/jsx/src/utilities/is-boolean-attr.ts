@@ -1,0 +1,27 @@
+const BOOLEAN_ATTRS = [
+    'async',
+    'allowfullscreen',
+    'allowpaymentrequest',
+    'autofocus',
+    'autoplay',
+    'checked',
+    'controls',
+    'default',
+    'defer',
+    'disabled',
+    'formnovalidate',
+    'hidden',
+    'ismap',
+    'multiple',
+    'muted',
+    'novalidate',
+    'nowrap',
+    'open',
+    'readonly',
+    'required',
+    'reversed',
+    'selected',
+    'playsinline',
+];
+
+export const isBooleanAttr = (attrName: string) => BOOLEAN_ATTRS.includes(attrName);

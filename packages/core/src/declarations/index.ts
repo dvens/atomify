@@ -3,5 +3,7 @@ export * from './property';
 export * from './events';
 
 declare global {
-    interface Window { ShadyCSS: any; }
+    interface Window {
+        ShadyCSS: any;
+    }
 }

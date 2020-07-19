@@ -34,9 +34,38 @@ and add the following to your tsconfig.json:
 }
 ```
 
-@atomify/jsx works together with @atomify/core and you could use it as following:
+@atomify/jsx works together with `@atomify/core` and `@atomify/hooks`
 
-```jsx
+*@atomify/hooks*
+
+```tsx
+import { h , Fragment } from '@atomify/jsx';
+import { defineElement, useProp} from '@atomify/hooks';
+
+const CustomElement: FC = () => {
+    const [title] = useProp<Number>('title', 'Hello world!');
+
+    return (
+        <Fragment>
+            <h1>{ title }</h1>
+            <h2>Example title2</h2>
+        </Fragment>
+    );
+};
+
+CustomElement.props = {
+    someTitle: {
+        type: Number,
+        reflectToAttr: true,
+    }
+};
+
+defineElement('custom-element', CustomElement);
+```
+
+*@atomify/core*
+
+```tsx
 import { h , Fragment } from '@atomify/jsx';
 import { Component, Prop } from '@atomify/core';
 
@@ -60,3 +89,18 @@ export class CustomElement extends HTMLElement {
     }
 }
 ```
+
+## Class
+Both `class` and `className` are supported. The `class` attribute can take a `string`, `object` or `array`:
+
+```tsx
+const hasChildren = true;
+const title = 'Hello world!'
+
+<h1 class={'test'}>{ this.title }</h1>
+<h1 class={[ hasChildren ? 'its true': 'not true']}>{ title }</h1>
+<h1 class={{['is-hidden']: hasChildren }}>{ title }</h1>
+```
+
+## Ref
+The `ref` attribute accepts a `function` or a direct `ref` object. The `ref` object must include the `current` property.

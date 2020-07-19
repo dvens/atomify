@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/core/index.ts"],"names":[],"mappings":"AAAA,cAAc,oBAAoB,CAAC;AACnC,cAAc,kBAAkB,CAAC;AACjC,cAAc,iCAAiC,CAAC","sourcesContent":["export * from './apply-attributes';\nexport * from './create-element';\nexport * from './create-fragment-from-children';"]}
