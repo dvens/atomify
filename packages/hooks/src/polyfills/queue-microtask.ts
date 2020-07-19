@@ -1,6 +1,6 @@
 export const queueMicrotaskPolyfill = () => {
     if (typeof window.queueMicrotask !== 'function') {
-        window.queueMicrotask = function (callback) {
+        window.queueMicrotask = function (callback: () => void) {
             Promise.resolve()
                 .then(callback)
                 .catch((e) =>
