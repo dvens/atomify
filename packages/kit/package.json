@@ -1,6 +1,6 @@
 {
     "name": "@atomify/kit",
-    "version": "0.9.3",
+    "version": "1.0.0",
     "description": "A generic toolkit with utilities and hooks",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
