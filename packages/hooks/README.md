@@ -349,7 +349,7 @@ console.log(customElement.log()); // logs: Hello World!
 ```
 
 ### Composition hooks
-The composition hooks are a set of addtive, function-based APIs that allow basic composition of the components.
+The composition hooks are a set of addtive, function-based APIs that allow basic composition of functional components.
 
 #### useReactive
 Takes an object and returns a reactive object.

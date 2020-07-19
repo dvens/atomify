@@ -90,7 +90,7 @@ export class CustomElement extends HTMLElement {
 }
 ```
 
-## Class
+## Class and Classname
 Both `class` and `className` are supported. The `class` attribute can take a `string`, `object` or `array`:
 
 ```tsx
