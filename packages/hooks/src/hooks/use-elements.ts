@@ -2,7 +2,7 @@ import { Component } from '../component';
 import { DID_LOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { createHook } from './hook';
 
-type QueryTarget = Element | DocumentFragment;
+type QueryTarget = Element | DocumentFragment | Document;
 
 interface QueryComponent extends Component {
     [type: string]: any;
