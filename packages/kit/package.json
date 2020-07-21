@@ -1,6 +1,6 @@
 {
     "name": "@atomify/kit",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "A generic toolkit with utilities and hooks",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
@@ -43,7 +43,7 @@
     },
     "homepage": "https://github.com/dvens/atomify",
     "dependencies": {
-        "@atomify/hooks": "^1.0.2",
+        "@atomify/hooks": "^1.0.3",
         "@atomify/jsx": "^1.7.1"
     },
     "gitHead": "e8eebe58db6e017fc19503283b858bac4ce11e42"
