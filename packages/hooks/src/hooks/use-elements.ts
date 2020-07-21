@@ -40,7 +40,7 @@ function select<T>(
 /**
  * Selects a single element and bind the element to the custom element.
  * @param {string} selector
- * @param {QueryTarget} target
+ * @param {QueryTarget} target (element or document)
  */
 export const useElement = <T>(selector: string, target?: QueryTarget) =>
     createListenHook<T, null>(selector, false, target);
