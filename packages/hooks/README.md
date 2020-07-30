@@ -189,22 +189,10 @@ export interface CustomElement extends Component {
 }
 
 const CustomElement: FC<CustomElement> = ({ element, update }) => {
-    const button = useElement<HTMLButtonElement>('button');
-    const event = useEvent<Number>({eventName: 'test'});
-
-    // Listens to the custom event named test.
-    useListen('test', (e: CustomEvent) => {
-        console.log('useListen:', e.detail);
-    }, { target: window });
-
-    // Listens to the click event of the button
-    // and fires the custom event when the button is clicked.
-    useListen('click', () => {
-        event.emit(1);
-    },{ target: button});
+    const div = useElement<HTMLDivElement>('div');
 
     return (
-        <button>Hello World!</button>
+        <div>Hello World!</div>
     );
 };
 
@@ -222,10 +210,22 @@ The `useListen` hook is used to listen to DOM events, it can also listen to the 
 ```typescript
 ....
 const CustomElement: FC<CustomElement> = ({ element, update }) => {
-    const div = useElement<HTMLDivElement>('div');
+    const button = useElement<HTMLButtonElement>('button');
+    const event = useEvent<Number>({eventName: 'test'});
+
+    // Listens to the custom event named test.
+    useListen(window, 'test', (e: CustomEvent) => {
+        console.log('useListen:', e.detail);
+    });
+
+    // Listens to the click event of the button
+    // and fires the custom event when the button is clicked.
+    useListen(button, 'click', () => {
+        event.emit(1);
+    });
 
     return (
-        <div>Hello World!</div>
+        <button>Hello World!</button>
     );
 };
 

@@ -6,7 +6,6 @@ import { createHook } from './hook';
 type EventQueryTarget = { current: null[] | HTMLElement[] | null | HTMLElement };
 
 interface ListenOptions {
-    target: EventQueryTarget | Window | Document | Component;
     capture?: boolean;
     passive?: boolean;
 }
@@ -14,12 +13,18 @@ interface ListenOptions {
 interface BindEventOptions {
     eventName: string;
     cb: (e: Event) => void;
-    options: ListenOptions;
+    options?: ListenOptions;
     remove?: boolean;
     element: Component;
+    target: EventQueryTarget | Window | Document | Component;
 }
 
-interface SaveEvent extends BindEventOptions {
+interface SaveEvent {
+    eventName: string;
+    cb: (e: Event) => void;
+    options?: ListenOptions;
+    remove?: boolean;
+    element: Component;
     target: Window | Document | Node;
 }
 
@@ -27,7 +32,7 @@ export type ListenMap = Map<string, ListenMapItem>;
 export interface ListenMapItem {
     eventName: string;
     callbackWrapper: (e: Event) => void;
-    options: ListenOptions;
+    options?: ListenOptions;
 }
 
 /**
@@ -37,13 +42,18 @@ export interface ListenMapItem {
  * @param {() => void} cb
  * @param {ListenOptions} options
  */
-export const useListen = (eventName: string, cb: (e?: any) => void, options: ListenOptions) =>
+export const useListen = (
+    target: EventQueryTarget | Window | Document | Component,
+    eventName: string,
+    cb: (e?: any) => void,
+    options?: ListenOptions,
+) =>
     createHook({
         onDidLoad(element, hooks) {
             hooks.callbacks.push({
                 type: DID_LOAD_SYMBOL,
                 callback: () => {
-                    bindEvents({ eventName, cb, options, element });
+                    bindEvents({ eventName, cb, options, element, target });
                 },
             });
         },
@@ -51,38 +61,31 @@ export const useListen = (eventName: string, cb: (e?: any) => void, options: Lis
             hooks.callbacks.push({
                 type: UPDATE_SYMBOL,
                 callback: () => {
-                    bindEvents({ eventName, cb, options, element });
+                    bindEvents({ eventName, cb, options, element, target });
                 },
             });
         },
         onDidUnload(element) {
-            bindEvents({ eventName, cb, options, remove: true, element });
+            bindEvents({ eventName, cb, options, remove: true, element, target });
         },
     });
 
 /**
  * @param {BindEventOptions} { options, remove = false, eventName, cb, element }
  */
-function bindEvents({ options, remove = false, eventName, cb, element }: BindEventOptions) {
-    if (
-        options.target instanceof Window ||
-        options.target instanceof Document ||
-        options.target instanceof HTMLElement
-    ) {
-        trackEventListener({ options, target: options.target, element, remove, cb, eventName });
-    } else if (
-        options.target.current instanceof NodeList ||
-        Array.isArray(options.target.current)
-    ) {
-        Array.from(options.target.current).forEach(
+function bindEvents({ options, remove = false, eventName, cb, element, target }: BindEventOptions) {
+    if (target instanceof Window || target instanceof Document || target instanceof HTMLElement) {
+        trackEventListener({ options, target, element, remove, cb, eventName });
+    } else if (target.current instanceof NodeList || Array.isArray(target.current)) {
+        Array.from(target.current).forEach(
             (item) =>
                 item &&
                 trackEventListener({ options, target: item, element, remove, cb, eventName }),
         );
-    } else if (options.target.current instanceof HTMLElement) {
+    } else if (target.current instanceof HTMLElement) {
         trackEventListener({
             options,
-            target: options.target.current,
+            target: target.current,
             element,
             remove,
             cb,
