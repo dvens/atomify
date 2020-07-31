@@ -49,19 +49,22 @@ export const addRemoveEventListeners = (targetElement: any, type: string = 'addE
 
         items.forEach((item) => {
             const eventTarget = getEventTarget(targetElement, defaultTarget, item.eventTarget);
-            const eventId = `${targetElement[ELEMENT_ID]}${item.type}${
-                item.eventTarget
-            }${item.handler.toString()}`;
 
-            if (
-                (NodeList.prototype.isPrototypeOf(eventTarget) || Array.isArray(eventTarget)) &&
-                eventTarget.length > 0
-            ) {
-                Array.from(eventTarget).map((target) =>
-                    initializeEvent(target, eventId, item, targetElement, type),
-                );
-            } else {
-                initializeEvent(eventTarget, eventId, item, targetElement, type);
+            if (eventTarget) {
+                const eventId = `${targetElement[ELEMENT_ID]}${item.type}${
+                    item.eventTarget
+                }${item.handler.toString()}`;
+
+                if (
+                    (NodeList.prototype.isPrototypeOf(eventTarget) || Array.isArray(eventTarget)) &&
+                    eventTarget.length > 0
+                ) {
+                    Array.from(eventTarget).map((target) =>
+                        initializeEvent(target, eventId, item, targetElement, type),
+                    );
+                } else {
+                    initializeEvent(eventTarget, eventId, item, targetElement, type);
+                }
             }
         });
 
@@ -107,8 +110,7 @@ function getEventTarget(target: any, defaultTarget: any, eventTarget: any) {
     }
 
     if (eventTarget && typeof eventTarget === 'string') {
-        if (!target[eventTarget])
-            throw new Error(`${eventTarget} has to be called by the @Query or @QueryAll decorator`);
+        if (!target[eventTarget]) return null;
         return target[eventTarget];
     }
 
