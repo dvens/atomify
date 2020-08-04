@@ -53,7 +53,7 @@ const reflectPropertyToAttribute = (element: Component, attrName: string, newVal
     element[SIDE_EFFECT_PHASE_SYMBOL] = null;
 };
 
-export const useProp = <T = unknown>(name: string, value: T) =>
+export const useProp = <T>(name: string, value: T) =>
     createHook<[T, (s: T) => void, (callback: PropertyCallback<T>) => void]>({
         onDidLoad(element, hooks, index) {
             if (!(name in element.props))
