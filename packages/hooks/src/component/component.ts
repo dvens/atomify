@@ -225,6 +225,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
                     this.$cmpMeta$.$onComponentReadyResolve$.resolve(this);
                     this.flushPhaseCallbacks(DID_LOAD_SYMBOL);
                     this.$cmpMeta$.$onComponentReadyResolve$ = defer<any>();
+                    this.setAttribute('initialized', '');
                     break;
                 case UPDATE_SYMBOL:
                     this.render();
@@ -233,6 +234,7 @@ export function defineElement(name: string, fn: FC, options?: Options) {
                 case DID_UNLOAD_SYMBOL:
                     this.connected = false;
                     this.flushPhaseCallbacks(DID_UNLOAD_SYMBOL);
+                    this.removeAttribute('initialized');
                     break;
             }
             this[PHASE_SYMBOL] = null;
