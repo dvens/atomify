@@ -135,6 +135,21 @@ CustomElement.props = {
 <custom-element name="default name"></custom-elementt>
 ```
 
+#### Property without initial value
+The initial value of `useProp` can be empty if it is sure that the initial value will always be set on the element. This is where we the `required` boolean within the property map comes in place.
+When the `required` boolean isset it will check if the value is not `undefined` and forces the initial value to be set on the component:
+
+```tsx
+const [name] = useProp<string>('name');
+
+CustomElement.props = {
+    name: {
+        type: String;
+        required: true,
+    },
+};
+```
+
 ### useEvent
 To dispatch Custom Dom events from components, use the `useEvent` hook. The example below will dispatch `test` event:
 
@@ -387,6 +402,31 @@ const double = useComputed(() => state.count * 2);
 
 useWatch(() => {
     console.log(state.count, double.current); // outputs 1, 2
+});
+```
+
+### Interact with the component when its fully loaded
+Atomify has an buildin `componentOnReady` promise that will resolve onces the component is loaded into the dom.
+
+```tsx
+// element.tsx
+export interface CustomElement extends Component {
+}
+
+const CustomElement: FC<CustomElement> = ({ element, update }) => {
+
+    return (
+        ...
+    );
+};
+
+defineElement('custom-element', CustomElement, {useShadowDom: true});
+
+// app.tsx
+import { CustomElement } from './element.tsx'
+const customElement = document.querySelector<CustomElement>('custom-element')
+customElement.componentOnReady().then(() => {
+    console.log('loaded:', customElement)
 });
 ```
 

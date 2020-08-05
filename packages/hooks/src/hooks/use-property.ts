@@ -13,10 +13,13 @@ type PropertyElement<T> = Component & { [name: string]: T };
 
 type PropertyCallback<T> = (newValue: T, oldValue: T) => void;
 
+type PropertyHook<T> = [T, (s: T) => void, (callback: PropertyCallback<T>) => void];
+
 export type Property = {
     [key: string]: {
         type?: PropertyTypeHint;
         reflectToAttr?: boolean;
+        required?: boolean;
     };
 };
 
@@ -53,17 +56,39 @@ const reflectPropertyToAttribute = (element: Component, attrName: string, newVal
     element[SIDE_EFFECT_PHASE_SYMBOL] = null;
 };
 
-export const useProp = <T>(name: string, value: T) =>
-    createHook<[T, (s: T) => void, (callback: PropertyCallback<T>) => void]>({
+export function useProp<T>(name: string, value?: T): PropertyHook<T>;
+export function useProp<T>(name: string, value: T): PropertyHook<T> {
+    return createHook({
         onDidLoad(element, hooks, index) {
+            const hasNoValue = typeof value === 'undefined';
+
+            let valueIsRequired = false;
+
             if (!(name in element.props))
                 throw new Error(
                     `Please add the ${name} as property to the ${element.$cmpMeta$.$tagName$} prop map`,
                 );
 
+            if (hasNoValue && name in element.props) {
+                const { required = false } = element.props[name];
+                if (!required) {
+                    throw new Error(
+                        `The value for ${name} is undefined and doesnt have a initial value so it should be required. Add the required boolean as true for ${name} to the ${element.$cmpMeta$.$tagName$} prop map or add an initial value as second param to the useProp hook.`,
+                    );
+                }
+
+                valueIsRequired = required;
+            }
+
             const key = `_${name}`;
             const initialValue = (element as PropertyElement<T>)[name] || value;
             const reflectToAttr = element.props[name].reflectToAttr || false;
+
+            if (valueIsRequired && typeof initialValue === 'undefined') {
+                throw new Error(
+                    `The value of ${name} is undefined but required make sure that the ${name} prop is filled in.`,
+                );
+            }
 
             // Callback that gets set when its used.
             let callback: PropertyCallback<T> | null = null;
@@ -115,3 +140,4 @@ export const useProp = <T>(name: string, value: T) =>
             return [initialValue, setState, watchCallback];
         },
     });
+}
