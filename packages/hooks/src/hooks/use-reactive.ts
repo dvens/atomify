@@ -41,8 +41,14 @@ export const reactive = <T extends object>(initialState: T, element: Component):
                 return internalValue;
             },
             set(newValue) {
+                const isHTMLNodeOrList =
+                    newValue instanceof NodeList ||
+                    Array.isArray(newValue) ||
+                    newValue instanceof HTMLElement;
+
                 if (
                     internalValue != null &&
+                    !isHTMLNodeOrList &&
                     typeof internalValue === 'object' &&
                     typeof newValue === 'object'
                 ) {
