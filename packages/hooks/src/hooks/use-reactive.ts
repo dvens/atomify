@@ -30,7 +30,9 @@ export const reactive = <T extends object>(initialState: T, element: Component):
 
     for (const [key, value] of Object.entries(initialState)) {
         let internalValue =
-            value != null && typeof value === 'object' ? reactive(value, element) : value;
+            value != null && !Array.isArray(value) && typeof value === 'object'
+                ? reactive(value, element)
+                : value;
 
         const symbol = Symbol(key);
 
