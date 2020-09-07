@@ -1,4 +1,4 @@
-import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL } from '../symbols';
+import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { createHook } from './hook';
 
 export const onDidLoad = (cb: () => void) =>
@@ -23,7 +23,10 @@ export const onDidUnload = (cb: () => void) =>
 
 export const onUpdated = (cb: () => void) =>
     createHook({
-        onUpdate() {
-            cb();
+        onUpdate(_, hooks) {
+            hooks.callbacks.push({
+                type: UPDATE_SYMBOL,
+                callback: cb,
+            });
         },
     });
