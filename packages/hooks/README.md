@@ -189,7 +189,7 @@ console.log(div.current); // outputs single div
 console.log(buttons.current) // outputs array of buttons
 ```
 
-**Binded to the this of the element**
+**Binded to the this of the element (specially handy for dynamic or conditional elements)**
 
 Both of the hooks bind the queried element to the this of the custom element. Since we are using functional components you need to specifically tell `Typescript` that these queried elements can be used:
 
@@ -217,6 +217,28 @@ defineElement('custom-element', CustomElement, {useShadowDom: true});
 const customElement = document.querySelector<CustomElement>('custom-element');
 
 console.log(customElement.div); // returns the single div;
+```
+
+**Assigning a different name:**
+It can happen sometimes that the selector has a dash. Ex: custom-element this will give some weird syntaxes like below:
+
+```tsx
+const div = useElement<HTMLElement>('custom-element');
+console.log(element['custom-element']);
+```
+
+The options now has an "as" option that lets you change the name of this element:
+```tsx
+const div = useElement<HTMLElement>('custom-element', { as: 'customElement' });
+console.log(element.customElement);
+```
+
+**Changing target query element**
+The `useElement` and `useElements` use the current custom element as their target root (ex: targetRoot.querySelector).
+This can be changed by passing a different root within options object:
+```tsx
+const div = useElement<HTMLElement>('custom-element', { as: 'customElement', target: document });
+console.log(element.customElement);
 ```
 
 ### useListen

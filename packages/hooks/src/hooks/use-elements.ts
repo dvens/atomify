@@ -8,13 +8,18 @@ interface QueryComponent extends Component {
     [type: string]: any;
 }
 
+type QueryOptions = {
+    root?: QueryTarget;
+    as?: string;
+};
+
 /**
  * Queries the render root ( this or the shadowdom ) from a custom element
  * And binds the selector to the custom element.
  * @param {string} selector
  * @param {boolean} [queryAll=false]
  * @param {QueryComponent} element
- * @param {QueryTarget} target
+ * @param {QueryOptions} Options
  * @returns
  */
 function select<T>(
@@ -22,6 +27,7 @@ function select<T>(
     queryAll: boolean = false,
     element: QueryComponent,
     target: QueryTarget,
+    bindAs: string,
 ): T {
     const descriptor = {
         get() {
@@ -32,41 +38,42 @@ function select<T>(
         configurable: true,
     };
 
-    Object.defineProperty(element, selector, descriptor);
+    Object.defineProperty(element, bindAs, descriptor);
 
-    return element[selector];
+    return element[bindAs];
 }
 
 /**
  * Selects a single element and bind the element to the custom element.
  * @param {string} selector
- * @param {QueryTarget} target (element or document)
+ * @param {QueryOptions} Options
  */
-export const useElement = <T>(selector: string, target?: QueryTarget) =>
-    createListenHook<T, null>(selector, false, target);
+export const useElement = <T>(selector: string, options?: QueryOptions) =>
+    createListenHook<T, null>(selector, false, options);
 /**
  * Selects multiple elements and binds those elements to the custom element.
  * @param {string} selector
- * @param {QueryTarget} target
+ * @param {QueryOptions} Options
  */
-export const useElements = <T>(selector: string, target?: QueryTarget) =>
-    createListenHook<T, null[]>(selector, true, target);
+export const useElements = <T>(selector: string, options?: QueryOptions) =>
+    createListenHook<T, null[]>(selector, true, options);
 
 /**
  * @param {string} selector
  * @param {boolean} queryAll
- * @param {QueryTarget} target
+ * @param {QueryOptions} Options
  */
-const createListenHook = <T, D>(selector: string, queryAll: boolean, target?: QueryTarget) =>
+const createListenHook = <T, D>(selector: string, queryAll: boolean, options?: QueryOptions) =>
     createHook<{ current: T | D }>({
         onDidLoad(element: QueryComponent, hooks, index) {
-            const targetElement = target ? target : element.container;
-            select<T>(selector, queryAll, element, targetElement);
+            const targetElement = options && options.root ? options.root : element.container;
+            const bindAs = options && options.as && options.as !== '' ? options.as : selector;
+            select<T>(selector, queryAll, element, targetElement, bindAs);
 
             hooks.callbacks.push({
                 type: DID_LOAD_SYMBOL,
                 callback: () => {
-                    hooks.state[index].current = element[selector];
+                    hooks.state[index].current = element[bindAs];
                 },
             });
 
@@ -76,10 +83,12 @@ const createListenHook = <T, D>(selector: string, queryAll: boolean, target?: Qu
             });
         },
         onUpdate(element: QueryComponent, hooks, index) {
+            const bindAs = options && options.as && options.as !== '' ? options.as : selector;
+
             hooks.callbacks.push({
                 type: UPDATE_SYMBOL,
                 callback: () => {
-                    hooks.state[index].current = element[selector];
+                    hooks.state[index].current = element[bindAs];
                 },
             });
         },
