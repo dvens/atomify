@@ -5,6 +5,7 @@ interface CustomEventOptions {
     composed?: boolean;
     cancelable?: boolean;
     eventName: string;
+    target?: Window | Document;
 }
 
 export const useEvent = <T>(options: CustomEventOptions) =>
@@ -17,9 +18,10 @@ export const useEvent = <T>(options: CustomEventOptions) =>
                     { detail: value, bubbles: true, cancelable: true },
                     options,
                 );
-                const event = new CustomEvent(eventName, eventOptions);
 
-                element.dispatchEvent(event);
+                const event = new CustomEvent(eventName, eventOptions);
+                const target = options.target ? options.target : element;
+                target.dispatchEvent(event);
             }
 
             return {
