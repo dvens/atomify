@@ -104,3 +104,53 @@ const title = 'Hello world!'
 
 ## Ref
 The `ref` attribute accepts a `function` or a direct `ref` object. The `ref` object must include the `current` property.
+
+```tsx
+import { extractCSS, setup, styled } from '@atomify/css';
+import { setDefaultRender } from '@atomify/hooks';
+import { h, render, renderToString, Head } from '@atomify/jsx';
+import { prefixer } = from 'prefix-library';
+
+// Set global default render atomify // default is string renderer.
+setDefaultRender(render);
+
+// Tell atomify css what JSX to use.
+// Client side it will be apended to the head
+setup({
+    render: h,
+    prefixer,
+});
+
+// This will generate the .button__default class
+// Will be apended to the head.
+const Button = styled<{ size: number }>('button', 'button__default')`
+    width: ${props => props.size || '20px'};
+`;
+
+<Button size={20}>hello</Button>
+
+// This will generate a random hash
+// Will be anpended to the head.
+const Button = styled<{ size: number }>('button')`
+    width: ${props => props.size || '20px'};
+`;
+
+<Button size={20}>hello</Button>
+
+const Home = () => {
+    <Head>
+        <title>hello</title>
+    </Head>
+    <Button size={20}>hello</Button>;
+};
+
+
+// Client side
+render(Home, document.qetElementBydId('app'));
+
+// SSR
+// Extracting css on the server,
+const style = extractCSS(Home); // getStyleTags and getStyleTag
+const body = renderToString(Home);
+const head = Head.renderToString(Home);
+```

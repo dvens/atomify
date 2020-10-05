@@ -1,7 +1,6 @@
-import { applyAttributes, createElement, createFragementFromChildren } from './core';
 import { classNames } from './utilities';
 
-export declare namespace h {
+declare namespace h {
     export namespace JSX {
         interface IntrinsicElements {
             [tagName: string]: any;
@@ -9,19 +8,20 @@ export declare namespace h {
     }
 }
 
-export const h = (nodeName: string, vnodeData: object, ...children: any) => {
-    const element = createElement(nodeName, vnodeData, children);
-    const isNotFunctionalComponent = !(
-        typeof nodeName === 'function' && nodeName !== DocumentFragment
-    );
+const Fragment = DocumentFragment;
+export const createElement = (nodeName: string, vnodeData: object, ...children: any) => {
+    console.log(nodeName, vnodeData, children);
+    // const element = createElement(nodeName, vnodeData, children);
+    // const isNotFunctionalComponent = !(
+    //     typeof nodeName === 'function' && nodeName !== DocumentFragment
+    // );
 
-    if (isNotFunctionalComponent) {
-        const fragment = createFragementFromChildren(children);
-        element.appendChild(fragment);
-    }
+    // if (isNotFunctionalComponent) {
+    //     const fragment = createFragementFromChildren(children);
+    //     element.appendChild(fragment);
+    // }
 
-    return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
+    // return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
 };
 
-export const Fragment = DocumentFragment;
-export { classNames };
+export { classNames, createElement as h, Fragment };

@@ -10,7 +10,6 @@
     "no-any": true,
     "no-duplicate-variable": true,
     "no-eval": true,
-    "no-internal-module": true,
     "no-trailing-whitespace": true,
     "no-var-keyword": true,
     "no-unnecessary-type-assertion": true,
@@ -29,8 +28,7 @@
       "always"
     ],
     "trailing-comma": [
-      true,
-      "multiline"
+      true
     ],
     "triple-equals": [
       true,
