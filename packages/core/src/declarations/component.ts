@@ -55,4 +55,4 @@ export interface RenderTemplate {
     templateResult: DocumentFragment;
 }
 
-export type QueryTarget = Element | DocumentFragment;
+export type QueryTarget = Element | DocumentFragment | Document;
