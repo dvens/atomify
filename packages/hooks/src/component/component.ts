@@ -57,7 +57,7 @@ interface Options {
     useShadowDom?: boolean;
 }
 
-export function defineElement(name: string, fn: FC, options?: Options) {
+export function defineElement(name: string, fn: FC<any>, options?: Options) {
     const { renderer = defaultRenderer, useShadowDom = false } = options || {};
 
     validateSelector(name);
