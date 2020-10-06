@@ -47,7 +47,7 @@ export interface Component extends HTMLElement {
     $cmpMeta$: ComponentMeta;
     props: Property;
 }
-export interface FC<P> {
+export interface FC<P = any> {
     ({ element, update }: { element: P & Component; update: () => void }): any;
     props?: Property;
 }
