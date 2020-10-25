@@ -1,6 +1,13 @@
+import { createVdom, Fragment } from './dom';
+import { AtomifyNode, Props } from './types';
 import { classNames } from './utilities';
 
-declare namespace h {
+const EMPTY_ARRAY: Array<any> = [];
+
+// FRE for types
+// Logic from domchec/jsxdom
+// rendeer of uperfine
+export declare namespace h {
     export namespace JSX {
         interface IntrinsicElements {
             [tagName: string]: any;
@@ -8,20 +15,17 @@ declare namespace h {
     }
 }
 
-const Fragment = DocumentFragment;
-export const createElement = (nodeName: string, vnodeData: object, ...children: any) => {
-    console.log(nodeName, vnodeData, children);
-    // const element = createElement(nodeName, vnodeData, children);
-    // const isNotFunctionalComponent = !(
-    //     typeof nodeName === 'function' && nodeName !== DocumentFragment
-    // );
+export const h = <P extends Props = {}>(nodeName: string, props: P, children: AtomifyNode) => {
+    const properties = props || ({} as P);
+    const key = properties.key || null;
 
-    // if (isNotFunctionalComponent) {
-    //     const fragment = createFragementFromChildren(children);
-    //     element.appendChild(fragment);
-    // }
-
-    // return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
+    return createVdom(
+        nodeName,
+        properties,
+        Array.isArray(children) ? children : children == null ? EMPTY_ARRAY : [children],
+        null,
+        key,
+    );
 };
 
-export { classNames, createElement as h, Fragment };
+export { classNames, Fragment };
