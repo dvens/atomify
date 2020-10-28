@@ -1,34 +1,24 @@
 import { Ref } from '../utilities';
 
-export type Key = string | number | null | undefined;
-
-export interface Props {
-    key?: Key;
-    children?: AtomifyNode;
-    ref?: Ref;
-}
-
-export interface FC<P extends Props = {}> {
-    (props: P): AtomifyElement<P> | null;
-}
-
-export interface AtomifyElement<P extends Props = any, T = string> {
-    type: T;
+export type VnodeType<P = any> = string | FunctionComponent<P>;
+export interface VNode<P extends object = {}> {
+    type: VnodeType<P>;
+    children?: ComponentChildren;
     props: P;
+    tag?: number;
 }
 
-export interface Vnode<P extends Props = any> {
-    key?: string;
-    type: string | FC<P>;
-    node: HTMLElement;
-    children?: Vnode<P>;
-    parent?: Vnode<P>;
-    props: P;
-    oldProps?: P;
+export interface FunctionComponent<P = {}> {
+    (props: Props<P>): VNode<any> | null;
+    defaultProps?: Partial<P>;
 }
 
-export type AtomifyNode = Key | AtomifyElement | Vnode[] | boolean | null | undefined;
+export type Props<P> = P & { children?: ComponentChildren; ref?: Ref };
 
 export interface PropsWithChildren {
-    children?: AtomifyNode;
+    children?: ComponentChildren;
 }
+
+export type ComponentChild = VNode<any> | object | string | number | boolean | null | undefined;
+
+export type ComponentChildren = ComponentChild[] | ComponentChild;

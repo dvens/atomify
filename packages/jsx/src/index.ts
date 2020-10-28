@@ -1,12 +1,8 @@
-import { createVdom, Fragment } from './dom';
-import { AtomifyNode, Props } from './types';
-import { classNames } from './utilities';
+import { createVnode, Fragment, text } from './dom';
+import { render } from './render';
+import { ComponentChildren, FunctionComponent, Props, VNode, VnodeType } from './types';
+import { classNames, isFunction, isNumber, isString } from './utilities';
 
-const EMPTY_ARRAY: Array<any> = [];
-
-// FRE for types
-// Logic from domchec/jsxdom
-// rendeer of uperfine
 export declare namespace h {
     export namespace JSX {
         interface IntrinsicElements {
@@ -15,17 +11,28 @@ export declare namespace h {
     }
 }
 
-export const h = <P extends Props = {}>(nodeName: string, props: P, children: AtomifyNode) => {
+export const h = <P extends object>(
+    type: VnodeType<P>,
+    props: Props<P>,
+    ...children: ComponentChildren[]
+): VNode<P> | null => {
     const properties = props || ({} as P);
-    const key = properties.key || null;
+    const mappedChildren = children.map((node) =>
+        isString(node) || isNumber(node) ? text(node) : node,
+    );
 
-    return createVdom(
-        nodeName,
+    if (isFunction(type)) {
+        return type({
+            ...properties,
+            children: mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren,
+        });
+    }
+
+    return createVnode(
+        type,
         properties,
-        Array.isArray(children) ? children : children == null ? EMPTY_ARRAY : [children],
-        null,
-        key,
+        mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren,
     );
 };
 
-export { classNames, Fragment };
+export { classNames, Fragment, render, FunctionComponent };

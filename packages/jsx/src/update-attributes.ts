@@ -9,11 +9,11 @@ import {
     RefFunction,
     removeAttr,
     setAttr,
-} from '../utilities';
+} from './utilities';
 
 const XLINK_NS = 'http://www.w3.org/1999/xlink';
 
-export const applyAttributes = (element: any, vnodeData: object) => {
+export const updateAttributes = (element: any, vnodeData: object) => {
     const attributes = Object.keys(vnodeData || {});
 
     attributes.forEach((attribute) => {
