@@ -8,7 +8,7 @@ export interface VNode<P extends object = {}> {
     tag?: number;
 }
 
-export interface FunctionComponent<P = {}> {
+export interface FunctionComponent<P = any> {
     (props: Props<P>): VNode<any> | null;
     defaultProps?: Partial<P>;
 }

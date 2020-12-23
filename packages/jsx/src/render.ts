@@ -8,7 +8,6 @@ export const render = (
 ) => {
     if (!isNullValue(vnode)) {
         const element = createElement(vnode);
-
         parent.appendChild(element);
     }
 };
