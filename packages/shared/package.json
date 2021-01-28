@@ -1,7 +1,7 @@
 {
-    "name": "@atomify/kit",
-    "version": "1.1.10",
-    "description": "A generic toolkit with utilities and hooks",
+    "name": "@atomify/shared",
+    "version": "1.0.0",
+    "description": "Shared types and utilities for Atomify.",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
     "main": "./dist/index.js",
@@ -41,9 +41,5 @@
         "url": "https://github.com/dvens/atomify/issues"
     },
     "homepage": "https://github.com/dvens/atomify",
-    "dependencies": {
-        "@atomify/hooks": "^1.1.6",
-        "@atomify/jsx": "^1.7.1"
-    },
     "gitHead": "e8eebe58db6e017fc19503283b858bac4ce11e42"
 }

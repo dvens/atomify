@@ -1,7 +1,3 @@
-export type FunctionValue = (...args: any) => void;
-export type RefFunction = (node: Element) => void;
-export type Ref = { current: any };
-
 export const isBoolean = (value: any): value is boolean => typeof value === 'boolean';
 export const isNullValue = (value: any | null): value is null => value == null || value === false;
 export const isString = (value: any): value is string => typeof value === 'string';

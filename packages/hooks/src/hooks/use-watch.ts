@@ -1,6 +1,7 @@
+import { debounce } from '@atomify/shared';
+
 import { Component } from '../component';
 import { DID_LOAD_SYMBOL } from '../symbols';
-import { debounce } from './../utilities/debounce';
 import { createHook } from './hook';
 
 export const useWatch = (callback: () => void) =>

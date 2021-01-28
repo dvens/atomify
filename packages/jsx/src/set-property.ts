@@ -5,15 +5,15 @@ import {
     isCustomElement,
     isFunction,
     isNullValue,
-    Ref,
+    MutableRefObject,
     RefFunction,
     removeAttr,
     setAttr,
-} from './utilities';
+} from '@atomify/shared';
 
-const XLINK_NS = 'http://www.w3.org/1999/xlink';
+import { XLINK_NS } from './constants';
 
-export const updateAttributes = (element: any, vnodeData: object) => {
+export const setProperty = (element: any, vnodeData: object) => {
     const attributes = Object.keys(vnodeData || {});
 
     attributes.forEach((attribute) => {
@@ -36,7 +36,7 @@ export const updateAttributes = (element: any, vnodeData: object) => {
             case 'ref':
                 isFunction(attributeValue)
                     ? (attributeValue as RefFunction)(element)
-                    : ((attributeValue as Ref).current = element);
+                    : ((attributeValue as MutableRefObject<any>).current = element);
                 return;
             case 'class':
             case 'className':
@@ -55,12 +55,11 @@ export const updateAttributes = (element: any, vnodeData: object) => {
         }
 
         if (
-            (isCustomElement(element) &&
-                !(attributeName as string).includes('-') &&
-                !isBooleanAttr(attributeName) &&
-                typeof element.constructor.properties !== 'undefined' &&
-                element.constructor.properties.has(attributeName)) ||
-            (element.props && attributeName in element.props)
+            isCustomElement(element) &&
+            !(attributeName as string).includes('-') &&
+            !isBooleanAttr(attributeName) &&
+            element.props &&
+            attributeName in element.props
         ) {
             element[attributeName] = attributeValue;
         } else if (isBooleanAttr(attributeName)) {

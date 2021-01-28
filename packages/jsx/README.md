@@ -121,17 +121,23 @@ setup({
     prefixer,
 });
 
+// Its static css based upon css vars.
 // This will generate the .button__default class
 // Will be apended to the head.
-const Button = styled.button<{ size: number }>('button__default')`
+const Button = styled<{ size: number }>('button', 'button__default')`
+    background-color: var(--theme-color-1, red);
     width: ${props => props.size || '20px'};
+
+    ${modifier('is--active')`
+        --theme-color-1: blue;
+    `}
 `;
 
 <Button size={20}>hello</Button>
 
 // This will generate a random hash
 // Will be anpended to the head.
-const Button = styled.button<{ size: number }>`
+const Button = styled<{ size: number }>('button')`
     width: ${props => props.size || '20px'};
 `;
 
@@ -161,4 +167,24 @@ const stylesheet = getSheets();
 const body = renderToString(Home);
 const style =  getStyleTags() or getStyleTag()
 const head = Head.renderToString(Home);
+
+// Web components ssr
+import { h, Fragment } from '@atomify/jsx';
+import { defineElement } from '@atomify/hooks';
+
+// RFC
+// SSR gives an error when it has shadow dom.
+const CustomElement = withSSR<{ count: number }>(({ props, element, update }) => {
+    const { count } = props;
+    return (<Fragment>{ props.count }</Fragment>);
+});
+
+CustomElement.getServerProps = async () => {
+    const count = await getAPICountAmount();
+    return {
+        count,
+    };
+}
+
+defineElement('custom-element', CustomElement);
 ```

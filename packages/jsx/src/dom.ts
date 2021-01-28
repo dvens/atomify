@@ -1,7 +1,8 @@
+import { isFunction, isObject, isString, isSVG } from '@atomify/shared';
+
 import { EMPTY_ARRAY, EMPTY_OBJ, SVG_URI, TEXT_NODE } from './constants';
+import { setProperty } from './set-property';
 import { ComponentChildren, PropsWithChildren, VNode, VnodeType } from './types';
-import { updateAttributes } from './update-attributes';
-import { isFunction, isObject, isString, isSVG } from './utilities';
 
 export const createElement = <P extends object>(vnode: VNode<P>) => {
     const { type, tag, props, children } = vnode;
@@ -14,7 +15,7 @@ export const createElement = <P extends object>(vnode: VNode<P>) => {
             : document.createElement(type as string);
 
     if (!(dom instanceof Text)) {
-        updateAttributes(dom, props);
+        setProperty(dom, props);
     }
 
     if (Array.isArray(children)) {
@@ -23,7 +24,7 @@ export const createElement = <P extends object>(vnode: VNode<P>) => {
         dom.appendChild(createElement(vDomify(children)));
     }
 
-    return dom;
+    return (vnode.element = dom);
 };
 
 export const createVnode = <P>(
@@ -38,6 +39,6 @@ export const vDomify = (value: any) =>
 
 export const text = (value: any) => createVnode(value, EMPTY_OBJ, EMPTY_ARRAY, TEXT_NODE);
 
-export const Fragment = (props: PropsWithChildren): ComponentChildren => {
+export const Fragment = (props: PropsWithChildren) => {
     return props.children;
 };

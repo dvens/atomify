@@ -20,7 +20,6 @@ import {
     useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
-import { scheduleMacrotask, scheduleMicrotask, supportsAdoptingStyleSheets } from './utilities';
 
 export {
     defineElement,
@@ -45,9 +44,6 @@ export {
     getCurrentElement,
     getCurrentElementPhase,
     queueMicrotaskPolyfill,
-    supportsAdoptingStyleSheets,
-    scheduleMacrotask,
-    scheduleMicrotask,
     FC,
     useReactive,
     useWatch,

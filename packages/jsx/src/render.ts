@@ -1,13 +1,21 @@
-import { createElement } from './dom';
-import { VNode } from './types';
-import { isNullValue } from './utilities/index';
+import { isNullValue } from '@atomify/shared';
 
-export const render = (
-    vnode: VNode,
-    parent: Element | Document | ShadowRoot | DocumentFragment,
-) => {
+import { createElement } from './dom';
+import { Container, VNode } from './types';
+
+export const render = (vnode: VNode, container: Container) => {
     if (!isNullValue(vnode)) {
         const element = createElement(vnode);
-        parent.appendChild(element);
+        container.appendChild(element);
     }
+};
+
+export const hydrate = (vnode: VNode, container: Container, removeChildren = true) => {
+    if (removeChildren) {
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+    }
+
+    render(vnode, container);
 };

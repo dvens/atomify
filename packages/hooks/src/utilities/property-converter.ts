@@ -1,5 +1,6 @@
+import { camelCaseToDash, dashToCamelCase } from '@atomify/shared';
+
 import { Component } from '../component';
-import { camelCaseToDash, dashToCamelCase } from './camel-case';
 
 /**
  * Converts property to an attribute

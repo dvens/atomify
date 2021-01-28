@@ -1,3 +1,12 @@
+import {
+    camelCaseToDash,
+    defer,
+    DefferObject,
+    generateQuickGuid,
+    scheduleMicrotask,
+    validateSelector,
+} from '@atomify/shared';
+
 import { clear, Hooks, ListenMap, Property, setCurrentElement } from '../hooks';
 import {
     DID_LOAD_SYMBOL,
@@ -10,15 +19,7 @@ import {
     SideEffectPhase,
     UPDATE_SYMBOL,
 } from '../symbols';
-import {
-    camelCaseToDash,
-    defer,
-    DefferObject,
-    generateQuickGuid,
-    scheduleMicrotask,
-    toProperty,
-    validateSelector,
-} from '../utilities';
+import { toProperty } from '../utilities';
 import { defaultRenderer, RenderFunction } from './render';
 
 export type Container = HTMLElement | ShadowRoot;
@@ -47,7 +48,7 @@ export interface Component extends HTMLElement {
     $cmpMeta$: ComponentMeta;
     props: Property;
 }
-export interface FC<P = object> {
+export interface FC<P = unknown> {
     ({ element, update }: { element: P & Component; update: () => void }): any;
     props?: Property;
 }
@@ -57,7 +58,7 @@ interface Options {
     useShadowDom?: boolean;
 }
 
-export function defineElement(name: string, fn: FC, options?: Options) {
+export function defineElement(name: string, fn: FC<any>, options?: Options) {
     const { renderer = defaultRenderer, useShadowDom = false } = options || {};
 
     validateSelector(name);

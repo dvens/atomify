@@ -1,6 +1,7 @@
+import { supportsAdoptingStyleSheets } from '@atomify/shared';
+
 import { Component } from '../component';
 import { CSS_SAVE_TOKEN } from '../symbols';
-import { supportsAdoptingStyleSheets } from '../utilities';
 import { scopeCSS } from './scope-css';
 
 declare global {

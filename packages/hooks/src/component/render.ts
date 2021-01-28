@@ -1,4 +1,6 @@
-import { bindShadyRoot, supportsAdoptingStyleSheets, supportShadyCSS } from '../utilities';
+import { supportsAdoptingStyleSheets } from '@atomify/shared';
+
+import { bindShadyRoot, supportShadyCSS } from '../utilities';
 import { Component, Container } from './component';
 
 export type RenderFunction = (

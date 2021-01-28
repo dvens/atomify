@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import {
     attributeChangedCallback,
     connectedCallback,
@@ -39,13 +41,13 @@ export const Component = (options: ComponentOptions) => {
     validateSelector(options.tag);
 
     return <T extends CustomElementConstructor>(constructor: T) => {
-        const generatedComponent: T = class extends constructor {
+        const GeneratedComponent: T = class extends constructor {
             __canAttachShadowDom: boolean;
             __hasShadowdomPolyfill: boolean;
             __nodeName: string;
             [ON_READY_RESOLVED]: IDefferObject<any>;
             [IS_DISCONNECTING]: boolean | IDefferObject<any>;
-            [ELEMENT_ID]: string;
+            [ELEMENT_ID]: string = '';
 
             /**
              * Tells the components when it is connected to DOM
@@ -127,9 +129,9 @@ export const Component = (options: ComponentOptions) => {
          *   Create new custom element when element name is not defined;
          */
         if (!customElements.get(options.tag)) {
-            customElements.define(options.tag, generatedComponent);
+            customElements.define(options.tag, GeneratedComponent);
         }
 
-        return generatedComponent;
+        return GeneratedComponent;
     };
 };

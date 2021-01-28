@@ -1,8 +1,10 @@
+import { classNames, isFunction, isNumber, isString } from '@atomify/shared';
+
+import { EMPTY_OBJ } from './constants';
 import { createVnode, Fragment, text } from './dom';
-import { patch } from './patch';
 import { render } from './render';
+import { renderToString } from './render-to-string';
 import { ComponentChildren, FunctionComponent, Props, VNode, VnodeType } from './types';
-import { classNames, isFunction, isNumber, isString } from './utilities';
 export declare namespace h {
     export namespace JSX {
         interface IntrinsicElements {
@@ -16,7 +18,7 @@ export const h = <P extends object>(
     props: Props<P>,
     ...children: ComponentChildren[]
 ): VNode<P> | null => {
-    const properties = props || ({} as P);
+    const properties = props || (EMPTY_OBJ as P);
     const mappedChildren = children.map((node) =>
         isString(node) || isNumber(node) ? text(node) : node,
     );
@@ -33,4 +35,4 @@ export const h = <P extends object>(
     return createVnode(type, properties, flattendChildren);
 };
 
-export { classNames, Fragment, render, FunctionComponent, patch };
+export { classNames, Fragment, render, FunctionComponent, renderToString };
