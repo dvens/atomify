@@ -2,7 +2,7 @@ import { classNames, isFunction, isNumber, isString } from '@atomify/shared';
 
 import { EMPTY_OBJ } from './constants';
 import { createVnode, Fragment, text } from './dom';
-import { render } from './render';
+import { hydrate, JSXRenderer, render } from './render';
 import { renderToString } from './render-to-string';
 import { ComponentChildren, FunctionComponent, Props, VNode, VnodeType } from './types';
 export declare namespace h {
@@ -35,4 +35,4 @@ export const h = <P extends object>(
     return createVnode(type, properties, flattendChildren);
 };
 
-export { classNames, Fragment, render, FunctionComponent, renderToString };
+export { classNames, Fragment, render, FunctionComponent, renderToString, JSXRenderer, hydrate };
