@@ -1,5 +1,4 @@
 import {
-    classNames,
     FunctionValue,
     isBooleanAttr,
     isCustomElement,
@@ -43,7 +42,7 @@ export const setProperty = (element: any, vnodeData: object) => {
                 if (isFunction(attributeValue)) {
                     (attributeValue as FunctionValue)(element);
                 } else {
-                    setAttr(element, 'class', classNames(attributeValue));
+                    setAttr(element, 'class', attributeValue);
                 }
                 return;
             case 'htmlFor':

@@ -20,7 +20,7 @@ import {
     UPDATE_SYMBOL,
 } from '../symbols';
 import { toProperty } from '../utilities';
-import { defaultRenderer, RenderFunction } from './render';
+import { componentRender, defaultRenderer, RenderFunction } from './render';
 
 export type Container = HTMLElement | ShadowRoot;
 export interface ComponentMeta {
@@ -59,7 +59,7 @@ interface Options {
 }
 
 export function defineElement(name: string, fn: FC<any>, options?: Options) {
-    const { renderer = defaultRenderer, useShadowDom = false } = options || {};
+    const { renderer = componentRender || defaultRenderer, useShadowDom = false } = options || {};
 
     validateSelector(name);
 

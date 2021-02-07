@@ -106,7 +106,7 @@ const title = 'Hello world!'
 The `ref` attribute accepts a `function` or a direct `ref` object. The `ref` object must include the `current` property.
 
 ```tsx
-import { getSheets, setup, styled } from '@atomify/css';
+import { getStyleTags, setup, getStyleTag } from '@atomify/css';
 import { setDefaultRender } from '@atomify/hooks';
 import { h, render, renderToString, Head } from '@atomify/jsx';
 import { prefixer } from 'prefix-library';
@@ -114,34 +114,32 @@ import { prefixer } from 'prefix-library';
 // Set global default render atomify // default is string renderer.
 setDefaultRender(render);
 
-// Tell atomify css what JSX to use.
-// Client side it will be apended to the head
+// Prefix for web components and withStyles
 setup({
-    render: h,
     prefixer,
 });
 
-// Its static css based upon css vars.
-// This will generate the .button__default class
-// Will be apended to the head.
-const Button = styled<{ size: number }>('button', 'button__default')`
-    background-color: var(--theme-color-1, red);
-    width: ${props => props.size || '20px'};
+// With styles
+import styles from './app.css'
+function App() {}
+withStyles(App, styles);
 
-    ${modifier('is--active')`
-        --theme-color-1: blue;
-    `}
-`;
+// SSR
+const style = getStyleTags() or getStyleTag()
 
-<Button size={20}>hello</Button>
+// Setup will be build on top of css modules
+// EX: button.module.css
+.button--primary {}
 
-// This will generate a random hash
-// Will be anpended to the head.
-const Button = styled<{ size: number }>('button')`
-    width: ${props => props.size || '20px'};
-`;
+// EX: button.tsx
+import styles from './button.module.css';
+import classnames from '@atomify/shared';
 
-<Button size={20}>hello</Button>
+const Button = (props) => {
+    const classes = classNames('c-button', {styles['button--primary']: props.variant === 'primary'})
+    return <button className={classes}>{props.title}</button>
+};
+
 
 const Home = () => {
     <Head>
@@ -163,9 +161,7 @@ render(Home, document.qetElementBydId('app'));
 
 // SSR
 // Extracting css on the server,
-const stylesheet = getSheets();
 const body = renderToString(Home);
-const style =  getStyleTags() or getStyleTag()
 const head = Head.renderToString(Home);
 
 // Web components ssr

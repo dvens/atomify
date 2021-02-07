@@ -1,5 +1,4 @@
-import { Component, defineElement, FC, RenderFunction } from './component';
-import { adoptStyles, css, scopeCSS, unsafeCSS } from './css';
+import { Component, defineElement, FC, RenderFunction, setupDefaultRender } from './component';
 import {
     createHook,
     getCurrentElement,
@@ -24,12 +23,9 @@ import { queueMicrotaskPolyfill } from './polyfills';
 export {
     defineElement,
     RenderFunction,
+    setupDefaultRender,
     useRef,
     useProp,
-    scopeCSS,
-    adoptStyles,
-    unsafeCSS,
-    css,
     Component,
     onDidLoad,
     onDidUnload,

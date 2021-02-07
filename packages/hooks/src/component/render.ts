@@ -13,10 +13,13 @@ export type RenderFunction = (
 interface TemplateCache {
     template: HTMLTemplateElement;
     isTemplateString: boolean;
-    isJSXresult: boolean;
 }
 
+type ComponentRender = null | RenderFunction;
+
 const templateCache = new Map<string, TemplateCache>();
+
+export let componentRender: ComponentRender = null;
 
 /**
  * Used when no renderer is available or set within the Component option
@@ -32,7 +35,6 @@ export const defaultRenderer: RenderFunction = (result, container, name, compone
         const template = document.createElement('template');
         const hasStringResult = typeof result === 'string';
         const isTemplateString = hasStringResult || component.styles !== '';
-        const isJSXresult = typeof result === 'object';
 
         // Styles are being reused when the component supports shadowDom but not constructed stylesheets.
         template.innerHTML = `
@@ -47,14 +49,18 @@ export const defaultRenderer: RenderFunction = (result, container, name, compone
         const options = {
             template,
             isTemplateString,
-            isJSXresult,
         };
         templateCache.set(name, options);
-        setTemplate(container, options, result, component);
+        setTemplate(container, options, component);
     } else {
         const template = templateCache.get(name);
-        if (template) setTemplate(container, template, result, component);
+        if (template) setTemplate(container, template, component);
     }
+};
+
+export const setupDefaultRender = (fn: RenderFunction) => {
+    componentRender = fn;
+    return componentRender;
 };
 
 /**
@@ -62,13 +68,8 @@ export const defaultRenderer: RenderFunction = (result, container, name, compone
  * @param {(DocumentFragment | Element)} container
  * @param {TemplateCache} templateCache
  */
-const setTemplate = (
-    container: Container,
-    templateCache: TemplateCache,
-    result: unknown,
-    component: Component,
-) => {
-    const { template, isJSXresult, isTemplateString } = templateCache;
+const setTemplate = (container: Container, templateCache: TemplateCache, component: Component) => {
+    const { template, isTemplateString } = templateCache;
 
     // Apply polyfill when shady polyfill is available and the component has shadowdom
     if (supportShadyCSS && component.hasShadowDom) {
@@ -81,10 +82,6 @@ const setTemplate = (
 
     if (isTemplateString) {
         container.appendChild(document.importNode(template.content, true));
-    }
-
-    if (isJSXresult) {
-        container.appendChild(result as Node);
     }
 
     // Set clear element on true because we do not make use of a vDom.
