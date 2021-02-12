@@ -1,6 +1,8 @@
 import { Component } from '@atomify/hooks';
 import { supportsAdoptingStyleSheets } from '@atomify/shared';
 
+import { applyShadowdomStyles } from './utilities';
+
 export const CSS_SAVE_TOKEN = Symbol('atomify.cssSaveToken');
 
 declare global {
@@ -115,16 +117,17 @@ export const adoptStyles = (root: Component, styles: Array<CSSResultOrNative>) =
             .map((style) => ('cssText' in style ? style.cssText : null))
             .join('');
 
-        const styleElement = document.createElement('style');
-        styleElement.textContent = combinedStyleArray;
-        styleElement.setAttribute('scope', componentName);
-
-        // When adopted stylesheet is not supported but shadow dom is apply it to the shadow root.
+        // When adopted stylesheet is not supported but shadowdom is apply it to the shadowroot.
         // Else it is being applied to the head.
         if (hasShadowDom) {
             // Cache the styles so it can be reused instead of creating a style tag again.
             root.styles = combinedStyleArray;
+            applyShadowdomStyles(root, combinedStyleArray);
         } else {
+            const styleElement = document.createElement('style');
+            styleElement.textContent = combinedStyleArray;
+            styleElement.setAttribute('scope', componentName);
+
             document.head.appendChild(styleElement);
             APPLIED_STYLES.push(componentName);
         }

@@ -15,7 +15,6 @@ import {
     useProp,
     useReactive,
     useRef,
-    useStyles,
     useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
@@ -33,7 +32,6 @@ export {
     useBindMethod,
     useElement,
     useElements,
-    useStyles,
     useEvent,
     useListen,
     createHook,

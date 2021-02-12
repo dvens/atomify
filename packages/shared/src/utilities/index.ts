@@ -15,3 +15,4 @@ export * from './styles-to-string';
 export * from './support-adopting-stylesheets';
 export * from './support-passive';
 export * from './validator';
+export * from './is-fragment';

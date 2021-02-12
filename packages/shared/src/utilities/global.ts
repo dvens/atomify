@@ -7,5 +7,3 @@ export const isObject = (value: any): value is object =>
 export const isElement = (value: any): value is HTMLElement | SVGElement =>
     (value && value instanceof HTMLElement) || value instanceof SVGElement;
 export const isNumber = (value: any): value is number => typeof value === 'number';
-export const isFragment = (value: any): value is typeof DocumentFragment =>
-    value && 'name' in value && value.name === 'Fragment';

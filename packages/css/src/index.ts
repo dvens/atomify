@@ -1,2 +1,2 @@
 export * from './css';
-export * from './scope-css';
+export * from './use-styles';

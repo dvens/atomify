@@ -1,4 +1,4 @@
-import { Component } from '../component';
+import { Component } from '@atomify/hooks';
 
 declare global {
     interface Window {
