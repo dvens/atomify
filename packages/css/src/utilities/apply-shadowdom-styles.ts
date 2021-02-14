@@ -16,7 +16,7 @@ export const applyShadowdomStyles = (component: Component, styles: string) => {
 
         styleTmp.innerHTML = `${
             component.hasShadowDom && !supportsAdoptingStyleSheets && styles
-                ? `<style>${styles}</style>`
+                ? `<style style-hook>${styles}</style>`
                 : ''
         }`;
     } else {

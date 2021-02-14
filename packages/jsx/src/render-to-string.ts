@@ -13,7 +13,7 @@ import {
 import { TEXT_NODE } from './constants';
 import { ComponentChildren, VNode } from './types';
 
-export const renderToString = (vnode: VNode | ComponentChildren) => {
+export const renderToString = (vnode: VNode | ComponentChildren): string => {
     if (vnode == null || typeof vnode === 'boolean') {
         return '';
     } else if (isString(vnode)) {
@@ -23,9 +23,7 @@ export const renderToString = (vnode: VNode | ComponentChildren) => {
     } else if (Array.isArray(vnode)) {
         let childrenHTML = '';
 
-        vnode.forEach((child) => {
-            childrenHTML += renderToString(child);
-        });
+        vnode.forEach((child) => (childrenHTML += renderToString(child)));
 
         return childrenHTML;
     } else if ('tag' in vnode && vnode.tag === TEXT_NODE && isString(vnode.type)) {

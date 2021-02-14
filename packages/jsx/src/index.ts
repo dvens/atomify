@@ -24,7 +24,7 @@ export const h = <P extends object>(
     );
 
     const flattendChildren = mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren;
-    // TODO: Remove this and add fragment and create element
+
     if (isFunction(type)) {
         return type({
             ...properties,
