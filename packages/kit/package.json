@@ -43,7 +43,8 @@
     "homepage": "https://github.com/dvens/atomify",
     "dependencies": {
         "@atomify/hooks": "^1.1.6",
-        "@atomify/jsx": "^1.7.1"
+        "@atomify/jsx": "^1.7.1",
+        "@atomify/shared": "^1.0.0"
     },
     "gitHead": "e8eebe58db6e017fc19503283b858bac4ce11e42"
 }

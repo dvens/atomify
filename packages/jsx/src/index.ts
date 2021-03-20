@@ -4,7 +4,15 @@ import { EMPTY_OBJ } from './constants';
 import { createVnode, Fragment, text } from './dom';
 import { hydrate, JSXRenderer, render } from './render';
 import { renderToString } from './render-to-string';
-import { ComponentChildren, FunctionComponent, Props, VNode, VnodeType } from './types';
+import {
+    ComponentChild,
+    ComponentChildren,
+    FunctionComponent,
+    Props,
+    VNode,
+    VnodeType,
+} from './types';
+
 export declare namespace h {
     export namespace JSX {
         interface IntrinsicElements {
@@ -35,4 +43,17 @@ export const h = <P extends object>(
     return createVnode(type, properties, flattendChildren);
 };
 
-export { classNames, Fragment, render, FunctionComponent, renderToString, JSXRenderer, hydrate };
+export {
+    classNames,
+    Fragment,
+    render,
+    FunctionComponent,
+    renderToString,
+    JSXRenderer,
+    hydrate,
+    VnodeType,
+    ComponentChildren,
+    ComponentChild,
+    VNode,
+    Props,
+};
