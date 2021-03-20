@@ -1,9 +1,9 @@
-import { ComponentChild, FunctionComponent, VNode } from '@atomify/jsx';
+import { ComponentChild, FunctionComponent, renderToString, VNode } from '@atomify/jsx';
 import { isObject, isServer, isString, shallowEqual } from '@atomify/shared';
 
 import { vnodeToElement } from './vnode-to-element';
 type Tags = Record<string, VNode[]>;
-const tags: Tags = {};
+let tags: Tags = {};
 
 const ACCEPTED_TAG_NAMES = ['meta', 'base', 'link', 'style', 'script'];
 const METATYPES = ['name', 'httpEquiv', 'charSet', 'itemProp'];
@@ -86,7 +86,11 @@ function updateTitle(tags: Tags) {
     if (title !== document.title) document.title = title;
 }
 
-// export const get;
+export const renderStatic = () => {
+    const children = Object.keys(tags).map((tagName) => tags[tagName]);
+    tags = {};
+    return renderToString(children);
+};
 
 export const Head: FunctionComponent<{}> = (props) => {
     const { children } = props;
