@@ -1,6 +1,6 @@
 {
     "name": "@atomify/css",
-    "version": "1.0.0",
+    "version": "1.1.0-alpha.0",
     "description": "CSS for Atomify.",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
@@ -18,8 +18,8 @@
         "name": "Dylan Vens"
     },
     "dependencies": {
-        "@atomify/shared": "^1.0.0",
-        "@atomify/hooks": "^1.1.6"
+        "@atomify/hooks": "^1.2.0-alpha.0",
+        "@atomify/shared": "^1.1.0-alpha.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.2.3",
