@@ -34,7 +34,32 @@ and add the following to your tsconfig.json:
 }
 ```
 
-@atomify/jsx works together with `@atomify/core` and `@atomify/hooks`
+@atomify/jsx works together with `@atomify/hooks`
+
+## Render function
+To get started using @atomify/jsx, first look at the render() function. This function accepts a tree description and creates the structure described. Next, it appends this structure to a parent DOM element provided as the second argument:
+
+```tsx
+import { h, render } from '@atomify/jsx';
+function Title(text: string) {
+    return <h1>{text}</h1>
+}
+render(<Title text="Hello world!" />, document.body);
+```
+
+## Serverside rendering
+`@atomify/jsx` is shipped with a `renderToString` that will functional components into HTML string for SSR usage.
+
+```tsx
+import { renderToString } from '@atomify/jsx'
+function Title(text: string) {
+    return <h1>{text}</h1>
+}
+
+const result = renderToString(<Title text="Hello world" />);
+
+console.log(result) // <h1>Hello world</h1>
+```
 
 *@atomify/hooks*
 
@@ -63,124 +88,20 @@ CustomElement.props = {
 defineElement('custom-element', CustomElement);
 ```
 
-*@atomify/core*
-
-```tsx
-import { h , Fragment } from '@atomify/jsx';
-import { Component, Prop } from '@atomify/core';
-
-@Component({
-    tag: 'custom-element'
-})
-export class CustomElement extends HTMLElement {
-
-    @Prop({ reRender: true, reflectToAttribute: true })
-    title: string = 'Hello world!';
-
-    render() {
-
-        return (
-            <Fragment>
-                <h1 class={'test'}>{ this.title }</h1>
-                <h2>Example title2</h2>
-            </Fragment>
-        );
-
-    }
-}
-```
-
 ## Class and Classname
-Both `class` and `className` are supported. The `class` attribute can take a `string`, `object` or `array`:
+Both `class` and `className` are supported. The `class` attribute doesnt support `object` or `array` anymore since version 2.0 it will be using a plugin that can be installed through `@atomify/shared` (it accepts a string, array, object or everything combined):
 
 ```tsx
-const hasChildren = true;
-const title = 'Hello world!'
+import { classNames } from '@atomify/shared';
 
-<h1 class={'test'}>{ this.title }</h1>
-<h1 class={[ hasChildren ? 'its true': 'not true']}>{ title }</h1>
-<h1 class={{['is-hidden']: hasChildren }}>{ title }</h1>
+<div
+    className={classNames('aaa',
+        { test1: true, test2: false }, [
+        '1',
+        false,
+    ])}>
+</div>
 ```
 
 ## Ref
 The `ref` attribute accepts a `function` or a direct `ref` object. The `ref` object must include the `current` property.
-
-```tsx
-import { getStyleTags, setup, getStyleTag } from '@atomify/css';
-import { setDefaultRender } from '@atomify/hooks';
-import { h, render, renderToString, Head } from '@atomify/jsx';
-import { prefixer } from 'prefix-library';
-
-// Set global default render atomify // default is string renderer.
-setDefaultRender(render);
-
-// Prefix for web components and withStyles
-setup({
-    prefixer,
-});
-
-// With styles
-import styles from './app.css'
-function App() {}
-withStyles(App, styles);
-
-// SSR
-const style = getStyleTags() or getStyleTag()
-
-// Setup will be build on top of css modules
-// EX: button.module.css
-.button--primary {}
-
-// EX: button.tsx
-import styles from './button.module.css';
-import classnames from '@atomify/shared';
-
-const Button = (props) => {
-    const classes = classNames('c-button', {styles['button--primary']: props.variant === 'primary'})
-    return <button className={classes}>{props.title}</button>
-};
-
-
-const Home = () => {
-    <Head>
-        <title>hello</title>
-    </Head>
-    <Button size={20}>hello</Button>;
-};
-
-export const getStaticSSRProps: async = ({ id }) => {
-    const posts = await getPosts({ id });
-    return {
-        posts
-    };
-};
-
-
-// Client side
-render(Home, document.qetElementBydId('app'));
-
-// SSR
-// Extracting css on the server,
-const body = renderToString(Home);
-const head = Head.renderToString(Home);
-
-// Web components ssr
-import { h, Fragment } from '@atomify/jsx';
-import { defineElement } from '@atomify/hooks';
-
-// RFC
-// SSR gives an error when it has shadow dom.
-const CustomElement = withSSR<{ count: number }>(({ props, element, update }) => {
-    const { count } = props;
-    return (<Fragment>{ props.count }</Fragment>);
-});
-
-CustomElement.getServerProps = async () => {
-    const count = await getAPICountAmount();
-    return {
-        count,
-    };
-}
-
-defineElement('custom-element', CustomElement);
-```

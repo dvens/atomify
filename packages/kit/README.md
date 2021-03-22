@@ -6,7 +6,6 @@ Utility kit to use with Atomify hooks components.
 ```sh
 npm i @atomify/kit
 ```
-
 ## Configuration
 Atomify hooks is made for the modern browsers. Its recommended in legacy browsers to add the following while compiling to ES5 with Babel:
 ```exclude: /node_modules\/(?!@atomify)/```

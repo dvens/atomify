@@ -1,4 +1,4 @@
-# DEPRECATED - no longer maintained everything is moved to @atomify/hooks
+## 🚧 DEPRECATED - no longer maintained everything is moved to @atomify/hooks 🚧
 ## @atomify/core
 
 @atomify/core helps you to easily create custom elements using Typescript and decorators.
