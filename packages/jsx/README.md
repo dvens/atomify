@@ -34,7 +34,32 @@ and add the following to your tsconfig.json:
 }
 ```
 
-@atomify/jsx works together with `@atomify/core` and `@atomify/hooks`
+@atomify/jsx works together with `@atomify/hooks`
+
+## Render function
+To get started using @atomify/jsx, first look at the render() function. This function accepts a tree description and creates the structure described. Next, it appends this structure to a parent DOM element provided as the second argument:
+
+```tsx
+import { h, render } from '@atomify/jsx';
+function Title(text: string) {
+    return <h1>{text}</h1>
+}
+render(<Title text="Hello world!" />, document.body);
+```
+
+## Serverside rendering
+`@atomify/jsx` is shipped with a `renderToString` that will functional components into HTML string for SSR usage.
+
+```tsx
+import { renderToString } from '@atomify/jsx'
+function Title(text: string) {
+    return <h1>{text}</h1>
+}
+
+const result = renderToString(<Title text="Hello world" />);
+
+console.log(result) // <h1>Hello world</h1>
+```
 
 *@atomify/hooks*
 
@@ -63,43 +88,19 @@ CustomElement.props = {
 defineElement('custom-element', CustomElement);
 ```
 
-*@atomify/core*
-
-```tsx
-import { h , Fragment } from '@atomify/jsx';
-import { Component, Prop } from '@atomify/core';
-
-@Component({
-    tag: 'custom-element'
-})
-export class CustomElement extends HTMLElement {
-
-    @Prop({ reRender: true, reflectToAttribute: true })
-    title: string = 'Hello world!';
-
-    render() {
-
-        return (
-            <Fragment>
-                <h1 class={'test'}>{ this.title }</h1>
-                <h2>Example title2</h2>
-            </Fragment>
-        );
-
-    }
-}
-```
-
 ## Class and Classname
-Both `class` and `className` are supported. The `class` attribute can take a `string`, `object` or `array`:
+Both `class` and `className` are supported. The `class` attribute doesnt support `object` or `array` anymore since version 2.0 it will be using a plugin that can be installed through `@atomify/shared` (it accepts a string, array, object or everything combined):
 
 ```tsx
-const hasChildren = true;
-const title = 'Hello world!'
+import { classNames } from '@atomify/shared';
 
-<h1 class={'test'}>{ this.title }</h1>
-<h1 class={[ hasChildren ? 'its true': 'not true']}>{ title }</h1>
-<h1 class={{['is-hidden']: hasChildren }}>{ title }</h1>
+<div
+    className={classNames('aaa',
+        { test1: true, test2: false }, [
+        '1',
+        false,
+    ])}>
+</div>
 ```
 
 ## Ref

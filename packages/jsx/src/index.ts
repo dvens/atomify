@@ -1,5 +1,17 @@
-import { applyAttributes, createElement, createFragementFromChildren } from './core';
-import { classNames } from './utilities';
+import { classNames, isFunction, isNumber, isString } from '@atomify/shared';
+
+import { EMPTY_OBJ } from './constants';
+import { createVnode, Fragment, text } from './dom';
+import { hydrate, JSXRenderer, render } from './render';
+import { renderToString } from './render-to-string';
+import {
+    ComponentChild,
+    ComponentChildren,
+    FunctionComponent,
+    Props,
+    VNode,
+    VnodeType,
+} from './types';
 
 export declare namespace h {
     export namespace JSX {
@@ -9,19 +21,39 @@ export declare namespace h {
     }
 }
 
-export const h = (nodeName: string, vnodeData: object, ...children: any) => {
-    const element = createElement(nodeName, vnodeData, children);
-    const isNotFunctionalComponent = !(
-        typeof nodeName === 'function' && nodeName !== DocumentFragment
+export const h = <P extends object>(
+    type: VnodeType<P>,
+    props: Props<P>,
+    ...children: ComponentChildren[]
+): VNode<P> | null => {
+    const properties = props || (EMPTY_OBJ as P);
+    const mappedChildren = children.map((node) =>
+        isString(node) || isNumber(node) ? text(node) : node,
     );
 
-    if (isNotFunctionalComponent) {
-        const fragment = createFragementFromChildren(children);
-        element.appendChild(fragment);
+    const flattendChildren = mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren;
+
+    if (isFunction(type)) {
+        return type({
+            ...properties,
+            children: flattendChildren,
+        });
     }
 
-    return isNotFunctionalComponent ? applyAttributes(element, vnodeData) : element;
+    return createVnode(type, properties, flattendChildren);
 };
 
-export const Fragment = DocumentFragment;
-export { classNames };
+export {
+    classNames,
+    Fragment,
+    render,
+    FunctionComponent,
+    renderToString,
+    JSXRenderer,
+    hydrate,
+    VnodeType,
+    ComponentChildren,
+    ComponentChild,
+    VNode,
+    Props,
+};

@@ -1,6 +1,7 @@
+import { supportsPassive } from '@atomify/shared';
+
 import { Component } from '../component/component';
 import { DID_LOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
-import { supportsPassive } from '../utilities/support-passive';
 import { createHook } from './hook';
 
 type EventQueryTarget = { current: null[] | HTMLElement[] | null | HTMLElement };

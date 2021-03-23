@@ -5,7 +5,6 @@ export * from './use-elements';
 export * from './use-listen';
 export * from './use-event';
 export * from './use-bind-method';
-export * from './use-styles';
 export * from './use-property';
 export * from './use-reactive';
 export * from './use-watch';

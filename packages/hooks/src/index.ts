@@ -1,5 +1,4 @@
-import { Component, defineElement, FC, RenderFunction } from './component';
-import { adoptStyles, css, scopeCSS, unsafeCSS } from './css';
+import { Component, defineElement, FC, RenderFunction, setupDefaultRender } from './component';
 import {
     createHook,
     getCurrentElement,
@@ -16,21 +15,16 @@ import {
     useProp,
     useReactive,
     useRef,
-    useStyles,
     useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
-import { scheduleMacrotask, scheduleMicrotask, supportsAdoptingStyleSheets } from './utilities';
 
 export {
     defineElement,
     RenderFunction,
+    setupDefaultRender,
     useRef,
     useProp,
-    scopeCSS,
-    adoptStyles,
-    unsafeCSS,
-    css,
     Component,
     onDidLoad,
     onDidUnload,
@@ -38,16 +32,12 @@ export {
     useBindMethod,
     useElement,
     useElements,
-    useStyles,
     useEvent,
     useListen,
     createHook,
     getCurrentElement,
     getCurrentElementPhase,
     queueMicrotaskPolyfill,
-    supportsAdoptingStyleSheets,
-    scheduleMacrotask,
-    scheduleMicrotask,
     FC,
     useReactive,
     useWatch,

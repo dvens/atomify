@@ -35,5 +35,6 @@ module.exports = {
         'simple-import-sort/sort': 'warn',
         'import/named': 'off',
         'import/namespace': 'off',
+        '@typescript-eslint/no-namespace': 'off',
     },
 };
