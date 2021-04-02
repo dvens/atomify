@@ -85,7 +85,7 @@ const createCSSResult = (
     let styleSheet: CSSStyleSheet | null = null;
     const cssText = css;
 
-    if (supportsAdoptingStyleSheets) {
+    if (supportsAdoptingStyleSheets()) {
         styleSheet = new CSSStyleSheet();
         styleSheet.replaceSync(cssText);
     }
@@ -106,7 +106,7 @@ export const adoptStyles = (root: Component, styles: Array<CSSResultOrNative>) =
     const componentName = root.$cmpMeta$.$tagName$;
 
     // Add addopted stylesheets when it is supported
-    if (supportsAdoptingStyleSheets && hasShadowDom) {
+    if (supportsAdoptingStyleSheets() && hasShadowDom) {
         const CSSRoot = root.container;
         if (!(CSSRoot instanceof HTMLElement))
             CSSRoot.adoptedStyleSheets = styles.map((s) => {

@@ -4,8 +4,8 @@
         "outDir": "./dist",
         "baseUrl": ".",
         "alwaysStrict": true,
-        "target": "es2017",
-        "module": "es2015",
+        "target": "ES2015",
+        "module": "commonjs",
         "moduleResolution": "node",
         "lib": ["esnext.array", "esnext", "es2017", "dom"],
         "declaration": true,
@@ -31,5 +31,5 @@
     "include": [
         "src/**/*.ts"
     ],
-    "exclude": ["src/hooks/*.ts"]
+    "exclude": []
 }

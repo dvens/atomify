@@ -15,7 +15,7 @@ export const applyShadowdomStyles = (component: Component, styles: string) => {
         styleTmp = document.createElement('template');
 
         styleTmp.innerHTML = `${
-            component.hasShadowDom && !supportsAdoptingStyleSheets && styles
+            component.hasShadowDom && !supportsAdoptingStyleSheets() && styles
                 ? `<style style-hook>${styles}</style>`
                 : ''
         }`;
