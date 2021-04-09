@@ -1,32 +1,8 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "./dist",
+        "outDir": "./dist/esm",
         "baseUrl": ".",
-        "alwaysStrict": true,
-        "target": "ES2015",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "lib": ["esnext.array", "esnext", "es2017", "dom"],
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "removeComments": true,
-        "inlineSources": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        // Only necessary because @types/uglify-js can't find types for source-map
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "allowUnreachableCode": false,
-        "forceConsistentCasingInFileNames": true,
-        "strictNullChecks": true,
-        "noEmitOnError": true
     },
     "include": [
         "src/**/*.ts"

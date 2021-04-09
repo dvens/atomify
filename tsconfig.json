@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "alwaysStrict": true,
+        "target": "es2017",
+        "module": "ES2015",
         "moduleResolution": "node",
         "lib": ["esnext.array", "esnext", "es2017", "dom"],
         "declaration": true,
@@ -22,7 +24,6 @@
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "jsxFactory": "h",
-        "jsxFragmentFactory": "Fragment",
         "strictNullChecks": true,
         "noEmitOnError": true
     }

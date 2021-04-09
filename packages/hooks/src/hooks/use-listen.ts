@@ -116,7 +116,7 @@ function trackEventListener({ cb, element, target, remove, options, eventName }:
 
     const callbackWrapper = (ev: Event) => cb(ev);
     const listenerOptions =
-        supportsPassive && options
+        supportsPassive() && options
             ? {
                   capture: !!options.capture,
                   passive: !!options.passive,

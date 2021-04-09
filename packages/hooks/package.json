@@ -4,13 +4,14 @@
     "description": "Hooks for the Atomify eco system",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
+    "module": "./dist/esm/index.js",
+    "main": "dist/cjs/index.js",
+    "typings": "./dist/esm/index.d.ts",
     "directories": {
         "test": "test"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
         "checksize": "rollup -c ; rm ./dist/index.bundled.js",
         "regen-package-lock": "rm -rf node_modules package-lock.json; npm install"
     },
@@ -32,7 +33,6 @@
     "dependencies": {
         "@atomify/shared": "^1.1.0"
     },
-    "typings": "./dist/index.d.ts",
     "publishConfig": {
         "access": "public"
     },
