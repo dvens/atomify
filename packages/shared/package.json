@@ -1,6 +1,6 @@
 {
     "name": "@atomify/shared",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Shared types and utilities for Atomify.",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
