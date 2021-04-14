@@ -22,4 +22,4 @@ export interface PropsWithChildren {
 export type ComponentChild = VNode<any> | object | string | number | boolean | null | undefined;
 
 export type ComponentChildren = ComponentChild[] | ComponentChild;
-export type Container = Element | Document | ShadowRoot | DocumentFragment;
+export type Container = Element | Document | ShadowRoot | DocumentFragment | HTMLElement;
