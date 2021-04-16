@@ -48,7 +48,7 @@ export interface Component extends HTMLElement {
     $cmpMeta$: ComponentMeta;
     props: Property;
 }
-export interface FC<P = unknown> {
+export interface FCE<P = unknown> {
     ({ element, update }: { element: P & Component; update: () => void }): any;
     props?: Property;
 }
@@ -58,7 +58,7 @@ interface Options {
     useShadowDom?: boolean;
 }
 
-export function defineElement(name: string, fn: FC<any>, options?: Options) {
+export function defineElement(name: string, fn: FCE<any>, options?: Options) {
     const { renderer = componentRender || defaultRenderer, useShadowDom = false } = options || {};
 
     validateSelector(name);

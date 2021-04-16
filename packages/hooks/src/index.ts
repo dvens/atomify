@@ -1,4 +1,4 @@
-import { Component, defineElement, FC, RenderFunction, setupDefaultRender } from './component';
+import { Component, defineElement, FCE, RenderFunction, setupDefaultRender } from './component';
 import {
     createHook,
     getCurrentElement,
@@ -38,7 +38,7 @@ export {
     getCurrentElement,
     getCurrentElementPhase,
     queueMicrotaskPolyfill,
-    FC,
+    FCE,
     useReactive,
     useWatch,
     useComputed,

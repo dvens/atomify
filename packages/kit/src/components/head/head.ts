@@ -1,8 +1,23 @@
-import { ComponentChild, FunctionComponent, renderToString, VNode } from '@atomify/jsx';
+import { ComponentChild, FunctionComponent, h, renderToString, VNode } from '@atomify/jsx';
 import { isObject, isServer, isString, shallowEqual } from '@atomify/shared';
 
+import { LinkProps, MetaProps } from './head.types';
 import { vnodeToElement } from './vnode-to-element';
 type Tags = Record<string, VNode[]>;
+
+export interface ConfigObject {
+    title?: string;
+    base?: {
+        href?: string;
+        target?: string;
+    };
+    meta?: MetaProps[];
+    link?: LinkProps[];
+    script?: any[];
+    style?: string;
+    noScript?: any[];
+}
+
 let tags: Tags = {};
 
 const ACCEPTED_TAG_NAMES = ['meta', 'base', 'link', 'style', 'script'];
@@ -86,14 +101,54 @@ function updateTitle(tags: Tags) {
     if (title !== document.title) document.title = title;
 }
 
-export const renderStatic = () => {
+const renderStatic = () => {
     const children = Object.keys(tags).map((tagName) => tags[tagName]);
     tags = {};
+
     return renderToString(children);
 };
 
-export const Head: FunctionComponent<{}> = (props) => {
-    const { children } = props;
+const renderAsElements = () => {
+    const children = Object.keys(tags).map((tagName) => tags[tagName]);
+    tags = {};
+
+    return children.reduce((acc, val) => acc.concat(val), []);
+};
+
+const renderObjectToChildren = (props: ConfigObject) => {
+    const vnodeMap: (VNode<{}> | null)[] = [];
+
+    Object.keys(props).map((key) => {
+        const value = props[key as keyof typeof props];
+
+        switch (key) {
+            case 'title':
+            case 'style':
+                vnodeMap.push(h(key, {}, value));
+                break;
+            case 'base':
+                vnodeMap.push(h(key, value as object, null));
+                break;
+            default:
+                if (Array.isArray(value)) {
+                    value.forEach((props) => {
+                        vnodeMap.push(h(key, props, null));
+                    });
+                }
+                break;
+        }
+    });
+
+    return vnodeMap;
+};
+
+interface Head extends FunctionComponent {
+    renderObjectToChildren: (props: ConfigObject) => (VNode<{}> | null)[];
+    renderAsElements: () => VNode<{}>[];
+    renderStatic: () => string;
+}
+
+export const Head: Head = ({ children }) => {
     const vnodesChildren = Array.isArray(children) ? children : [children];
     const vnodes = vnodesChildren
         .filter((child) => isObject(child))
@@ -135,3 +190,7 @@ export const Head: FunctionComponent<{}> = (props) => {
 
     return null;
 };
+
+Head.renderAsElements = renderAsElements;
+Head.renderStatic = renderStatic;
+Head.renderObjectToChildren = renderObjectToChildren;

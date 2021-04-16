@@ -56,4 +56,5 @@ export {
     ComponentChild,
     VNode,
     Props,
+    createVnode,
 };

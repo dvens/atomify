@@ -67,7 +67,7 @@ console.log(result) // <h1>Hello world</h1>
 import { h , Fragment } from '@atomify/jsx';
 import { defineElement, useProp} from '@atomify/hooks';
 
-const CustomElement: FC = () => {
+const CustomElement: FCE = () => {
     const [title] = useProp<Number>('title', 'Hello world!');
 
     return (

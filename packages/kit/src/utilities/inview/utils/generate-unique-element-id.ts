@@ -1,17 +1,15 @@
-import { ElementMap } from '../inview.types';
+import { ElementMap, InviewRoot } from '../inview.types';
 
 /**
  * @param elementIds
  * @param root
  */
-export function generateUniqueElementId(elementIds: ElementMap, root?: Element | null) {
+export function generateUniqueElementId(elementIds: ElementMap, root?: InviewRoot) {
     if (!root) return '';
 
     if (elementIds.has(root)) return elementIds.get(root);
 
-    const generatedId = `${Math.random()
-        .toString(36)
-        .substr(2, 9)}_`;
+    const generatedId = `${Math.random().toString(36).substr(2, 9)}_`;
 
     elementIds.set(root, generatedId);
 

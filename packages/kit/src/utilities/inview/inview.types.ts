@@ -13,10 +13,12 @@ export type ObserverInstance = {
 };
 
 export type InstanceMap = Map<Element, ObserverInstance>;
-export type ElementMap = Map<Element, string>;
+export type ElementMap = Map<InviewRoot, string>;
 export type ObserverMap = Map<string, IntersectionObserver>;
 
 export interface HasObserverItems {
     rootIsObserved: boolean;
     rootHasItemsLeft: boolean;
 }
+
+export type InviewRoot = HTMLElement | Element | Document | null | undefined;

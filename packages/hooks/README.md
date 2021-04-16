@@ -48,13 +48,13 @@ You can now use the component as following inside your HTML:
 ```
 
 ### Using update and the current element
-Since the functional component do not have access to the this, its possible to get access to the component `update` function and the `current element`. The `update` function triggers a re-render of the component. We import `FC` from `@atomify/hooks` to get access to those parameters:
+Since the functional component do not have access to the this, its possible to get access to the component `update` function and the `current element`. The `update` function triggers a re-render of the component. We import `FCE` from `@atomify/hooks` to get access to those parameters:
 
 ```tsx
 import { h } from '@atomify/jsx';
-import { defineElement, FC } from '@atomify/hooks';
+import { defineElement, FCE } from '@atomify/hooks';
 
-const CustomElement: FC = ({ element, update }) => {
+const CustomElement: FCE = ({ element, update }) => {
     console.log('Element:', element);
     return (<button onClick={() => update()}>Hello World!</button>);
 };
@@ -99,9 +99,9 @@ Besides importing the hook its also needed to define the prop and the the type o
 
 ```tsx
 import { h, Fragment } from '@atomify/jsx';
-import { defineElement, useProp, FC } from '@atomify/hooks';
+import { defineElement, useProp, FCE } from '@atomify/hooks';
 
-const CustomElement: FC = () => {
+const CustomElement: FCE = () => {
     const [name, setName] = useProp<string>('name', 'default name');
     return (<Fragment>Hello {name}!</Fragment>);
 };
@@ -206,14 +206,14 @@ Both of the hooks bind the queried element to the this of the custom element. Si
 ```tsx
 import { h, Fragment } from '@atomify/jsx';
 
-import { Component, FC, useElement, defineElement } from '@atomify/hooks';
+import { Component, FCE, useElement, defineElement } from '@atomify/hooks';
 
 // Component returns the basic Atomify Component.
 export interface CustomElement extends Component {
     div: HTMLDivElement;
 }
 
-const CustomElement: FC<CustomElement> = ({ element, update }) => {
+const CustomElement: FCE<CustomElement> = ({ element, update }) => {
     const div = useElement<HTMLDivElement>('div');
 
     return (
@@ -256,7 +256,7 @@ The `useListen` hook is used to listen to DOM events, it can also listen to the 
 
 ```typescript
 ....
-const CustomElement: FC<CustomElement> = ({ element, update }) => {
+const CustomElement: FCE<CustomElement> = ({ element, update }) => {
     const button = useElement<HTMLButtonElement>('button');
     const event = useEvent<Number>({eventName: 'test'});
 
@@ -287,7 +287,7 @@ export interface CustomElement extends Component {
     log: () => void;
 }
 
-const CustomElement: FC<CustomElement> = ({ element, update }) => {
+const CustomElement: FCE<CustomElement> = ({ element, update }) => {
 
     useBindMethod('log', () => {
         console.log('Hello world!')
@@ -360,7 +360,7 @@ Atomify has an buildin `componentOnReady` promise that will resolve onces the co
 export interface CustomElement extends Component {
 }
 
-const CustomElement: FC<CustomElement> = ({ element, update }) => {
+const CustomElement: FCE<CustomElement> = ({ element, update }) => {
 
     return (
         ...

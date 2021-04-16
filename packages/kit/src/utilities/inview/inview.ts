@@ -1,3 +1,5 @@
+import { isServer } from '@atomify/shared';
+
 import {
     ElementMap,
     InstanceMap,
@@ -16,9 +18,9 @@ import {
 const INSTANCES: InstanceMap = new Map();
 const OBSERVERS: ObserverMap = new Map();
 const ELEMENT_IDS: ElementMap = new Map();
-const DEFAULT_ROOT = document.querySelector('body');
 
 class Inview {
+    defaultRoot = isServer ? null : document.querySelector('body');
     /**
      * Observes element, and triggers the callback each time its getting observed
      * @param {Element} element
@@ -42,14 +44,14 @@ class Inview {
             options.threshold = buildThresholdList();
         }
 
-        const { threshold, root = DEFAULT_ROOT } = options;
+        const { threshold, root = this.defaultRoot } = options;
         const uniqueId = `${generateUniqueElementId(ELEMENT_IDS, root)}`;
         const instanceId = generateOptionsId(uniqueId, options);
 
         let observer = OBSERVERS.get(instanceId);
 
         if (!observer) {
-            observer = new IntersectionObserver(changes => onChange(changes, INSTANCES), options);
+            observer = new IntersectionObserver((changes) => onChange(changes, INSTANCES), options);
             if (instanceId) OBSERVERS.set(instanceId, observer);
         }
 
@@ -106,7 +108,7 @@ class Inview {
      * @memberof Inview
      */
     destroy() {
-        INSTANCES.forEach(instance => instance.observer.disconnect());
+        INSTANCES.forEach((instance) => instance.observer.disconnect());
         INSTANCES.clear();
         ELEMENT_IDS.clear();
         OBSERVERS.clear();
