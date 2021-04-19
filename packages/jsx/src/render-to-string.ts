@@ -26,8 +26,12 @@ export const renderToString = (vnode: VNode | ComponentChildren): string => {
         vnode.forEach((child) => (childrenHTML += renderToString(child)));
 
         return childrenHTML;
-    } else if ('tag' in vnode && vnode.tag === TEXT_NODE && isString(vnode.type)) {
-        return escapeString(vnode.type);
+    } else if (
+        'tag' in vnode &&
+        vnode.tag === TEXT_NODE &&
+        (isString(vnode.type) || isNumber(vnode.type))
+    ) {
+        return escapeString(String(vnode.type));
     }
 
     if (isObject(vnode)) {

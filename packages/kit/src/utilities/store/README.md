@@ -68,5 +68,3 @@ store.subscribe(({ counter }) => {
     console.log(counter.amount);
 }, ['counter']);
 ```
-
-TODO: REFACTOR TO SIMPLE STORE + SSR

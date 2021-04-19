@@ -1,16 +1,14 @@
-import proxyContainer from './polyfill';
-import { Observers, Store, StoreSettings } from './store.types';
+import { isServer } from '@atomify/shared';
+
+import { defaultObject, Observers, Store, StoreSettings } from './store.types';
+
+let proxyContainer: any = null;
 
 export function createStore<State>(settings: StoreSettings<State>): Store<State> {
     const actionsHolder = settings.actions || {};
     const observers: Observers = [];
 
     let prevState: State = settings.initialState;
-
-    function valueHasChanged(value: unknown, old: unknown): boolean {
-        // This ensures (old==NaN, value==NaN) always returns false
-        return old !== value && (old === old || value === value);
-    }
 
     const validator = {
         set(state: State, key: any, value: any) {
@@ -23,9 +21,9 @@ export function createStore<State>(settings: StoreSettings<State>): Store<State>
         },
     };
 
-    let state: any = proxyContainer(settings.initialState || {}, validator);
+    let state: any = getProxyConatiner(settings.initialState || {}, validator);
 
-    function subscribe(observer: Function, keys?: undefined | string[]) {
+    function subscribe(observer: (data: State) => void, keys?: undefined | string[]) {
         if (typeof observer !== 'function')
             new Error('You can only subscribe to Store changes with a valid function!');
         observers.push({
@@ -33,6 +31,16 @@ export function createStore<State>(settings: StoreSettings<State>): Store<State>
             keys,
         });
         return true;
+    }
+
+    function unsubscribe(observer: (data: State) => void) {
+        if (typeof observer !== 'function')
+            new Error('You can only subscribe to Store changes with a valid function!');
+
+        const match = observers.find(({ callback }) => callback === observer);
+        if (match) {
+            observers.splice(observers.indexOf(match), 1);
+        }
     }
 
     async function dispatch(actionKey: string, payload: any) {
@@ -59,8 +67,26 @@ export function createStore<State>(settings: StoreSettings<State>): Store<State>
 
     return {
         subscribe,
+        unsubscribe,
         dispatch,
         getState: () => state,
         getPrevState: () => prevState,
     };
+}
+
+export const setProxyContainer = (proxy: () => void) => {
+    proxyContainer = proxy;
+};
+
+function getProxyConatiner(services = {}, handler: defaultObject = {}) {
+    if (!isServer && !window.Proxy) {
+        return new proxyContainer(services, handler);
+    }
+
+    return new Proxy(services, handler);
+}
+
+function valueHasChanged(value: unknown, old: unknown): boolean {
+    // This ensures (old==NaN, value==NaN) always returns false
+    return old !== value && (old === old || value === value);
 }
