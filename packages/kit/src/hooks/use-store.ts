@@ -1,6 +1,6 @@
 import { createHook } from '@atomify/hooks';
 
-import { Store, Subscribe } from './../utilities/store/store.types';
+import { Store, Subscribe } from '../utilities/store/store.types';
 /**
  * Store wrapper for functional components
  * @template T

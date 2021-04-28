@@ -22,6 +22,7 @@ const BOOLEAN_ATTRS = [
     'reversed',
     'selected',
     'playsinline',
+    'nomodule',
 ];
 
 export const isBooleanAttr = (attrName: string) => BOOLEAN_ATTRS.includes(attrName);
