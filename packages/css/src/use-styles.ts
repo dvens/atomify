@@ -11,5 +11,6 @@ export const useStyles = (styleCallback: () => CSSResultOrNative | Array<CSSResu
 
     return createHook({
         onDidLoad: (element) => adoptStyles(element, styles),
+        onUpdate: (element) => adoptStyles(element, styles),
     });
 };

@@ -19,7 +19,7 @@ import {
     SideEffectPhase,
     UPDATE_SYMBOL,
 } from '../symbols';
-import { toProperty } from '../utilities';
+import { deleteElement, registerElement, toProperty } from '../utilities';
 import { componentRender, defaultRenderer, RenderFunction } from './render';
 
 export type Container = HTMLElement | ShadowRoot;
@@ -147,6 +147,7 @@ export function defineElement(name: string, fn: FCE<any>, options?: Options) {
          * ConnectedCallback is fired each time the custom element is appended into a document-connected element.
          **/
         connectedCallback() {
+            registerElement(this.constructor, this);
             this.update();
         }
 
@@ -154,6 +155,7 @@ export function defineElement(name: string, fn: FCE<any>, options?: Options) {
          * DisconnectedCallback is fired each time the custom element is disconnected from the document's DOM.
          **/
         disconnectedCallback() {
+            deleteElement(this.constructor, this);
             this.handlePhase(DID_UNLOAD_SYMBOL);
         }
 

@@ -18,6 +18,7 @@ import {
     useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
+import { ELEMENT_REGISTRY } from './utilities';
 
 export {
     defineElement,
@@ -42,4 +43,5 @@ export {
     useReactive,
     useWatch,
     useComputed,
+    ELEMENT_REGISTRY,
 };

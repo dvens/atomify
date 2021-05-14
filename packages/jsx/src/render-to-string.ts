@@ -58,10 +58,10 @@ export const renderToString = (vnode: VNode | ComponentChildren): string => {
                         html += ` data-${name}="${datasetValue}"`;
                     }
                 });
-            } else if (prop === 'class' || props === 'className') {
-                html += value ? ` ${escapeString(value)}` : '';
+            } else if (prop === 'class' || prop === 'className') {
+                html += value ? ` class="${escapeString(value)}"` : '';
             } else if (prop === 'style') {
-                html += ` class="${stylesToString(value)}"`;
+                html += ` style="${stylesToString(value)}"`;
             } else if (prop === 'dangerouslySetInnerHTML') {
                 innerHTML = value;
             } else {

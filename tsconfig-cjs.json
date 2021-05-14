@@ -2,7 +2,8 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist/cjs",
-        "module": "CommonJS",
+        "module": "commonjs",
+        "target": "es5",
         "declaration": false,
         "declarationMap": false
     }
