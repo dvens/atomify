@@ -5,3 +5,6 @@ Shared types and utilities for Atomify.
 ```sh
 npm i @atomify/shared
 ```
+
+## TODO
+- Add a list of all the utilities
