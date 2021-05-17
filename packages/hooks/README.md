@@ -199,8 +199,7 @@ console.log(div.current); // outputs single div
 console.log(buttons.current) // outputs array of buttons
 ```
 
-**Binded to the this of the element (specially handy for dynamic or conditional elements)**
-
+**Binded to the this of the element (specially handy for dynamic or conditional elements)*
 Both of the hooks bind the queried element to the this of the custom element. Since we are using functional components you need to specifically tell `Typescript` that these queried elements can be used:
 
 ```tsx
