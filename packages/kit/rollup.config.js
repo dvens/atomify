@@ -3,7 +3,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 
 export default {
-    input: './dist/index.js',
+    input: './dist/esm/index.js',
     output: {
         file: './dist/index.bundled.js',
         format: 'esm',
