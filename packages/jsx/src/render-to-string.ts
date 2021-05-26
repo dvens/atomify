@@ -3,6 +3,7 @@ import {
     escapeString,
     isBoolean,
     isBooleanAttr,
+    isFunction,
     isNumber,
     isObject,
     isString,
@@ -36,6 +37,10 @@ export const renderToString = (vnode: VNode | ComponentChildren): string => {
 
     if (isObject(vnode)) {
         const { children, props, type } = vnode as VNode;
+
+        if (isFunction(type)) {
+            return renderToString(type({ ...props, children }));
+        }
 
         let html = `<${type}`;
 

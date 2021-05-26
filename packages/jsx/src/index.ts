@@ -1,4 +1,4 @@
-import { classNames, isFunction, isNumber, isString } from '@atomify/shared';
+import { classNames, isNumber, isString } from '@atomify/shared';
 
 import { EMPTY_OBJ } from './constants';
 import { createVnode, Fragment, text } from './dom';
@@ -32,13 +32,6 @@ export const h = <P extends object>(
     );
 
     const flattendChildren = mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren;
-
-    if (isFunction(type)) {
-        return type({
-            ...properties,
-            children: flattendChildren,
-        });
-    }
 
     return createVnode(type, properties, flattendChildren);
 };

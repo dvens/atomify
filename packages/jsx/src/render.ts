@@ -12,10 +12,14 @@ type JSXRenderFN<C = any> = (
 
 export const render = (vnode: VNode | VNode[], container: Container) => {
     if (isNullValue(vnode)) return;
-
     if (!Array.isArray(vnode)) {
-        const element = createElement(vnode);
-        container.appendChild(element);
+        const elements = createElement(vnode);
+
+        if (Array.isArray(elements)) {
+            elements.forEach((e) => e && container.appendChild(e));
+        } else if (elements) {
+            container.appendChild(elements);
+        }
     } else {
         vnode.forEach((n) => render(n, container));
     }
