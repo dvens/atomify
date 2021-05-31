@@ -35,18 +35,27 @@ export const hydrate = (vnode: VNode | VNode[], container: Container, removeChil
     render(vnode, container);
 };
 
-export const hydrateCustomElement = (vnode: VNode | VNode[], container: Container) => {
-    const children = Array.from(container.childNodes).filter((child) => !isCSSStyleHook(child));
+export const hydrateCustomElement = (
+    vnode: VNode | VNode[],
+    container: Container,
+    removeChildren = false,
+) => {
+    if (removeChildren) {
+        const children = Array.from(container.childNodes).filter((child) => !isCSSStyleHook(child));
 
-    if (children.length > 0) {
-        children.forEach((child) => child.remove());
+        if (children.length > 0) {
+            children.forEach((child) => child.remove());
+        }
     }
 
     render(vnode, container);
 };
 
-export const JSXRenderer: JSXRenderFN = (result, container) => {
+export const JSXRenderer: JSXRenderFN = (result, container, _, component) => {
     if (isString(result))
         return console.error(`${result} is a string. @atomfiy/jsx only accepts vnode structures`);
-    hydrateCustomElement(result, container);
+    hydrateCustomElement(result, container, component.$cmpMeta$.$clearElementOnUpdate$);
+
+    if (!component.$cmpMeta$.$clearElementOnUpdate$)
+        component.$cmpMeta$.$clearElementOnUpdate$ = true;
 };
