@@ -47,7 +47,11 @@ function appendChild(child: ComponentChild, dom: Text | SVGElement | HTMLElement
         ? document.createTextNode(createdElement)
         : createdElement;
 
-    if (element) dom.appendChild(element);
+    if (element && !Array.isArray(element)) {
+        dom.appendChild(element);
+    } else if (Array.isArray(element)) {
+        element.forEach((e) => dom.appendChild(e));
+    }
 }
 
 export const createVnode = <P>(
