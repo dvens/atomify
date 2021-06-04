@@ -18,6 +18,7 @@ import {
     useWatch,
 } from './hooks';
 import { queueMicrotaskPolyfill } from './polyfills';
+import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, UPDATE_SYMBOL } from './symbols';
 import { ELEMENT_REGISTRY } from './utilities';
 
 export {
@@ -44,4 +45,7 @@ export {
     useWatch,
     useComputed,
     ELEMENT_REGISTRY,
+    DID_LOAD_SYMBOL,
+    UPDATE_SYMBOL,
+    DID_UNLOAD_SYMBOL,
 };

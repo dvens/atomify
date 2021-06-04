@@ -1,7 +1,7 @@
 import { debounce } from '@atomify/shared';
 
 import { Component } from '../component';
-import { DID_LOAD_SYMBOL } from '../symbols';
+import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL } from '../symbols';
 import { createHook } from './hook';
 
 export const useWatch = (callback: () => void) =>
@@ -15,6 +15,14 @@ export const useWatch = (callback: () => void) =>
                         callback: debounce(callback, 10),
                         dependencies,
                     });
+                },
+            });
+        },
+        onDidUnload(element, hooks) {
+            hooks.callbacks.push({
+                type: DID_UNLOAD_SYMBOL,
+                callback: () => {
+                    element.$cmpMeta$.$watchers$ = [];
                 },
             });
         },

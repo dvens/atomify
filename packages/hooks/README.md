@@ -396,8 +396,13 @@ export const useHook = (name: string) =>
             // Fired when component is updated.
             return `Welcome ${name}`
         },
-        onDidUnload: () => {
-            // Fird when component is removed from the dom.
+        onDidUnload: (_, hooks) => {
+            // OnDidUnload is the only one called as a initializer (so its called at the start)
+            // Thats why the components have a callback function that is only ran in the phase its given
+            hooks.callbacks.push({
+                type: DID_UNLOAD_SYMBOL,
+                callback: cb,
+            });
         }
     });
 

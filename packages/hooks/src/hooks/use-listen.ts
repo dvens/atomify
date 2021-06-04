@@ -1,7 +1,7 @@
 import { supportsPassive } from '@atomify/shared';
 
 import { Component } from '../component/component';
-import { DID_LOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
+import { DID_LOAD_SYMBOL, DID_UNLOAD_SYMBOL, UPDATE_SYMBOL } from '../symbols';
 import { createHook } from './hook';
 
 type EventQueryTarget = { current: null[] | HTMLElement[] | null | HTMLElement };
@@ -66,8 +66,13 @@ export const useListen = (
                 },
             });
         },
-        onDidUnload(element) {
-            bindEvents({ eventName, cb, options, remove: true, element, target });
+        onDidUnload(element, hooks) {
+            hooks.callbacks.push({
+                type: DID_UNLOAD_SYMBOL,
+                callback: () => {
+                    bindEvents({ eventName, cb, options, remove: true, element, target });
+                },
+            });
         },
     });
 

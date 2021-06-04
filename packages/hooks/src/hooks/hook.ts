@@ -75,5 +75,10 @@ export function createHook<T>(config: Hook<T>): T {
         config.onUpdate(currentElement, hooks, index);
     }
 
+    // OnDidUnload is always called as a initializer
+    if (config.onDidUnload) {
+        config.onDidUnload(currentElement, hooks, index);
+    }
+
     return hooks.state[index];
 }

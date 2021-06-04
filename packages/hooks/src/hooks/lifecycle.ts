@@ -13,7 +13,7 @@ export const onDidLoad = (cb: () => void) =>
 
 export const onDidUnload = (cb: () => void) =>
     createHook({
-        onDidLoad(_, hooks) {
+        onDidUnload(_, hooks) {
             hooks.callbacks.push({
                 type: DID_UNLOAD_SYMBOL,
                 callback: cb,
