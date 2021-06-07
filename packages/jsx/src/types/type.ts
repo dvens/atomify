@@ -1,7 +1,7 @@
 import { RefObject } from '@atomify/shared';
 
 export type VnodeType<P = any> = string | FunctionComponent<P>;
-export interface VNode<P extends object = {}> {
+export interface VNode<P = any> {
     type: VnodeType<P>;
     children?: ComponentChildren;
     props: P;

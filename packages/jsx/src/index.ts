@@ -21,7 +21,7 @@ export declare namespace h {
     }
 }
 
-export const h = <P extends object>(
+export const h = <P = any>(
     type: VnodeType<P>,
     props: Props<P>,
     ...children: ComponentChildren[]

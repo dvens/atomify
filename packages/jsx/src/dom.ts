@@ -2,7 +2,7 @@ import { isFunction, isNullValue, isObject, isString, isSVG } from '@atomify/sha
 
 import { EMPTY_ARRAY, EMPTY_OBJ, SVG_URI, TEXT_NODE } from './constants';
 import { setProperty } from './set-property';
-import { ComponentChild, ComponentChildren, PropsWithChildren, VNode, VnodeType } from './types';
+import { ComponentChild, ComponentChildren, FunctionComponent, VNode, VnodeType } from './types';
 
 type ElementNode = null | undefined | HTMLElement | Text | SVGElement;
 
@@ -66,6 +66,6 @@ export const vDomify = (value: any) =>
 
 export const text = (value: any) => createVnode(value, EMPTY_OBJ, EMPTY_ARRAY, TEXT_NODE);
 
-export const Fragment = (props: PropsWithChildren) => {
+export const Fragment: FunctionComponent = (props) => {
     return props.children;
 };
