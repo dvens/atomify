@@ -11,8 +11,6 @@ type JSXRenderFN<C = any> = (
 ) => void;
 
 export const render = (vnode: VNode | VNode[], container: Container) => {
-    const renderedChildren: (HTMLElement | Text | SVGElement)[] = [];
-
     if (isNullValue(vnode)) return;
     if (!Array.isArray(vnode)) {
         const elements = createElement(vnode);
@@ -22,18 +20,14 @@ export const render = (vnode: VNode | VNode[], container: Container) => {
             flattenedChildren.forEach((e) => {
                 if (e) {
                     container.appendChild(e);
-                    renderedChildren.push(e);
                 }
             });
         } else if (elements) {
             container.appendChild(elements);
-            renderedChildren.push(elements);
         }
     } else {
         vnode.forEach((n) => render(n, container));
     }
-
-    return renderedChildren;
 };
 
 export const hydrate = (vnode: VNode | VNode[], container: Container, removeChildren = true) => {
