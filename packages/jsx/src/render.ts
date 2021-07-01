@@ -18,7 +18,8 @@ export const render = (vnode: VNode | VNode[], container: Container) => {
         const elements = createElement(vnode);
 
         if (Array.isArray(elements)) {
-            elements.forEach((e) => {
+            const flattenedChildren = [].concat(...(elements as Array<any>));
+            flattenedChildren.forEach((e) => {
                 if (e) {
                     container.appendChild(e);
                     renderedChildren.push(e);
