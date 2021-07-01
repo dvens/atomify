@@ -1,6 +1,6 @@
 {
     "name": "@atomify/jsx",
-    "version": "2.1.10",
+    "version": "2.1.11",
     "description": "JSX renderer with support for Custom Elements",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
