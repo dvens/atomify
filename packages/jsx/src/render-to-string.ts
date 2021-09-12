@@ -12,9 +12,9 @@ import {
 } from '@atomify/shared';
 
 import { TEXT_NODE } from './constants';
-import { ComponentChildren, VNode } from './types';
+import { ComponentChild, ComponentChildren, VNode } from './types';
 
-export const renderToString = (vnode: VNode | ComponentChildren): string => {
+export const renderToString = (vnode: VNode | ComponentChildren | ComponentChild): string => {
     if (vnode == null || typeof vnode === 'boolean') {
         return '';
     } else if (isString(vnode)) {

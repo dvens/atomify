@@ -1,6 +1,6 @@
 import { isCSSStyleHook, isNullValue, isString } from '@atomify/shared';
 
-import { createElement } from './dom';
+import { createDom } from './dom';
 import { Container, VNode } from './types';
 
 type JSXRenderFN<C = any> = (
@@ -10,27 +10,34 @@ type JSXRenderFN<C = any> = (
     component: C,
 ) => void;
 
-export const render = (vnode: VNode | VNode[], container: Container) => {
+export const render = (vnode: VNode, container: Container) => {
     if (isNullValue(vnode)) return;
-    if (!Array.isArray(vnode)) {
-        const elements = createElement(vnode);
 
-        if (Array.isArray(elements)) {
-            const flattenedChildren = [].concat(...(elements as Array<any>));
-            flattenedChildren.forEach((e) => {
-                if (e) {
-                    container.appendChild(e);
-                }
-            });
-        } else if (elements) {
-            container.appendChild(elements);
-        }
-    } else {
-        vnode.forEach((n) => render(n, container));
+    const dom = createDom(vnode);
+
+    if (dom) {
+        container.appendChild(dom);
     }
+
+    // if (!Array.isArray(vnode)) {
+    //     const elements = createElement(vnode);
+
+    //     if (Array.isArray(elements)) {
+    //         const flattenedChildren = [].concat(...(elements as Array<any>));
+    //         flattenedChildren.forEach((e) => {
+    //             if (e) {
+    //                 container.appendChild(e);
+    //             }
+    //         });
+    //     } else if (elements) {
+    //         container.appendChild(elements);
+    //     }
+    // } else {
+    //     vnode.forEach((n) => render(n, container));
+    // }
 };
 
-export const hydrate = (vnode: VNode | VNode[], container: Container, removeChildren = true) => {
+export const hydrate = (vnode: VNode, container: Container, removeChildren = true) => {
     if (removeChildren) {
         while (container.firstChild) {
             container.removeChild(container.firstChild);
@@ -41,7 +48,7 @@ export const hydrate = (vnode: VNode | VNode[], container: Container, removeChil
 };
 
 export const hydrateCustomElement = (
-    vnode: VNode | VNode[],
+    vnode: VNode,
     container: Container,
     removeChildren = false,
 ) => {

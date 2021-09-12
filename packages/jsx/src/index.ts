@@ -24,16 +24,19 @@ export declare namespace h {
 export const h = <P = any>(
     type: VnodeType<P>,
     props: Props<P>,
-    ...children: ComponentChildren[]
+    ...children: ComponentChildren
 ): VNode<P> | null => {
-    const properties = props || (EMPTY_OBJ as P);
-    const mappedChildren = children.map((node) =>
+    const properties = Object.assign({}, props) || (EMPTY_OBJ as P);
+
+    const hasChildren = children.length > 0;
+
+    const rawChildren = hasChildren ? ([] as ComponentChildren).concat(...children) : [];
+
+    const mappedChildren = rawChildren.map((node) =>
         isString(node) || isNumber(node) ? text(node) : node,
     );
 
-    const flattendChildren = mappedChildren.length === 1 ? mappedChildren[0] : mappedChildren;
-
-    return createVnode(type, properties, flattendChildren);
+    return createVnode(type, properties, mappedChildren);
 };
 
 export {
