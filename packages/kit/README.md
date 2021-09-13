@@ -59,3 +59,6 @@ subscribe(() => {
     console.log(prevstate);
 });
 ```
+
+## TODO
+- Add documentation for <Head> component.

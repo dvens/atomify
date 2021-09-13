@@ -1,7 +1,7 @@
 # @atomify/jsx
 Small library for creating Custom Elements from JSX Markup.
 
-## Installation
+## Installation @atomify/jsx
 ```sh
 npm i @atomify/jsx
 ```
