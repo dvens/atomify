@@ -18,23 +18,6 @@ export const render = (vnode: VNode, container: Container) => {
     if (dom) {
         container.appendChild(dom);
     }
-
-    // if (!Array.isArray(vnode)) {
-    //     const elements = createElement(vnode);
-
-    //     if (Array.isArray(elements)) {
-    //         const flattenedChildren = [].concat(...(elements as Array<any>));
-    //         flattenedChildren.forEach((e) => {
-    //             if (e) {
-    //                 container.appendChild(e);
-    //             }
-    //         });
-    //     } else if (elements) {
-    //         container.appendChild(elements);
-    //     }
-    // } else {
-    //     vnode.forEach((n) => render(n, container));
-    // }
 };
 
 export const hydrate = (vnode: VNode, container: Container, removeChildren = true) => {

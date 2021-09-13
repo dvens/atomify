@@ -91,9 +91,12 @@ function updateTitle(tags: Tags) {
 
     if (component) {
         const { children } = component;
+        const titleChild = children && children.length > 0 ? children[0] : null;
 
         title =
-            children != null && isObject(children) && 'type' in children ? `${children.type}` : '';
+            titleChild != null && isObject(titleChild) && 'type' in titleChild
+                ? `${titleChild.type}`
+                : '';
     } else {
         title = '';
     }
