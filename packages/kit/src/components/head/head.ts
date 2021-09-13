@@ -95,7 +95,7 @@ function updateTitle(tags: Tags) {
 
         title =
             titleChild != null && isObject(titleChild) && 'type' in titleChild
-                ? `${titleChild.type}`
+                ? `${(titleChild as VNode).type}`
                 : '';
     } else {
         title = '';
