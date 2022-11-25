@@ -34,7 +34,7 @@ Loadable({
 (Other options for the Intersection Observer can be found here https://developer.mozilla.org/en-US/docs/Web/)
 
 ### Custom empty/loading state
-You can add your own loading state with the `loading` option. It accepts a string that will be appended to the hook element. The loading state will be removed when the dynamic import is loaded. If you are using [@atomify/core](https://www.npmjs.com/package/@atomify/core) it will remove the loading state when `componentOnReady` is being called.
+You can add your own loading state with the `loading` option. It accepts a string that will be appended to the hook element. The loading state will be removed when the dynamic import is loaded.
 
 ```javascript
 import { Loadable } from '@utilities/loadable';

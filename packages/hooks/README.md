@@ -29,7 +29,7 @@ setupDefaultRender(JSXRenderer);
 ## Creating components
 
 `@atomify/hooks` components are made out of functions and Typescript.
-You can create new components by importing the defineElement from `@atomify/hooks`. @atomify/core components come without Shadow DOM enabled. You can enable the Shadow DOM by setting the `useShadowDom` argument as true.
+You can create new components by importing the defineElement from `@atomify/hooks`. @atomify/jsx components come without Shadow DOM enabled. You can enable the Shadow DOM by setting the `useShadowDom` argument as true.
 
 ```tsx
 import { h, Fragment } from '@atomify/jsx';
