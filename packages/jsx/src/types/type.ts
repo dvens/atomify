@@ -1,10 +1,11 @@
 import { RefObject } from '@atomify/shared';
 
 export type VnodeType<P = any> = string | FunctionComponent<P>;
+
+export type Props<P> = P & { children?: ComponentChildren; ref?: RefObject<any> };
 export interface VNode<P = any> {
     type: VnodeType<P>;
-    children?: ComponentChildren;
-    props: P;
+    props: Props<P>;
     tag?: number;
     element?: Text | SVGElement | HTMLElement;
 }
@@ -12,8 +13,6 @@ export interface VNode<P = any> {
 export interface FunctionComponent<P = any> {
     (props: Props<P>): VNode<any> | null;
 }
-
-export type Props<P> = P & { children?: ComponentChildren; ref?: RefObject<any> };
 
 export interface PropsWithChildren {
     children?: ComponentChildren;

@@ -44,9 +44,9 @@ export const createDom = <P extends object>(
         appendChildren(dom, vnode || []);
     } else if (isString(vnode.type)) {
         dom = createElement(vnode);
-        appendChildren(dom, vnode.children || []);
+        appendChildren(dom, vnode.props.children || []);
     } else if (isFunction(vnode.type)) {
-        const fc = vnode.type({ ...vnode.props, children: vnode.children });
+        const fc = vnode.type({ ...vnode.props, children: vnode.props.children });
         dom = createDom(fc);
     } else {
         return dom;
@@ -85,7 +85,14 @@ export const createVnode = <P>(
     props: P,
     children: ComponentChildren,
     tag?: number,
-) => ({ type, props, children, tag });
+): VNode<P> => ({
+    props: {
+        ...props,
+        children,
+    },
+    tag,
+    type,
+});
 
 export const vDomify = (value: any) =>
     value !== true && value !== false && value ? value : text('');

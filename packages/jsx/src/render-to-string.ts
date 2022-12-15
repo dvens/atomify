@@ -36,7 +36,8 @@ export const renderToString = (vnode: VNode | ComponentChildren | ComponentChild
     }
 
     if (isObject(vnode)) {
-        const { children, props, type } = vnode as VNode;
+        const { props, type } = vnode as VNode;
+        const children = props.children || [];
 
         if (isFunction(type)) {
             return renderToString(type({ ...props, children }));

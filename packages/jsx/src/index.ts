@@ -21,12 +21,12 @@ export declare namespace h {
     }
 }
 
-export const h = <P = any>(
+export const h = <P>(
     type: VnodeType<P>,
     props: Props<P>,
     ...children: ComponentChildren
-): VNode<P> | null => {
-    const properties = Object.assign({}, props) || (EMPTY_OBJ as P);
+): VNode<P> => {
+    const properties: P = Object.assign({}, props) || (EMPTY_OBJ as P);
 
     const hasChildren = children.length > 0;
 
@@ -53,4 +53,5 @@ export {
     VNode,
     Props,
     createVnode,
+    text,
 };
