@@ -90,8 +90,8 @@ function updateTitle(tags: Tags) {
     let title;
 
     if (component) {
-        const { children } = component;
-        const titleChild = children && children.length > 0 ? children[0] : null;
+        const { props } = component;
+        const titleChild = props.children && props.children.length > 0 ? props.children[0] : null;
 
         title =
             titleChild != null && isObject(titleChild) && 'type' in titleChild
@@ -158,7 +158,8 @@ export const Head: Head = ({ children }) => {
         .reverse()
         .filter(unique())
         .map((child) => {
-            const { props, type, children, tag } = child as VNode<{ className?: string }>;
+            const { props, type, tag } = child as VNode<{ className?: string }>;
+            const { children } = props;
             const className = (props.className ? props.className + ' ' : '') + ATOMIFY_HEAD;
 
             return {

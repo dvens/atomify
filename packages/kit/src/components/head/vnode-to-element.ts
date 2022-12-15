@@ -8,8 +8,9 @@ const DOMAttributeNames: Record<string, string> = {
     noModule: 'noModule',
 };
 
-export const vnodeToElement = ({ type, props, children }: VNode<any>) => {
+export const vnodeToElement = ({ type, props }: VNode<any>) => {
     if (isFunction(type)) return null;
+    const { children } = props;
     const element = document.createElement(type);
 
     for (const p in props) {

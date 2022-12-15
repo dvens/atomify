@@ -1,0 +1,35 @@
+# Build results
+dist/
+
+# Dependency directory
+node_modules/
+
+# Bower dependency directory
+bower_components/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac desktop service store files
+.DS_Store
+
+### WebStorm ###
+.idea/
+.idea_modules/
+
+### VSCode ###
+.gitignore/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+### Node ###
+# Logs
+logs
+*.log
+
+coverage/
