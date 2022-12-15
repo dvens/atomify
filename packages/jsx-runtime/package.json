@@ -1,6 +1,6 @@
 {
     "name": "@atomify/jsx-runtime",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "JSX runtime for babel",
     "url": "https://github.com/dvens/atomify",
     "license": "MIT",
@@ -31,7 +31,7 @@
         "uglify-es": "^3.3.9"
     },
     "dependencies": {
-        "@atomify/jsx": "^2.2.3",
+        "@atomify/jsx": "^2.2.4",
         "@atomify/shared": "^1.2.2"
     },
     "publishConfig": {
