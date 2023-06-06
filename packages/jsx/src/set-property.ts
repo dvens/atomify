@@ -19,6 +19,8 @@ export const setProperty = (element: any, vnodeData: object) => {
         const attributeName = attribute as keyof typeof vnodeData;
         const attributeValue = vnodeData[attributeName];
 
+        if (attributeName === 'children') return;
+
         let lAttributeName = attribute.toLowerCase();
 
         switch (attributeName) {
